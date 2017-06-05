@@ -1,0 +1,27 @@
+menu "Device Drivers"
+
+
+
+source "drivers/net/Kconfig"
+
+source "drivers/input/Kconfig"
+
+source "drivers/serial/Kconfig"
+
+
+source "drivers/i2c/Kconfig"
+
+
+
+source "drivers/watchdog/Kconfig"
+
+
+
+
+
+source "drivers/mmc/Kconfig"
+
+
+
+
+endmenu

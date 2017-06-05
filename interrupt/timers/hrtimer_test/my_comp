@@ -1,0 +1,1 @@
+make ARCH=arm CROSS_COMPILE=/opt/tooling/codesourcery/MGC-2014.05-46-arm-gcc-4.8.3/Sourcery_CodeBench_for_ARM_Embedded/bin/arm-none-linux-gnueabi- all

@@ -1,0 +1,15 @@
+#
+# File system configuration
+#
+
+menu "File systems"
+
+source "fs/ext4/Kconfig"
+
+
+source "fs/fat/Kconfig"
+
+
+
+
+endmenu

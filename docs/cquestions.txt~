@@ -1,0 +1,2939 @@
+Data types:
+
+1. What will be output when you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    printf("%d\t",sizeof(6.5));
+    printf("%d\t",sizeof(90000));
+    printf("%d",sizeof('A'));
+    return 0;
+}
+
+Explanation:
+
+By default data type of numeric constants is:
+6.5 :  double
+90000: long int
+‘A’: char
+In C size of data type varies from compiler to compiler. 
+
+2. Consider on following declaring of enum.
+(i)        enum  cricket {Gambhir,Smith,Sehwag}c;
+(ii)      enum  cricket {Gambhir,Smith,Sehwag};
+(iii)    enum   {Gambhir,Smith=-5,Sehwag}c;
+(iv)      enum  c {Gambhir,Smith,Sehwag};
+Choose correct one declartion.
+
+Explanation:
+
+Syntax of enum data type is:
+enum  [<tag_name>]{
+    <enum_constanat_name> [=<integer_ value>],
+    …
+} [<var_name>,…]
+
+Note:
+[] : Represents optional .
+<>: Represents any valid c identifier
+
+
+3.  What will be output when you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    signed x;
+    unsigned y;
+    x = 10 +- 10u + 10u +- 10;
+    y = x;
+    if(x==y)
+         printf("%d %d",x,y);
+    else if(x!=y)
+         printf("%u  %u",x,y);
+    return 0;
+}
+
+Consider on the expression:
+x = 10 +- 10u + 10u +- 10;
+10: It is signed integer constant.
+10u: It is unsigned integer constant.
+X: It is signed integer variable.
+In any binary operation of dissimilar data type for example: a + b
+Lower data type operand always automatically type casted into the operand of higher data type before performing the operation and result will be higher data type.
+As we know operators enjoy higher precedence than binary operators. So our expression is:
+x = 10 + (-10u) + 10u + (-10);
+  = 10 + -10 + 10 + (-10);
+  = 0
+Note: Signed is higher data type than unsigned int.
+So, Corresponding signed value of unsigned 10u is +10
+
+
+4. What will be output when you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    double num=5.2;
+    int  var=5;
+    printf("%d\t",sizeof(!num));
+    printf("%d\t",sizeof(var=15/2));
+    printf("%d",var);
+    return 0;
+}
+
+sizeof(Expr)  operator always returns the an integer value which represents the size of the final value of the expression expr.
+Consider on the following expression:
+!num
+=!5.2
+=0
+0 is int type integer constant and it size is 2 by in TURBO C 3.0 compiler and  4 in the TURBO C 4.5 and Linux GCC compilers.
+Consider on the following expression:
+var = 15/2
+=> var = 7
+=> 7
+7 is int type integer constant.
+Any expression which is evaluated inside the sizeof operator its scope always will be within the sizeof operator. So value of variable var will remain 5 in the printf statement.
+
+5.  What will be output when you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    const int *p;
+    int a=10;
+    p=&a;
+    printf("%d",*p);
+    return 0;
+}
+
+In the following declaration
+const int *p;
+p can keep address of constant integer.
+
+Note : Default data type is int.
+
+6. What will be output when you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    signed x,a;
+    unsigned y,b;
+    a=(signed)10u;
+    b=(unsigned)-10;
+    y = (signed)10u + (unsigned)-10;
+    x = y;
+    printf("%d  %u\t",a,b);
+    if(x==y)
+         printf("%d %d",x,y);
+    else if(x!=y)
+         printf("%u  %u",x,y);
+    return 0;
+}
+
+a=(signed)10u;
+signed value of 10u is +10
+so, a=10
+b=(unsigned)-10;
+unsigned value of -10 is :
+MAX_VALUE_OF_UNSIGNED_INT – 10 + 1
+In turbo c 3.0 complier max value of unsigned int is 65535
+So, b = 65526
+y = (signed)10u + (unsigned)-10;
+  = 10 + 65526 = 65536 = 0 (Since 65536 is beyond the range of unsigned int. zero is its corresponding cyclic vlaue)
+X = y = 0
+
+7. What will be output when you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    volatile int a=11;
+    printf("%d",a);
+    return 0;
+}
+
+We cannot predict the value of volatile variable because its value can be changed by any microprocessor interrupt.
+
+Note: Size of int is always equal to word length of micro preprocessor in which your compiler has based.
+
+8. What will be output when you will execute following c code?
+
+#include<stdio.h>
+const enum Alpha{
+      X,
+      Y=5,
+      Z
+}p=10;
+int main(){
+    enum Alpha a,b;
+    a= X;
+    b= Z;
+    printf("%d",a+b-p); 
+    return 0; 
+}
+
+ Default value of enum constant X is zero and
+Z = Y + 1 = 5 + 1 = 6
+So, a + b – p
+=0 + 6 -10 = -4
+
+8.  What will be output when you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    char a=250;
+    int expr;
+    expr= a+ !a + ~a + ++a;
+    printf("%d",expr);
+    return 0;
+}
+
+ char a = 250;
+250 is beyond the range of signed char. Its corresponding cyclic value is: -6
+So, a = -6
+Consider on the expression:
+expr= a+ !a + ~a + ++a;
+Operator! , ~ and ++ have equal precedence. And it associative is right to left.
+So, First ++ operator will perform the operation. So value a will -5
+Now,
+Expr = -5 + !-5 + ~-5 + -5
+= -5 + !-5 + 4 - 5
+= -5 + 0 + 4 -5
+= -6
+
+9. Consider on order of modifiers in following declaration:
+
+(i)char volatile register unsigned c;
+(ii)volatile register unsigned char c;
+(iii)register volatile unsigned char c;
+(iv)unsigned char volatile register c;
+
+which one is correct above ?
+
+10. What will be output when you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    int a=-5;
+    unsigned int b=-5u;
+    if(a==b)
+         printf("Avatar");
+    else
+         printf("Alien");
+    return 0;
+}
+
+ int a=-5;
+Here variable a is by default signed int.
+unsigned int b=-5u;
+Constant -5u will convert into unsigned int. Its corresponding unsigned int value will be :
+65536 – 5 + 1= 65532
+So, b = 65532
+
+In any binary operation of dissimilar data type for example: a == b
+Lower data type operand always automatically type casted into the operand of higher data type before performing the operation and result will be higher data type.
+In c signed int is higher data type than unsigned int. So variable b will automatically type casted into signed int.
+So corresponding signed value of 65532 is -5
+Hence, a==b
+
+12.  What will be output when you will execute following c code?
+
+#include<stdio.h>
+extern enum cricket x;
+int main(){
+    printf("%d",x); 
+    return 0;
+}
+const enum cricket{
+    Taylor,
+    Kallis=17,
+    Chanderpaul
+}x=Taylor|Kallis&Chanderpaul;
+
+ x=Taylor|Kallis&Chanderpaul
+= 0 | 17 & 18
+= 0 |(17 & 18)
+//& operator enjoy higher precedence than |
+=0 |16
+=16
+
+Note : Enum is primitive data type.
+
+13. What will be output when you will execute following c code?
+
+#include<stdio.h>
+enum A{
+    x,y=5,
+    enum B{
+         p=10,q
+    }varp;
+}varx;
+
+int main(){
+    printf("%d %d",x,varp.q);
+    return 0;
+}
+
+
+Nesting of enum constant is not possible in c.
+
+14. Consider on following declaration in c:
+
+(i)short const register i=10;
+(ii)static volatile const int i=10;
+(iii)unsigned auto long register i=10;
+(iv)signed extern float i=10.0;
+
+Option (III) is in correct due to we cannot specify two storage class auto and register in the declaration of any variable.
+Option (iv) is in correct due to we cannot use signed or unsigned modifiers with float data type. In c float data type by default signed and it cannot be unsigned.
+
+In c any name is called identifier. This name can be variable name, function name, enum constant name, micro constant name, goto label name, any other data type name like structure, union, enum names or typedef name.
+
+Note: 
+Rule 1: Name of identifier includes alphabets, digit and underscore.
+Rule 2: First character of any identifier must be either alphabets or underscore.
+Rule 3: Name of identifier cannot be any keyword of c program.
+Rule 4: Name of function cannot be global identifier.
+Valid name: __TOTAL__, __NAME__  , __TINY__etc.
+Invalid name: __TIME__ ,__DATE__ , __FILE__ ,__LINE__ ,__STDC__, __TINY__, __SMALL__, __COMPACT__, __LARGE__, __HUHE__, __CDECL__, __PASCAL__, __MSDOS__, __TURBOC__
+Rule 5: Name of identifier cannot be register Pseudo variables.
+Rule 6: Name of identifier cannot be exactly same as of name of function within the scope of the function.
+Rule 7: Name of identifier is case sensitive i.e. num and Num are two different variables.
+Rule 8: Only first 32 characters are significant of   identifier name.
+Rule 9: Identifier name cannot be exactly same as constant name which have been declared in header file of c and you have included that header files. For example:
+
+variable name cannot be any keyword of c language.
+Variable name can have only underscore.
+Variable name must star from either alphabet or underscore.
+We cannot use special character – in the variable name.
+Variable name can be keyword of c++.
+Variable name can have digits.
+Variable name cannot be global identifier.
+Variable name can be in the format: __NAME__. But it is bad practice since this format is used for global identifiers.
+Two or more global variables can have same name but we can initialize only one of them.
+Two variables can have same name in different scope.
+Two local variables cannot have same name in same scope.
+Variable name can be main.
+Variable name cannot be pre defined function of included header file.
+
+ Declaration of variables in c:
+
+Declaration of variables means to acknowledge the compiler only about variable name and its data type with its modifiers but compiler doesn’t reserve any memory for the variables.
+
+In c we can declared any variable with help of extern keyword while it has not initialized. Example of declaration:
+
+(1) extern int a;
+
+(2)extern struct student{
+    char * name;
+    int roll;
+    double marks;
+};
+
+Important points about declaration variables in c:
+
+(1) Since declaration variable doesn’t get any memory space so we cannot assign any value to variable. For example:
+
+#include<stdio.h>
+extern int a;
+int main(){
+    a=100;
+    printf("%d",a);
+    return 0;
+}
+
+Output: Compilation error
+
+(2) We cannot use any operator with a variable which has only declared.
+
+(3)We can declare any variable either globally or locally.
+
+(4)A same variable can be declared many times.
+
+
+Definition of variables in c:
+
+A c statement in which a variable gets a memory is known as definition of variable. All auto, register, static and initialized extern variable are example of definition of variables. For example:
+
+(a)
+
+int a; //Definition of variable a
+static int a; //Definition of variable a
+register int a; //Definition of variable a
+extern int a=5; //Definition of variable a
+
+Note: In the above c statement all variables has been declared and defined at the same time.
+
+(b)
+
+#include<stdio.h>
+extern int a; //Declaration of variable a
+extern int a; //Again declaration of variable a
+int a=5;    //Definition of variable a
+
+int main(){
+    ptintf("%d",a);
+    return 0;
+}
+
+Output: 5
+
+Important points about definition of variable:
+
+(1)If any variable has not declared then it declaration occurs at the time of definition.
+(2)We can use any operator after the definition of variable.
+(3)Definition of variables can be globally or locally.
+(4)A register variable gets CPU instead of memory in definition.
+(5)A static or extern variable gets memory at the compile time while auto and register variables get memory or CPU at the run time.
+
+Definition of variable in c :
+
+A variable is named location of data. In other word we can variable is container of data.
+
+In real world you have used various type containers for specific purpose. For example you have used suitcase to store clothes, match box to store match sticks etc. In the same way variables of different data type is used to store different types of data. For example integer variables are used to store integers char variables is used to store characters etc. On the basis of how many data a variable will store, we can categorize the all c variable in three groups.
+
+(a)Variables which can store only one data at time. Example: integer variables, char variables, pointer variables etc. 
+(b)Variables which can store more than one data of similar type at a time. Example: array variables
+(c) Variables, which can store more than one value of dissimilar type at a time. Example: structure or union variables.
+
+Properties of variable in c:
+
+Every variable in c have three most fundamental attributes. They are:
+
+1. Name
+
+2. Value
+
+3. Address
+
+Name of a variable:
+
+ Every variable in c has its own name. A variable without any name is name is not possible in c. Most important properties of variables name are its unique names. Not two variables in c can have same name with same visibility. For example:
+
+#include<stdio.h>
+int main(){
+    auto int a=5;   //Visibility is within main block
+    static int a=10; //Visibility is within main block
+
+/* Two variables of same name */
+    printf("%d",a);
+    return 0;
+}
+
+Output: compilation error
+
+But it is possible that two variable with same name but different visibility. In this case variable name can access only that variable which is more local. In c there is not any way to access global variable if any local variable is present of same name. For example:
+
+(a)
+
+#include<stdio.h>
+int a=50; //Visibility is whole the program
+
+int main(){
+    int a=10; //Visibility within main block
+    printf("%d",a);
+    return 0;
+}
+
+Output: 10
+
+(b)
+
+#include<stdio.h>
+
+int main(){
+    int a=10; //Visibility within main block.
+    {
+        a+=5; //Accessing outer local variable a.
+        int a=20; //Visibility within inner block.
+        a+=10; //Accessing inner local variable a.    
+        printf(“%d”,a);//Accessing inner local variable a.
+    }
+
+    printf(“%d”,a); //Accessing outer local variable a.
+    return 0;
+}
+
+Output: 30 15
+
+Note: In c any name is called identifier. This name can be variable name, function name, enum constant name, micro constant name, goto label name, any other data type name like structure, union, enum names or typedef name.
+
+ Address of a variable in c
+Location in a memory where a variable stores its data or value is known as address of variable. To know address of any variable c has provided a special unary operator & which is known as deference operator or address operator. It operator is only used with variables not with the constant. For example:
+
+#include<stdio.h>
+int main(){
+    int a=5;
+    printf("Address of variable a is: %d",&a);
+    return 0;
+}
+
+We cannot write: &&a, because:
+
+&&a=& (&a) =& (address of variable a) =& (a constant number)
+
+And we cannot use address operator with constant.
+
+Important points about address of variables in c:
+
+(1)Address of any variable in c is an unsigned integer. It cannot be a negative number. So in printf statement we should use %u instead of %d, to print the address of any variable.
+
+%d: It is used to print signed decimal number.
+
+%u: It is used to print unsigned decimal number.
+
+Since, if the address of any variable will beyond the range of signed short int it will print a cyclic value.
+
+(2)Address of any variable must be within the range 0000 to FFFF in hexadecimal number format or 0 to 65535 i.e. range of unsigned short int in c. To print the address of any variable in hexadecimal number format by printf function we should use %x or %X.
+
+%x: To print a number in hexadecimal format using 0 to 9 and a, b, c, d, e, f.
+
+%X: To print a number in hexadecimal format using 0 to 9 and A, B, C, D, E, F.
+
+(3)A programmer cannot know at which address a variable will store the data. It is decided by compiler or operating system.
+
+(4)Any two variables in c cannot have same physical address.
+
+(5)Address of any variable reserve two bytes of memory spaces.
+
+(6) Address of any variable in c is not integer type so to assign an address to a integral variable we have to type cast the address. For example:
+
+#include<stdio.h>
+int main(){
+    int a=100;
+    unsigned int b=(unsigned)&b;
+    printf("%u",b);
+    return 0;
+}
+
+Address arithmetic in c:
+
+(1) We can subtract address of any two variables.  For example:
+
+#include<stdio.h>
+int main(){
+    int a;
+    int b;
+    printf("%d",&b-&a);
+    return 0;
+}
+
+(2)We cannot add, multiply, divide two addresses.
+(3)we can add or subtract a integer number with address.
+(3)Other operators which can be used with addresses are:
+(a)Negation operator:!
+(b)Size operator: sizeof
+(c)Type casting operator: (Type)
+(e) Deference operator: *
+(f)Logical operator: &&, ||
+
+Example:
+
+#include<stdio.h>
+int main(){1
+    int a=12,b;
+    printf("%d",!&a);
+    printf("%d",sizeof(&a));
+    printf("%d",(int)&a);
+    printf("%d",*&a);
+    printf("%d  %d %d %d",&a&&&b,&a&&b,&a||&b,&a||b);
+    return 0;
+
+}
+
+ Value of variable in c language
+
+Explanation of value of a variable in c programming language by examples and questions and answers
+
+Data which any variable keeps is known as value of variable. For example:
+int a=5;
+Here value of variable a is five. Name of variable always returns value of the variable.
+How to assign any value to a variable:
+C supports eleven type of assignment operator to assign any value to operator. Those are:
+
+(a) = 
+(b) +=
+(c) -=
+(d) v*=
+(e) /=
+(f) %=
+(g)   <<=
+(h) >>=
+(i) |=
+(j) &=
+(k) ^=
+
+In this chapter will discuss only first operator i.e. =
+
+Assignment statement in c:
+LValue = RValue
+
+LValue: Lvalue stands for left value. In any assignment statement LValue must be a container i.e. which have ability to hold the data. In c has only one type only container and which is variable. Hence LValue must be any variable in c it cannot be a constant, function or any other data type of c. For example
+
+#define <stdio.h>
+#define max 125
+
+struct abc{
+    char *name;
+    int roll;
+};
+
+enum {RED,BLUE};
+
+int main(){
+    int a;
+    const b;
+    a=5;
+    //10=5; LValue cannot be a integer constant
+    //max=20; //Lvalue cannot be a micro constant
+    //b=11; Lvalue cannot be a constant variable
+    //float=3.3f; Lvalue cannot be a data type
+    //abc={“sachin”,5}; Lvalue cannot be a data type
+    //BLUE =2; Lvalue cannot be a enum constant
+    return 0;
+}
+
+RValue: In any assignment statement RValue must be anything which can return and constant value or it is itself a constant. RValue can be any c constants, variables, function which is returning a value etc. For example:
+
+#include<stdio.h>
+#define max 5
+void display();
+float sum();
+enum {BLACK, WHITE};
+
+int main(){
+    int x=2; //RValue can be a constant.
+    float y=9.0;
+    const int z=x; //RValue can be a constant variable
+    x=max; //RValue can be a variable.
+    x=BLACK; //RValue can be a enum constant.
+    y=sum();//RValue can be a function.
+    y=display(); //RValue can be a function which is
+
+   return 0;
+}
+
+C operator questions with answers :
+
+
+1. What will be output of the following program?
+
+#include<stdio.h>
+int main(){
+    float a=0.7;d 
+    if(a<0.7){
+         printf("C");
+    }
+    else{
+         printf("C++");
+    }
+    return 0;
+}
+
+Explanation: 
+0.7 is double constant (Default). Its binary value is written in 64 bit.
+
+Binary value of 0.7 = (0.1011 0011 0011 0011 0011 0011 0011 0011 0011 0011 0011 )
+
+Now here variable a is a floating point variable while 0.7 is double constant. So variable a will contain only 32 bit value i.e.
+
+a = 0.1011 0011 0011 0011 0011 0011 0011 0011 while
+0.7 = 0.1011 0011 0011 0011 0011 0011 0011 0011 0011 0011 0011....
+It is obvious a < 0.7
+
+2.  What will be output of the following program?
+        
+#include<stdio.h>
+int main(){
+    int i=5,j;
+    j=++i+++i+++i;
+    printf("%d %d",i,j);
+    return 0;
+}
+
+Explanation:
+
+Rule :- ++ is pre increment operator so in any arithmetic expression it first increment the value of variable by one in whole expression then starts assigning the final value of variable in the expression.
+
+Compiler will treat this expression j = ++i+++i+++i; as
+i = ++i + ++i + ++i;
+
+Initial value of i = 5 due to three pre increment operator final value of i=8.
+Now final value of i i.e. 8 will assigned to each variable as shown in the following figure:
+
+j = ++i + ++i + ++i;
+
+So, j=8+8+8
+j=24 and
+i=8
+
+3.  What will be output of the following program?
+
+#include<stdio.h>
+int main(){
+    int i=1;
+    i=2+2*i++;
+    printf("%d",i);
+    return 0;
+}
+
+Explanation:
+i++ i.e. when postfix increment operator is used any expression the it first assign the its value in the expression the it increments the value of variable by one. So,
+i = 2 + 2 * 1
+i = 4
+Now i will be incremented by one so i = 4 + 1 = 5
+
+4.  What will be output of the following program?
+
+#include<stdio.h>
+int main(){
+    int a=2,b=7,c=10;
+    c=a==b;
+    printf("%d",c);
+    return 0;
+}
+Explanation:
+== is relational operator which returns only two values.
+0: If a == b is false
+1: If a == b is true
+Since
+a=2
+b=7
+So, a == b is false hence b=0
+
+5. What will be output of the following program?
+
+#include<stdio.h>
+void main(){
+    int x;
+    x=10,20,30;
+    printf("%d",x);
+    return 0;
+}
+Explanation :
+Precedence table:
+
+Operator Precedence  Associative
+ =      More than ,  Right to left
+ ,      Least        Left to right
+
+Since assignment operator (=) has more precedence than comma operator .So = operator will be evaluated first than comma operator. In the following expression
+x = 10, 20, 30
+First 10 will be assigned to x then comma operator will be evaluated.
+
+7. What will be output of the following program?
+
+#include<stdio.h>
+int main(){
+    int a=0,b=10;
+    if(a=0){
+         printf("true");
+    }
+    else{
+         printf("false");
+    }
+    return 0;
+}
+Explanation:
+As we know = is assignment operator not relation operator. So, a = 0 means zero will assigned to variable a. In c zero represent false and any non-zero number represents true.
+So, if(0) means condition is always false hence else part will execute.
+
+8.  What will be output of the following program?
+
+#include<stdio.h>
+int main(){
+    int a;
+    a=015 + 0x71 +5;
+    printf("%d",a);
+    return 0;
+}
+
+Explanation:
+015 is octal number its decimal equivalent is = 5 * 8 ^ 0 + 1 * 8 ^ 1 = 5 + 8 = 13
+0x71 is hexadecimal number (0x is symbol of hexadecimal) its decimal equivalent is = 1 * 16 ^ 0 + 7 * 16 ^ 1 = 1 + 112 = 113
+So, a = 13 + 113 + 5 = 131
+
+9.  What will be output of the following program?
+
+#include<stdio.h>
+int main(){
+    printf("%d %d %d",sizeof(3.14),sizeof(3.14f),sizeof(3.14L));
+    return 0;
+}
+
+Explanation:
+3.14f is floating point constant. Its size is 4 byte. 3.14 is double constant (default). Its size is 8 byte. 3.14L is long double constant. Its size is 10 byte. sizeof() operator always return the size of data type which is written inside the(). It is keyword.
+
+10.  What will be output of the following program?
+
+#include<stdio.h>
+int main(){
+    int x=100,y=20,z=5;
+    printf("%d %d %d");
+    return 0;
+}
+
+By default x, y, z are auto type data which are stored in stack in memory. Stack is LIFO data structure. So in stack first stores 100 then 20 then 5 and program counter will point top stack i.e. 5. Default value of %d in printf is data which is present in stack. So output is revere order of declaration. So output will be 5 20 100.
+
+11. What will be output of the following program?
+
+#include<stdio.h>
+int main(){
+    int a;
+    a=sizeof(!5.6);
+    printf("%d",a);
+    return 0;
+}
+
+ Explanation:
+! is negation operator it return either integer 0 or 1.
+! Any operand = 0 if operand is non zero.
+! Any operand = 1 if operand is zero.
+So, !5.6 = 0
+Since 0 is integer number and size of integer data type is two byte.
+
+12. What will be output of the following program?
+
+#include<stdio.h>
+int main(){
+    float a;
+    (int)a= 45;
+    printf("%d,a);
+    return 0;
+}
+ Explanation:
+After performing any operation on operand it always return some constant value.
+
+(int) i.e. type casting operator is not exception for this. (int) a will return one constant value and we cannot assign any constant value to another constant value in c.
+
+(int)a = 45; is equivalent to
+3456 = 45 ( Here 3456 in any garbage value of int(a)).
+
+13. What will be output of the following program?
+
+#include<stdio.h>
+int main(){
+     int i=5;
+     int a=++i + ++i + ++i;
+     printf("%d",a);
+     return 0;
+}
+Explanation:
+Rule : ++ (in ++i) is pre increment operator so in any arithmetic expression it first increment the value of variable by one in whole equation up to break point then start assigning the value of variable in the equation. There are many break point operators in. For example:
+
+(1) Declaration statement.
+(2) && or operator.
+(3) Comma (,) operator etc.
+
+In the following expression:
+int a=++i + ++i + ++i;
+
+Here break point is due to declaration .It break after each increment i.e. (initial value of i=5) after first increment value 6 assign to variable i then in next increment will occur and so on.
+So, a = 6 + 7 + 8;
+
+If else questions in c :
+
+1. 
+What will be output when you will execute following c code?
+
+#include<stdio.h>
+void main(){
+    int a=5,b=10,c=1;
+    if(a&&b>c){
+         printf("cquestionbank");
+    }
+    else{
+         break;
+    }
+}
+
+Keyword break is not syntactical part of if-else statement. So we cannot use break keyword in if-else statement. This keyword can be use in case of loop or switch case statement.
+Hence when you will compile above code compiler will show an error message: Misplaced break.
+
+
+2. What will be output when you will execute following c code?
+
+#define PRINT printf("Star Wars");printf(" Psycho");
+#include<stdio.h>
+void main(){
+    int x=1;
+    if(x--)
+         PRINT
+    else
+         printf("The Shawshank Redemption");
+}
+
+
+Explanation:
+
+PRINT is macro constant. Macro PRINT will be replaced by its defined statement just before the actual compilation starts.  Above code is converted as:
+
+void main(){
+    int x=1;
+    if(x--)
+         printf("Star Wars");
+printf(" Psycho");
+    else
+         printf("The Shawshank Redemption");
+}
+   
+If you are not using opening and closing curly bracket in if clause, then you can write only one statement in the if clause. So compiler will think:
+(i)
+if(x--)
+    printf("Star Wars");
+
+It is if statement without any else. It is ok.
+(ii)
+printf(" Psycho");
+
+It is a function call. It is also ok
+(iii)
+else
+         printf("The Shawshank Redemption");
+
+You cannot write else clause without any if clause. It is cause of compilation error. Hence compiler will show an error message: Misplaced else 
+
+
+3. What will be output when you will execute following c code?
+
+#define True 5==5
+#include<stdio.h>
+void main(){
+    if(.001-0.1f)
+         printf("David Beckham");
+    else if(True)
+         printf("Ronaldinho");
+    else
+        printf("Cristiano Ronaldo");
+}
+
+
+Explanation:
+
+As we know in c zero represents false and any non-zero number represents true. So in the above code:
+
+(0.001 – 0.1f) is not zero so it represents true. So only if clause will execute and it will print: David Beckham on console.
+But it is bad programming practice to write constant as a condition in if clause. Hence compiler will show a warning message: Condition is always true
+
+Since condition is always true, so else clause will never execute. Program control cannot reach at else part. So compiler will show another warning message:
+Unreachable code
+
+4. what will be output when you will execute following c code?
+
+#include<stdio.h>
+void main(){
+    if("ABC") printf("Barack Obama\n");
+    if(-1)    printf("Hu Jintao\n");
+    if(.92L)  printf("Nicolas Sarkozy\n");
+    if(0)     printf("Ben Bernanke\n");
+    if('W')   printf("Vladimir Putin\n");
+}
+
+
+“ABC”: It is string constant and it will always return a non-zero memory address.
+0.92L: It is long double constant.
+‘W’: It is character constant and its ASCII value is  
+
+As we know in c language zero represents false and any non-zero number represents true. In this program condition of first, second, third and fifth if statements are true.
+
+
+5. What will be output when you will execute following c code?
+
+#include<stdio.h>
+void main(){
+    if('\0');
+    else if(NULL)
+         printf("cquestionbank");
+    else;
+}
+
+
+‘\0’ is null character constant. Its ASCII value is zero. if(0) means false so program control will check it else if clause.
+NULL is macro constant which has been defined in stdio.h which also returns zero. 
+
+6.  What will be output when you will execute following c code?
+
+#include<stdio.h>
+void main(){
+    char c=256;
+    char *ptr="Leon";
+    if(c==0)                                
+         while(!c)
+             if(*ptr++)
+                 printf("%+u",c);
+             else
+                 break;
+}
+
+http://www.cquestions.com/2010/01/if-else-questions-in-c.html
+In the above program c is signed (default) char variable. Range of signed char variable in Turbo c is from -128 to 127. But we are assigning 256 which is beyond the range of variable c.
+
+Looping in c :
+
+Explanation of loops or looping in c programming language by examples and questions
+
+Looping is the process of repeating of same code until a specific condition doesn’t satisfy. In c there are three types of loop:
+
+(a)loop
+(b)while loop
+(c)do while
+
+for loop:
+
+This loop is used when we have to execute a part of code in finite times. It is per tested loop. Syntax of for loop:
+
+for (Expression 1; Expression 2; Expression 3){
+Loop body
+}
+
+Order of movement of control in for loop:
+
+First time:
+Expression 1-> Expression 2->Loop body -> Expression 3
+Second time and onward:
+Expression 2->Loop body -> Expression 3
+
+That is expression 1 only executes in the first iteration. From second iteration and onward control doesn’t go to at the expression 1.
+
+Explanation of each term of syntax:
+Expression 1:
+It is called initialization expression. Task of this expression is to initialize the looping variables.
+
+Properties of expression 1:
+
+1. Expression1 can initialize the more than one variable.
+2. Expression1 is optional.
+3. Unlike to the java in c we cannot declare the variable at the expression1.
+
+Expression 2: It is called as conditional expression. Task of expression is to check the condition and if it is false then it terminates the loop.
+
+Properties of expression2:
+
+1.  Expression2 can have more than one checking condition and if any condition is false loop will terminate. For example:
+2. Expression2 is also optional.
+3. It can perform task of expression1 as well as expression3. That is it can initialize the variables as well as increment the variables. 
+4. If expression2 is zero means condition is false and any non zero number means condition is true.
+
+Expression 3:
+It is called as instrumentation expression. Task of this expression is to increment the variable. Properties:
+
+1. We can increment more than one variable at the same time in the expression3.
+2. Expression 3 is also optional.
+
+Loop body:
+Loop body contains the part of code which we have to execute multiple numbers of times.
+
+Properties of loop body:
+
+1. If loop body contain only one statement then brace is optional. For example:
+2. Loop without body is possible. 
+3. Braces of loop body behave as block.
+
+
+While loop:
+
+It is pre tested loop. It is used when we have to execute a part of code in unknown numbers of times.
+Syntax:
+
+while (Expression){
+Loop body
+}
+
+ Properties of while loop:
+
+1. Task of the expression is to check the condition. Loop will execute until condition is true otherwise loop will terminate.  
+
+2. If any expression returns zero then condition will false and if it returns any non- zero number then condition will true.
+
+3.  In while loop condition expression is compulsory.
+
+4. While loop without any body is possible.
+
+5.  In while loop there can be more than one conditional expression.
+
+6. If loop body contain only one statement the brace is optional.
+
+ do while loop in c
+
+Explanation of do while loop in c programming language by examples, questions and answers
+
+
+It is also called as post tested loop. It is used when it is necessary to execute the loop at least one time. Syntax:
+
+do {
+Loop body
+}while (Expression);
+
+If there is only one statement in the loop body then braces is optional.
+
+break keyword in c:
+It is keyword of c programming. Task of this keyword is to bring the control from out of the loop in the case of looping.
+Another task of break keyword is to switch the control from one case to another case in case of switch case control statement.
+
+continue:
+It is keyword of c and task of this keyword is to transfer the control of program at the beginning of loop.
+Except looping, we cannot use continue keyword.
+
+Nested loop in c programming
+
+A loop inside another loop is known as nested loop. We can write any loop inside any loop in c i.e. we can write for loop inside the loop or while loop or do while loop etc.
+
+c online test:
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    int i;
+    for(i=0;i<5;i++){
+         int i=10;
+         printf(" %d",i);
+         i++;
+    }
+    return 0;
+}
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    register a,b,x;
+    scanf("%d %d",&a,&b);
+    x=a+~b;
+    printf("%d",x);
+    return 0;
+}
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+auto int a=5;
+int main(){
+    int x;
+    x=~a+a&a+a<<a;
+    printf("%d",x);
+    return 0;
+}
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    register int a,b;
+    int c;
+    scanf("%d%d",&a,&b);
+    c=~a + ~b + ++a + b++;
+    printf(" %d",c);
+    return 0;
+}
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    int arr[3]={10,20,30};
+    int x=0;
+    x = ++arr[++x] + ++x + arr[--x];
+    printf("%d ",x);
+    return 0;
+}
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    int a[]={10,20,30,40};
+    int i=3,x;
+    x=1*a[--i]+2*a[--i]+3*a[--i];
+    printf("%d",x);
+    return 0;
+}
+
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    static int a[][2][3]={0,1,2,3,4,5,6,7,8,9,10,11,12};
+    int i=-1;
+    int d;
+    d=a[i++][++i][++i];
+    printf("%d",d);
+    return 0;
+}
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+int f(int);
+int main(){
+    int i=3,val;
+    val=sizeof (f(i)+ +f(i=1)+ +f(i-1));
+    printf("%d %d",val,i);  
+    return 0; 
+}
+int f(int num){
+        return num*5;
+}
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    int x,a=3;
+    x=+ +a+ + +a+ + +5;
+    printf("%d  %d",x,a);
+    return 0;
+}
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    int num,i=0;
+    num=-++i+ ++-i;
+    printf("%d",num);
+    return 0;
+}
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    int num,a=5;
+    num=-a--+ +++a;
+    printf("%d  %d",num,a);
+    return 0;
+}
+
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    int num,a=15;
+    num=- - - -a--;
+    printf("%d  %d",num,a);
+    return 0;
+}
+
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    int x,a=2;
+    x=++a,++a,a++;
+    printf("%d  %d",x,a);
+    return 0;
+}
+
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    int x,i=2;
+    x=~-!++i;
+    printf("%d",x);
+    return 0;
+}
+
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    static double *p,*q,*r,*s,t=5.0;
+    double **arr[]={&p,&q,&r,&s};
+    int i;
+    *p=*q=*r=*s=t;
+    for(i=0;i<4;i++)
+        printf("%.0f  ",**arr[i]);
+    return 0;
+}
+
+
+What will be output if you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    float x;
+    x=0.35==3.5/10;
+    printf("%f",x);
+    return 0;
+}
+
+
+ #include<stdio.h>
+int main(){
+    int arr[]={6,12,18,24};
+    int x=0;
+    x=arr[1]+(arr[1]=2);
+    printf("%d",x);
+    return 0;
+}
+
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+int sq(int);
+int main(){
+    int a=1,x;
+    x=sq(++a)+sq(a++)+sq(a++);
+    printf("%d",x);
+return 0;
+}
+int sq(int num){
+    return num*num;
+}
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    printf("%c",*"abcde");
+return 0;
+}
+
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    printf("%d","abcde"-"abcde");
+return 0;
+}
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    int a=0;
+    #if (a==0)
+         printf("Equal");
+    #else if
+         printf("Not equal");
+    #endif
+    return 0;
+}
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+int main(){
+    for(;NULL;)
+         printf("cquestionbank");
+    return 0;
+}
+
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+auto int a=5;
+int main(){
+    int x;
+    x=~a+a&a+a<<a;
+    printf("%d",x);
+    return 0;
+}
+
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+void main(){
+    int a=5;
+    {
+         int b=10;
+         ++b;
+         ++a;
+         {
+             int a=20;
+             ++a;
+             a=++b;
+         }
+         ++a;
+         ++b;
+         printf("%d %d",a,b);
+    }
+    printf(" %d",a);
+}
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+#include<conio.h>
+void main(){
+    int a[]={0,1,2,3,4,5,6,7,8,9,10};
+    int i=0,num;
+    num=a[++i+a[++i]]+a[++i];
+    printf("%d",num);
+}
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+#include<conio.h>
+void main(){
+    int i=3,val;
+    val=sizeof f(i)+ +f(i=1)+ +f(i-1);
+    printf("%d %d",val,i);
+}
+int f(int num){
+    return num*5;
+}
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+#include<conio.h>
+void main(){
+    int i;
+    (i=8)+=1;
+    printf("%d",i);
+}
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+#include<conio.h>
+void main(){
+    char c=-'a';
+    printf("%d",c);
+}
+
+
+What will be output if you will execute following c code?
+
+#include<stdio.h>
+#include<conio.h>
+void main(){
+    int num,a=5;
+    num=-a--;
+    printf("%d  %d",num,a);
+}
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+#include<conio.h>
+void main(){
+    int num,a=10;
+    num=a&&0+ +-1&&a;
+    printf("%d  %d",num,a);
+}
+
+
+What will be output if you will execute following c code?
+
+#include<stdio.h>
+#include<conio.h>
+void main(){
+    int x,y,z;
+    y=(x=1,y=2,z=3);
+    printf("%d  %d  %d",x,y,z);
+}
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+#include<conio.h>
+void main(){
+    int t,a=5,b=10,c=15;
+    t=(++a&&++b,++a),++a||++c;
+    printf("%d  %d  %d %d",t,a,b,c);
+}
+
+
+
+
+What will be output if you will execute following c code?
+
+#include<stdio.h>
+#include<conio.h>
+int a=5;
+void main(){
+    int x;
+    x=!a+change();
+    printf("%d",x);
+}
+int change(){
+    a=0;
+    return 0;
+}
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+typedef struct cquestionbank{
+    int num;
+    struct cquestionbank **p;
+    struct cquestionbank ***q;
+}cqb;
+int main(){
+    static cqb *var1,**var2;
+    cqb temp={5,&var1,&var2};
+    var2=&var1;
+    var1->num=25;
+    printf("%d  %d ",**(temp.q),***(temp.q));
+    return 0;
+}
+
+ What will be output if you will execute following c code?
+
+#include<stdio.h>
+union cqbu{
+    int a;
+    char b;
+};
+struct cqbs{
+    int a;
+    char b;
+};
+int main(){
+    union cqbu u={25};
+    struct cqbs *ps=(struct cqbs *)&u;
+    union  cqbu *pu=(union  cqbu *)&u;
+    printf("%d  %d\n",ps->a,ps->b);
+    printf("%d  %d\n",pu->a,pu->b);
+    return 0;
+}
+
+
+What will be output if you will execute following c code?
+
+int main(){
+    float x;
+    x=(float)3.5==3.5;
+    printf("%f",x);
+    return 0;
+}
+
+
+ What will be output if you will execute following c code?
+
+int main(){
+    float x;
+    x=(int)(int)2.5+5.8f;
+    printf("%f",x);
+    return 0;
+}
+
+
+ What will be output if you will execute following c code?
+
+int main(){
+    float x;
+    x=(float)3.3==3.3;
+    printf("%f",x);
+    return 0;
+}
+
+ What will be output if you will execute following c code?
+
+#include "string.h"
+typedef struct stu1{
+    int roll;
+    char *name;
+    double marks;
+}STU1;
+typedef struct stu2{
+    int roll;
+    char *name;
+    double marks;
+}STU2;
+void main(){
+    STU1 s1={25,"Rohit",87.43},*p1;
+    static STU2 *p2;
+    p1=&s1;
+    memccpy(p2,p1,'\0',sizeof(STU1));
+    printf("Roll  : %d\n",p2->roll);
+    printf("Name  : %s\n",p2->name);
+    printf("Marks : %lf",p2->marks);
+}
+
+
+What will be output if you will execute following c code?
+
+#include<stdio.h>
+#define value 30
+int main(){
+    #if max
+         printf("Defined");
+    #else
+         printf("Not defined");
+    #endif
+    return 0;
+}
+
+ What will be output of following c program?
+
+#include<stdio.h>
+#define max
+int main(){
+    printf("%d",max);
+    return 0;
+}
+
+ What will be output of following c program?
+
+#include<stdio.h>
+int main(){
+    for(printf("1");!printf("0");printf("2"))
+         printf("Sachin");
+    return 0;
+}
+
+ What will be output of following c program?
+
+#include<stdio.h>
+int main(){
+    int a=5;
+    static int b=a;
+    printf("%d %d",a,b);
+    return 0;
+}
+
+ What will be output of following c program?
+
+#include<stdio.h>
+void main(){
+    int i;
+    for(i=0;i<5;i++){
+         int x=0;
+         printf("%d",x);
+         x++;
+    }  
+}
+
+ What will be output of following c program?
+
+#include<stdio.h>
+#include<conio.h>
+void main(){
+    int a[]={5,10,15};
+    int i=0,num;
+    num=a[++i]+ ++i+(++i);
+    printf("%d",num);
+}
+
+ What will be output of following c program?
+
+#include<stdio.h>
+#include<conio.h>
+void main(){
+    int i=3,val;
+    val=f(i)+ +f(i=1)+ +f(i-1);
+    printf("%d",val);
+}
+int f(int num){
+    return num*5;
+}
+
+ What will be output of following c program?
+
+#include<stdio.h>
+#include<conio.h>
+long fu(int);
+char vect[]={1,2,3,4,5};
+void main(){
+    int i=1;
+    i=fu(++i)+ ++vect[++i]+ ++i+fu(i++);
+    printf("%d",i);
+}
+long fu(int x){
+    return x*3;
+}
+
+ What will be output of following c program?
+
+#include<stdio.h>
+#include<conio.h>
+void main(){
+    int a,i=4;
+    a=- -i+- -i+- -5;
+    printf("%d %d",a,i);
+}
+
+ What will be output of following c program?
+
+#include<stdio.h>
+#include<conio.h>
+void main(){
+    int num,a=5;
+    num=---a;
+    printf("%d  %d",num,a);
+}
+
+
+ What will be output of following c program?
+
+#include<stdio.h>
+#include<conio.h>
+void main(){
+    int num,a=10;
+    num=a--- -a--;
+    printf("%d  %d",num,a);
+}
+
+ What will be output of following c program?
+
+#include<stdio.h>
+#include<conio.h>
+void main(){
+    int z;
+    z=(5,3,2);
+    printf("%d",z);
+}
+
+
+ What will be output of following c program?
+
+#include<stdio.h>
+#include<conio.h>
+void main(){
+    int i=5,j=10,num;
+    num=(++i,++j,i+j);
+    printf("%d  %d  %d",num,i,j); 
+}
+
+ What will be output of following c program?
+
+#include<stdio.h>
+#include<conio.h>
+float avg(float,float,float);
+void main(){
+    float p=1,q=2,r=-2,a;
+    a=avg(p,(q=4,r=-12,q),r);
+    printf("%f",a); 
+}
+float avg(float x,float y,float z){
+    return (x+y+z)/3;
+}
+
+
+What will be output of following c program?
+
+#include<stdio.h>
+int main(){
+    float **(*ptr)[4]=(float **(*)[4])0;
+    ptr+=5;
+    printf("%d  %d",ptr,sizeof ptr);
+    return 0;
+}
+
+ What will be output of following c program?
+
+#include<stdio.h>
+struct myStruct{
+    int a;
+    char b;
+}*ptr;
+int main(){
+    struct myStruct ms={400,'A'};
+    printf("%d  %d",ptr->a,ptr->b);
+    return 0;
+}
+
+
+ What will be output of following c program?
+
+#include<stdio.h>
+int main(){
+    float x;
+    x=(int)5.6f*3.2f/sizeof((int)6.6);
+    printf("%f",x);
+    return 0;
+}
+
+ What will be output of following c program?
+
+#include<stdio.h>
+#define plus +
+#define minus +plus
+int main(){
+    long x,i=3;
+    x=+ + i;
+    printf("%ld",x);
+    return 0;
+}
+
+ What will be output of following c program?
+
+#include<stdio.h>
+int main(){
+    float x;
+    x=(int)1.1,(float)2.2,(int)3.3 ,5.4;
+    printf("%f",x);
+    return 0;
+}
+
+ What will be output of following c program?
+
+#include<stdio.h>
+#include "string.h"
+typedef struct stu1{
+    int roll;
+    char *name;
+    double marks;
+}STU1;
+typedef struct stu2{
+    int roll;
+    char *name;
+    double marks;
+}STU2;
+void main(){
+    STU1 s1={25,"Rohit",87.43},*p1;
+    STU2 *p2;
+    p1=&s1;
+    memcpy(p2,p1,4);
+    printf("Roll  : %d\n",p2->roll);
+    printf("Name  : %s\n",p2->name);
+    printf("Marks : %lf",p2->marks);  
+}
+
+ What will be output of following c program?
+
+#include "string.h"
+typedef struct stu1{
+    char name1[6];
+    char name2[6];
+    double marks;
+}STU1;
+void main(){
+    STU1 s1={"rohit","kumar",87.43},*p1;
+    char *p;
+    p1=&s1;
+    p=memchr(p1,'u',sizeof(STU1));
+    printf("%s",p); 
+}
+
+http://www.cquestions.com/2010/04/c-questions-answers.html
+http://www.cquestions.com/2012/02/tricky-c-questions-and-answers.html
+
+What will be output if you will compile and execute the following c code?
+
+void main(){
+   int i=320;
+   char *ptr=(char *)&i;
+   printf("%d",*ptr);
+}
+
+What will be output if you will compile and execute the following c code?
+
+void main(){
+char c=125;
+    c=c+10;
+    printf("%d",c);
+}
+
+What is cyclic nature of data type?
+
+pointer in c:
+
+ Introduction to pointers in c
+
+
+
+Pointer is a variable just like other variables of c but only difference is unlike the other variable it stores the memory address of any other variables of c. This variable may be type of int, char, array, structure, function or any other pointers. For examples:
+
+(1)
+Pointer p which is storing memory address of a int type variable:
+
+int i=50;
+int *p=&i;
+
+(2)
+Pointer p which is storing memory address of an array:
+
+int arr[20];
+int (*p)[20]=&arr;
+
+(3)
+Pointer p which is storing memory address of a function:
+
+char display(void);
+char(*p)(void)=&display;
+
+(4)
+Pointer p which is storing memory address of struct type variable:
+
+struct abc{
+int a;
+float b;
+}var;
+struct abc *p=&var;
+For pictorial explanation of pointer CLICK ME.
+
+ How to read complex pointers in C Programming?
+
+
+Rule 1. Assign the priority to the pointer declaration considering precedence and associative according to following table.
+
+operator	precedeance	Associative
+
+() []		1		L to R
+
+*, identifier	2		R to L
+
+Data typew	3
+
+Where
+
+(): This operator behaves as bracket operator or function operator.
+
+[]: This operator behaves as array subscription operator.
+
+*: This operator behaves as pointer operator not as multiplication operator.
+
+Identifier: It is not an operator but it is name of pointer variable. You will always find the first priority will be assigned to the name of pointer.
+
+Data type: It is also not an operator. Data types also includes modifier (like signed int, long double etc.)
+
+E.G.:
+
+char (* ptr ) [3]
+4     2  1     3
+
+ptr is pointer to such one dimensional array of size three which content char type data.
+
+void (* ptr) (int (*) [2], int (*)(void))
+
+ptr is pointer to such function which first parameter is pointer to one dimensional array of size two which content int type data and second parameter is pointer to such function which parameter is void and return type is int data type and return type is void. 
+
+int (* (* ptr) [5])()
+
+ptr is pointer to such array of size five which content are pointer to such function which parameter is void and return type is int type data.
+
+Arithmetic operation with pointer in c programming :
+
+Rule 1: Addition arithmetic with pointers
+
+Address + Number= Address
+Address - Number= Address
+
+Address++ = Address
+Address-- = Address
+
+++Address = Address
+--Address = Address
+
+new address = old address +- number*size of datatype which pointer is pointing.
+
+Rule 2: Difference arithmetic with pointers
+
+Address - Address=Number
+
+If you will subtract two pointers result will be a number but number will not simple mathematical subtraction of two addresses but it follow following rule:
+If two pointers are of same type then:
+
+address2 - address1 = (simple subtraction of two address) / size of data types which pointer points.
+
+Rule 3: Illegal arithmetic with pointers
+
+Address + Address=Illegal
+Address * Address=Illegal
+Address / Address=Illegal
+Address % Address=Illegal
+
+Rule 5: Bit wise arithmetic with pointers
+
+We can perform bit wise operation between two pointers like
+
+Address & Address=Illegal
+Address | Address=Illegal
+Address ^ Address=Illegal
+~Address=Illegal
+
+Rule 6: We can find size of a pointer using sizeof operator.
+
+Pointer to array of function in c :
+Array of function means array which content is address of function and pointer to array of function means pointer is pointing to such array.
+In other word we can say pointer to array of functions is a pointer which is pointing to an array which contents are pointers to a function.
+
+Examples of pointer to array of function:
+
+What will be output if you will execute following code?
+
+#include<stdio.h>
+int display();
+int(*array[3])();
+int(*(*ptr)[3])();
+
+int main(){
+array[0]=display;
+array[1]=getch;
+ptr=&array;
+
+printf("%d",(**ptr)());
+
+(*(*ptr+1))();
+return 0;
+}
+int display(){
+int x=5;
+return x++;
+}
+
+Output: 5
+Explanation:
+
+In this example:
+
+array []: It is array of pointer to such function which parameter is void and return type is int data type.
+
+ptr: It is pointer to array which contents are pointer to such function which parameter is void and return type is int type data.
+
+(**ptr)() = (** (&array)) () //ptr=&array
+= (*array) () // from rule *&p=p
+=array [0] () //from rule *(p+i)=p[i]
+=display () //array[0]=display
+(*(*ptr+1))() =(*(*&array+1))() //ptr=&array
+=*(array+1) () // from rule *&p=p
+=array [1] () //from rule *(p+i)=p[i]
+=getch () //array[1]=getch
+
+
+Pointer to array of string in c programming:
+Pointer to array of string: A pointer which pointing to an array which content is string, is known as pointer to array of strings.
+
+What will be output if you will execute following code?
+
+#include<stdio.h>
+int main(){
+
+char *array[4]={"c","c++","java","sql"};
+char *(*ptr)[4]=&array;
+printf("%s ",++(*ptr)[2]);
+
+return 0;
+}
+
+ptr: It is pointer to array of string of size 4.
+array[4]: It is an array and its content are string.
+ ++(*ptr)[2]
+=++(*&array)[2] //ptr=&array
+=++array[2]
+=++”java”
+=”ava” //Since ptr is character pointer so it
+// will increment only one byte
+
+Note: %s is used to print stream of characters up to null (\0) character.
+
+Pointer to structure in c programming:
+Pointer to structure: A pointer which is pointing to a structure is know as pointer to structure. 
+
+Examples of pointers to structure:
+What will be output if you will execute following code?
+#include<stdio.h>
+
+struct address{
+char *name;
+char street[10];
+int pin;
+}cus={"A.Kumar","H-2",456003},*p=&cus;
+
+int main(){
+
+printf("%s %s",p->name,(*p).street);
+
+return 0;
+}
+
+Output: A.Kumar H-2
+
+Explanation:
+
+p is pointer to structure address.
+-> and (*). Both are same thing. These operators are used to access data member of structure by using structure’s pointer. 
+
+Multilevel pointers: 
+A pointer is pointer to another pointer which can be pointer to others pointers and so on is know as multilevel pointers. We can have any level of pointers
+
+What will be output if you will execute following code?
+
+#include<stdio.h>
+int main(){
+int s=2,*r=&s,**q=&r,***p=&q;
+printf("%d",p[0][0][0]);
+
+return 0;
+}
+
+As we know p[i] =*(p+i)
+So,
+P[0][0][0]=*(p[0][0]+0)=**p[0]=***p
+Another rule is: *&i=i
+So,
+***p=*** (&q) =**q=** (&r) =*r=*(&s) =s=2
+
+#include<stdio.h>
+void main(){
+
+int **p,q;
+
+p=(int **)5;
+q=10;
+printf("%d",q+p);
+
+return 0;
+}
+
+ Here q pointer and p is a number.
+In c
+Address + number = Address
+
+So,
+New address = old address + number * Size of data type to which pointer is pointing.
+= 5 + 10 * sizeof (*int)
+= 5+10*2 = 25.
+
+Note. We are assuming default pointer is near. Actually it depends upon memory model.
+
+ NULL pointer:
+
+Literal meaning of NULL pointer is a pointer which is pointing to nothing. NULL pointer points the base address of segment.
+
+Examples of NULL pointer:
+
+1. int *ptr=(char *)0;
+2. float *ptr=(float *)0;
+3. char *ptr=(char *)0;
+4. double *ptr=(double *)0;
+5. char *ptr=’\0’;
+6. int *ptr=NULL;
+
+What is meaning of NULL?
+
+NULL is macro constant which has been defined in the heard file stdio.h, alloc.h, mem.h, stddef.h and stdlib.h as
+#define NULL 0
+
+ What will be output of following c program?
+
+#include <stdio.h>
+
+int main(){
+if(!NULL)
+printf("I know preprocessor");
+else
+printf("I don't know preprocessor");
+
+    return 0;
+}
+
+Explanation:
+!NULL = !0 = 1
+
+We cannot copy any thing in the NULL pointer.
+
+Wild pointer:
+
+A pointer in c which has not been initialized is known as wild pointer.
+
+ What will be output of following c program?
+
+#include<stdio.h>
+int main(){
+
+int *ptr;
+
+printf("%u\n",ptr);
+printf("%d",*ptr);
+
+return 0;
+}
+
+Here ptr is wild pointer because it has not been initialized.
+
+There is difference between the NULL pointer and wild pointer. Null pointer points the base address of segment while wild pointer doesn’t point any specific memory location.
+
+Dangling pointer:
+
+If any pointer is pointing the memory address of any variable but after some variable has deleted from that memory location while pointer is still pointing such memory location. Such pointer is known as dangling pointer and this problem is known as dangling pointer problem.
+
+What will be output of following c program?
+
+#include<stdio.h>
+
+int *call();
+void main(){
+
+int *ptr;
+ptr=call();
+
+fflush(stdin);
+printf("%d",*ptr);
+
+}
+int * call(){
+
+int x=25;
+++x;
+
+return &x;
+}
+
+Output: Garbage value
+Note: In some compiler you may get warning message returning address of local variable or temporary
+
+Explanation: variable x is local variable. Its scope and lifetime is within the function call hence after returning address of x variable x became dead and pointer is still pointing ptr is still pointing to that location.
+
+Solution of this problem: Make the variable x is as static variable.
+In other word we can say a pointer whose pointing object has been deleted is called dangling pointer.
+
+function in c:
+
+Definition of function:
+
+Function is block or part of program. When any program is very long or same code is repeating many times then we try to cut the program in different parts (or blocks) so that whole program became more understandable, easier to debug (error checking) and size of code will be lesser.
+
+Function declaration and function definition in c:
+syntax :
+
+Declartion :
+<return type> <function name> (<parameters>, ...);
+
+Defination:
+<return type> <function name> (<parameters>, ...)
+{
+	statment 1;
+	statment 2;
+	...
+	statment n;
+
+	return [<expression>];
+}
+
+1. If function definition has written after the function call then it is necessary to declare the function before the function call because function call statement has no idea about prototype of calling function.
+2.If function definition has written before the function call statement then it is not necessary to write function declaration.
+3.If return type of function is signed int data type then it not necessary to write function declaration even though function definition has written after the function call.
+4.Function’s declaration doesn’t reserve any memory space.
+5.In declaration statement it is not necessary to write variable name in parameter of function.
+
+What is main function in c?
+
+Every c program starts with a main function and end with null statement.
+Properties of main function:
+1. Any c program can have only one main function.
+2. main function is called by operating system.
+3. main is not keyword of c. So any variable name can be main.
+4. Programmer can also call the main function.
+5. Default return type of main function is int and default parameter is void.
+
+Prototype of main function in c:
+int main (int arg_counter, char * arg_vectore, char * env_vectore []);
+
+A main function in c has three parameters. They are:
+1. Argument counter
+2. Argument vector
+3. Environment vector
+
+1. Argument counter: First parameter of main function is argument counter. It stores an integer number which is equal to number of parameters passed including file name from the command prompt.
+2. Argument vector: Second parameter of main function is argument vector. It is array which is array of string. This string array contains the actual parameters which have passed from the command prompt.
+3. Environment vector Third parameter of main function is environment variable. It is also array of string which contains all the environments variables of the system.
+
+C doesn't support function overloading. In c it is not possible to declare two function of same name but different signatures like number of parameters, data type of parameters, order of parameter etc.
+
+Return type of function
+1. Default return type of function is signed int data type.
+2. Function can return only one value at a time.
+3. Storage classes allowed with return type are static, extern, typedef i.e. we cannot use auto and register storage class with the return type of any function.
+4. Default storage class of return type of a function is extern.
+5. In return type we can use modifier like short, long, signed, unsigned, extern, static, const, volatile etc.
+
+Return type of function can be:
+1. Primitive data type: Primitive data types are: char, int, float, double, void
+2. Derived data type: Derived data types are: array, function, pointer.
+3. User defined data type :
+	a. Function which is returning structure
+	b. Function which is returning union
+	c. Function which is returning enum
+
+practice below :
+Function returning Pointer to user defined data type
+Function which is returning pointer to pointer
+Function returning pointer to derived data type
+Function returning pointer to void i.e. generic pointer
+Function returning pointer to double
+Function returning pointer to float
+Function returning pointer to integer
+Function returning pointer to character
+Function which is returning pointer
+Function which is returning void data type
+Function which is returning double data type
+Function which is returning floats data type
+Function returning pointer to array
+Function returning pointer to enum
+Function returning pointer to union
+Function returning pointer to structure
+Function which is returning pointer to function
+Function returning int data type
+Function which is returning char data type
+
+Parameter or argument of function:
+
+1. Primitive data type.
+2. Derived data type.
+3. User defined data type.
+4. Ellipsis i.e. variable number of parameter.
+5. We can use modifier with data type in return type.
+
+Pass by value: In this approach we pass copy of actual variables in function as a parameter. Hence any modification on parameters inside the function will not reflect in the actual variable.
+Pass by reference: In this approach we pass memory address actual variables in function as a parameter. Hence any modification on parameters inside the function will reflect in the actual variable.
+
+Parameter passing convention: pascal and cdecl
+Call by values and call by reference
+Function in c with no parameter and not returning
+Function in c has parameter but not returning any value
+Function in c with parameter and returning a value
+What is Ellipsis or … in c?
+
+Ellipsis is there consecutive period (.) with no white space. With the help of ellipsis we can write a function of variable number of parameter. For example:
+Ellipsis can be used as a variable number of parameters or a variable which stores variable number of arguments.
+
+#include<stdio.h>
+int number(int a,...){
+   return a;
+}
+
+int main() {
+   int i;
+   i=number(5,4,3,2,1);
+   printf("%d",i);
+   return 0;
+}
+
+Function recursions:
+
+1. It is very slow process.
+One problem with function recursion is it creates a function frame in each function call. This makes program very slow. This is main reason to introduce for, 
+while and do-while loop in c event that it is also possible by using function recursion.
+
+2. Nature of function recursion is infinite loop or stack over flow.
+Calling of same from its function body lead to infinite loop or stack over flow. But with help of conditional statement if-else, switch-case we can able to stop the loop.
+
+3. It follows LIFO data structure.
+In function recursion return value of each recursion is stored in stack. As we know stack is LIFO data structure.
+
+4. We can use break keyword in function recursion.
+Keyword break can be use to stop any loop. Since function recursion is no a loop so we can use break, continue keyword.
+
+5. We can not use goto to move the control from one function to another function.
+
+typedef of function in c :
+In c we can typedef the function declaration. It is useful when function declaration is too complex and we have to give any simple name or if we have to create more numbers of function of the same type.
+
+How to calculate size of a function in c? 
+
+Size of function = Size of all local variable which has declared in function + Size of those global variables which has used in function+ Size of all its parameter+ Size of returned value if it is an address. Example:
+
+What is size of calculate function?
+
+int x=2;
+int* calculate
+void main(){
+    int *p,a=0,b=5;
+    p=calculate(a,b);
+    printf(“%d”,*p);
+}
+int * calculate(int a,int b){
+    static int z;
+    z=a+x+b;
+    return &z;
+}
+
+Answer:
+
+Size of calculate function= 2 (global variable x)+ 2 (local variable z) +2*2 (parameter a, b)+ 2 ( returning address of z)= 10 bytes
+
+What is prototype of a function in c programming?
+Declaration of function is known as prototype of a function. Prototype of a function means
+
+(1) What is return type of function?
+(2) What parameters are we passing?
+(3) For example prototype of printf function is:
+
+int printf(const char *, …);
+
+I.e. its return type is int data type, its first parameter constant character pointer and second parameter is ellipsis i.e. variable number of arguments.
+
+Nesting of function call in c programming :
+
+If we are calling any function inside another function call is known as nesting function call. Sometime it converts a difficult program in easy one.
+For example:
+Try to find out maximum number among the five different integers without using nested function call.
+
+Find the maximum number among five different integers using nested function call:
+
+int max(int x,int y){return x>y?x:y;}
+void main(){
+    int m;
+    m=max(max(4,max(11,6)),max(10,5));
+    printf("%d",m);
+    getch();
+}
+
+Array in c:
+
+An array is derived data type in c programming language which can store similar type of data in continuous memory location. Data may be primitive type (int, char, float, double…), address of union, structure, pointer, function or another array.
+
+Example of array declaration:
+
+int arr[5];
+char arr[5];
+float arr[5];
+long double arr[5];
+char * arr[5];
+int (arr[])();
+double ** arr[5];
+
+
+Array is useful when:
+
+(a) We have to store large number of data of similar type. If we have large number of similar kind of variable then it is very difficult to remember name of all variables and write the program.
+(b) We want to store large number of data in continuous memory location. Array always stores data in continuous memory location.
+
+Advantage of using array:
+1. An array provides singe name .So it easy to remember the name of all element of an array.
+2. Array name gives base address of an array .So with the help increment operator we can visit one by one all the element of an array.
+3. Array has many application data structure.
+
+
+ Error checking questions on c
+1. In order to assign attributes to the pointer itself, rather than to the pointed-to object, you put the attributes after the asterisk.
+like ‘ char *const p = &c; ‘ – True/False
+2. What is the output of the below code ?
+char **p =”Hello”;
+printf(“%s”,**p);
+return 0;
+3. There is a char * pointer that points to some ints, and what should be done to step over it ?
+4. What changes has to be done to get the ouput as “9 8 7 6 5″ by the same recursive call method ?
+int main(void) {
+int i=9;
+printf(“%d \t”,i–);
+if(i)
+main();
+return 0;
+}
+5. What is the output in the below program ?
+void main() {
+int z = 12;
+printf(“%d”,printf(“Mr.123\\”));
+printf(”%d”,printf(”%d%d%d”,z,z,z));
+}
+6. You can’t ‘shift’ an array -
+True/False?
+7. Is it possible to do like this in C ?
+char s[8];
+s=”ABCD1234″;
+8. bit-fields do not provide a way to select bits by index value – True/False?
+9. Does ‘char *a’ allocate some memory for the pointer to point to ?
+10. A null pointer is does not to point to any object or function – True/False?
+An uninitialized pointer might point anywhere – True/False?
+11. The address of operator will never yield a null pointer – True/False?
+malloc returns a null pointer when it fails – True/False?
+12. char y[] is not identical to char *y – True / False .?
+Explain the reason for either true/false.
+13. What would be output of the below code ?
+char x[] = “abcde”;
+char *y= “abcde”;
+printf(“%c \n”, x[3]);
+printf(“%c \n”, y[3]);
+14. Is it possible to have char x[5] in one file a declaration extern char * in other file ?
+15. What is dangling pointer ?
+16. Why does the below code cause segmentation fault ?
+int* z = NULL;
+*z = 1;
+17. What are the two problems in the below code ?
+char *s1 = “Hello, “;
+char *s2 = “world!”;
+char *s3 = strcat(s1, s2);
+18. What is the problem with the below code ?
+i) char a[] = “Hello”;
+char *p = “Hello”;
+My program crashes if I try to assign a new value to p[i].
+ii) char *a = “abcdef”;
+*a = ‘X';
+19. Some compilers have a switch to control if string literals are writable or not – True/False?
+20. Three attributes can be assign to a pointer: const / volatile / restrict – True/False
+21. What are the problems in below code. How will you fix it ?
+char *check(int n)
+{
+char box[20];
+sprintf(box, “%d”, n);
+return box;
+}
+22. What is malloc’s internal bookkeeping information and how does it play a role in mis-directing the location of the actual bug ?
+23. Where would you use ‘const int’ instead of #define and where should you use #define instead of ‘const int’ ?
+24. Keyword ‘const’ refers to read-only -> True/False?
+25. What is the output of the below code
+#define MY_CALCULATOR 2+5+6
+printf(“%d \n” 3 * MY_CALCULATOR);
+26. How does declaring function parameters as ‘const’ help in better,safer code ?
+27. Which of the following is correct . Why does point no ‘i’ gives output sometime & sometimes it does not give output ?
+i. char *a = malloc(strlen(str));
+strcpy(a, str);
+ii. char *a = malloc(strlen(str) + 1);
+strcpy(a, str);
+28. How do the below get expanded ? Which one is the preferred method & Why ?
+#define mydef struct s *
+typedef struct s * mytype;
+mydef d1,d2;
+mytype t1,t2;
+29. i. const values cannot be used in initializers – True/False?
+ii. const values cannot be used for array dimensions – True/False
+30. Is char x[3] = “wow”; legal ?
+Why does it work sometimes ?
+31. How will the below code corrupt stack ?
+void checkstackcorruption (char *var)
+{
+char z[12];
+memcpy(z, var, strlen(var));
+}
+int main (int argc, char **argv)
+{
+checkstackcorruption (argv[1]);
+}
+32. Is the below method of usage of realloc() correct ?
+void *z = malloc(10);
+free(z);
+z = realloc(z, 20);
+33. What does the below mean ?
+int (*)[*];
+34. The rank of any unsigned integer type shall equal the rank of the corresponding
+signed integer type, if any – True/False?
+35. The rank of long long int shall be greater than the rank of long int which shall be greater than int – True/False?
+36.No two signed integer types shall have the same rank, even if they have the same
+representation – True/False?
+37. sprintf function is equivalent to fprintf, except that the output is written into an array – True/False?
+38. Incase of both sprintf and fprintf , A null character is written at the end of the characters written and that is not counted as part of the returned value – True/False?
+39. Arithmetic underflow on a negative number results in negative zero – True/False?
+40.Negative zero and positive zero compare equal under default numerical comparison – True/False?
+41. ‘type cast’ should not be used to override a const or volatile declaration – True/False?
+42. ‘sizeof’ yields the size of an array in bytes – True / False?
+43. How will you determine the number of elements in an array using sizeof operator ?
+44. What is l-value & r-value ?
+45. What is the output of the below code ?
+char (*x)[50];
+printf(“%u, %u,%d\n”,x,x+1,sizeof(*x));
+46.How will you declare & initialize pointer to a register located at phys addrs 600000h ?
+47. What is NPC ?
+48. Why does *ps.i do not work in the below code ?
+struct rec
+{
+int i;
+float f;
+char c;
+};
+int main()
+{
+struct rec *ps;
+ps=(struct rec *) malloc (sizeof(struct rec));
+*ps.i=10;
+free ps;
+return 0;
+}
+49. The term ‘Pointer to pointer’ is different from the term ‘double pointer’ – True/False?
+50. Will the Free API (after calling Malloc) return the Memory back to the OS or the Application ?
+51. How to do array assignment ?
+52. What could be the gud way to check ‘Close enough’ equality using Floats ?
+53. What is the Problem of Floating Points with ‘==’ operator in C . On what is that dependent upon ?
+54. Tell about the size of ‘empty structs’ in C ?
+55. Why does C language permits an extra comma in initializer list
+56. What does the below do ? z = x++ +( y += x++) ;
+57. What is nested union ? How is it useful ?
+58. How wil you pass unions to functions or pointers to unions ?
+59. What is the Behaviour of realloc for NULL argument ?
+60. Write a Macro to swap 2 bytes
+61. Write a Macro to swap 2 bytes
+62. Write small program to Set a Bit, Clear a Bit, Toggle a Bit, Test a Bit (or Demonstrate simple Bit Manipulation in C)
+63. Use #define to Set Bit, Clr Bit, Toggle and Test Bit of a volatile status register (Port) – Bit Manipulations to set/clear a bit of a particular Port Register
+64. Universal Gates;
+
+Preprocessor
+
+1. Using the #define statement, how would you declare a manifest constant that returns the number of seconds in a year? Disregard leap years in your answer.
+
+#define SECONDS_PER_YEAR (60UL * 60UL * 24UL * 365UL)
+
+I’m looking for several things here:
+
+(a)    Basic knowledge of the #define syntax (i.e. no semi-colon at the end, the need to parenthesize etc.).
+
+(b)    A good choice of name, with capitalization and underscores.
+
+(c)    An understanding that the pre-processor will evaluate constant expressions for you. Thus, it is clearer, and penalty free to spell out how you are calculating the number of seconds in a year, rather than actually doing the calculation yourself.
+
+(d)    A realization that the expression will overflow an integer argument on a 16 bit machine – hence the need for the L, telling the compiler to treat the expression as a Long.
+
+(e)    As a bonus, if you modified the expression with a UL (indicating unsigned long), then you are off to a great start because you are showing that you are mindful of the perils of signed and unsigned types – and remember, first impressions count!
+
+2. Write the ‘standard’ MIN macro. That is, a macro that takes two arguments and returns the smaller of the two arguments.
+
+#define MIN(A,B)       ((A) <=  (B) ? (A) : (B))
+
+The purpose of this question is to test the following:
+
+(a)    Basic knowledge of the #define directive as used in macros. This is important, because until the inline operator becomes part of standard C, macros are the only portable way of generating inline code. Inline code is often necessary in embedded systems in order to achieve the required performance level.
+
+(b)    Knowledge of the ternary conditional operator.  This exists in C because it allows the compiler to potentially produce more optimal code than an if-then-else sequence. Given that performance is normally an issue in embedded systems, knowledge and use of this construct is important.
+
+(c)    Understanding of the need to very carefully parenthesize arguments to macros.
+
+(d)    I also use this question to start a discussion on the side effects of macros, e.g. what happens when you write code such as :
+
+least = MIN(*p++, b);
+
+3. What is the purpose of the preprocessor directive #error?
+
+Either you know the answer to this, or you don’t. If you don’t, then see reference 1. This question is very useful for differentiating between normal folks and the nerds. It’s only the nerds that actually read the appendices of C textbooks that find out about such things.  Of course, if you aren’t looking for a nerd, the candidate better hope she doesn’t know the answer.
+Infinite Loops
+
+4. Infinite loops often arise in embedded systems. How does one code an infinite loop in C?
+
+There are several solutions to this question. My preferred solution is:
+
+while(1)
+
+{
+
+…
+
+}
+
+Another common construct is:
+
+for(;;)
+
+{
+
+…
+
+}
+
+Personally, I dislike this construct because the syntax doesn’t exactly spell out what is going on.  Thus, if a candidate gives this as a solution, I’ll use it as an opportunity to explore their rationale for doing so.  If their answer is basically – ‘I was taught to do it this way and I have never thought about it since’ – then it tells me something (bad) about them. Conversely, if they state that it’s the K&R preferred method and the only way to get an infinite loop passed Lint, then they score bonus points.
+
+A third solution is to use a goto:
+
+Loop:
+
+…
+
+goto Loop;
+
+Candidates that propose this are either assembly language programmers (which is probably good), or else they are closet BASIC / FORTRAN programmers looking to get into a new field.
+Data declarations
+
+5. Using the variable a, write down definitions for the following:
+
+(a) An integer
+
+(b) A pointer to an integer
+
+(c) A pointer to a pointer to an integer
+
+(d) An array of ten integers
+
+(e) An array of ten pointers to integers
+
+(f) A pointer to an array of ten integers
+
+(g) A pointer to a function that takes an integer as an argument and returns an integer
+
+(h)    An array of ten pointers to functions that take an integer argument and return an integer.
+
+The answers are:
+
+(a)    int a;                 // An integer
+
+(b)    int *a;               // A pointer to an integer
+
+(c)    int **a;             // A pointer to a pointer to an integer
+
+(d)    int a[10];          // An array of 10 integers
+
+(e)    int *a[10];        // An array of 10 pointers to integers
+
+(f)     int (*a)[10];     // A pointer to an array of 10 integers
+
+(g)    int (*a)(int);     // A pointer to a function a that takes an integer argument and returns an integer
+
+(h)    int (*a[10])(int); // An array of 10 pointers to functions that take an integer argument and return an integer
+
+People often claim that a couple of these are the sorts of thing that one looks up in textbooks – and I agree. While writing this article, I consulted textbooks to ensure the syntax was correct. However, I expect to be asked this question (or something close to it) when in an interview situation. Consequently, I make sure I know the answers – at least for the few hours of the interview.  Candidates that don’t know the answers (or at least most of them) are simply unprepared for the interview.  If they can’t be prepared for the interview, what will they be prepared for?
+Static
+
+6. What are the uses of the keyword static?
+
+This simple question is rarely answered completely.  Static has three distinct uses in C:
+
+(a)    A variable declared static within the body of a function maintains its value between function invocations.
+
+(b)    A variable declared static within a module[1], (but outside the body of a function) is accessible by all functions within that module. It is not accessible by functions within any other module.  That is, it is a localized global.
+
+(c)    Functions declared static within a module may only be called by other functions within that module. That is, the scope of the function is localized to the module within which it is declared.
+
+Most candidates get the first part correct.  A reasonable number get the second part correct, while a pitiful number understand answer (c).  This is a serious weakness in a candidate, since they obviously do not understand the importance and benefits of localizing the scope of both data and code.
+Const
+
+7. What does the keyword const mean?
+
+As soon as the interviewee says ‘const means constant’, I know I’m dealing with an amateur. Dan Saks has exhaustively covered const in the last year, such that every reader of ESP should be extremely familiar with what const can and cannot do for you. If you haven’t been reading that column, suffice it to say that const means “read-only”.  Although this answer doesn’t really do the subject justice, I’d accept it as a correct answer. (If you want the detailed answer, then read Saks’ columns – carefully!).
+
+If the candidate gets the answer correct, then I’ll ask him these supplemental questions:
+
+What do the following incomplete[2] declarations mean?
+
+const int a;
+
+int const a;
+
+const int *a;
+
+int * const a;
+
+int const * a const;
+
+The first two mean the same thing, namely a is a const (read-only) integer.  The third means a is a pointer to a const integer (i.e., the integer isn’t modifiable, but the pointer is). The fourth declares a to be a const pointer to an integer (i.e., the integer pointed to by a is modifiable, but the pointer is not). The final declaration declares a to be a const pointer to a const integer (i.e., neither the integer pointed to by a, nor the pointer itself may be modified).
+
+If the candidate correctly answers these questions, I’ll be impressed.
+
+Incidentally, one might wonder why I put so much emphasis on const, since it is very easy to write a correctly functioning program without ever using it.  There are several reasons:
+
+(a)    The use of const conveys some very useful information to someone reading your code. In effect, declaring a parameter const tells the user about its intended usage.  If you spend a lot of time cleaning up the mess left by other people, then you’ll quickly learn to appreciate this extra piece of information. (Of course, programmers that use const, rarely leave a mess for others to clean up…)
+
+(b)    const has the potential for generating tighter code by giving the optimizer some additional information.
+
+(c)    Code that uses const liberally is inherently protected by the compiler against inadvertent coding constructs that result in parameters being changed that should not be.  In short, they tend to have fewer bugs.
+
+Volatile
+
+8. What does the keyword volatile mean? Give three different examples of its use.
+
+A volatile variable is one that can change unexpectedly.  Consequently, the compiler can make no assumptions about the value of the variable.  In particular, the optimizer must be careful to reload the variable every time it is used instead of holding a copy in a register.  Examples of volatile variables are:
+
+(a)    Hardware registers in peripherals (e.g., status registers)
+
+(b)    Non-stack variables referenced within an interrupt service routine.
+
+(c)    Variables shared by multiple tasks in a multi-threaded application.
+
+If a candidate does not know the answer to this question, they aren’t hired.  I consider this the most fundamental question that distinguishes between a ‘C programmer’ and an ‘embedded systems programmer’.  Embedded folks deal with hardware, interrupts, RTOSes, and the like. All of these require volatile variables. Failure to understand the concept of volatile will lead to disaster.
+
+On the (dubious) assumption that the interviewee gets this question correct, I like to probe a little deeper, to see if they really understand the full significance of volatile. In particular, I’ll ask them the following:
+
+(a) Can a parameter be both const and volatile? Explain your answer.
+
+(b) Can a pointer be volatile? Explain your answer.
+
+(c) What is wrong with the following function?:
+
+int square(volatile int *ptr)
+
+{
+
+return *ptr * *ptr;
+
+}
+
+The answers are as follows:
+
+(a)    Yes. An example is a read only status register. It is volatile because it can change unexpectedly. It is const because the program should not attempt to modify it.
+
+(b)    Yes. Although this is not very common. An example is when an interrupt service routine modifies a pointer to a buffer.
+
+(c)    This one is wicked.  The intent of the code is to return the square of the value pointed to by *ptr. However, since *ptr points to a volatile parameter, the compiler will generate code that looks something like this:
+
+int square(volatile int *ptr)
+
+{
+
+int a,b;
+
+a = *ptr;
+
+b = *ptr;
+
+return a * b;
+
+}
+
+Since it is possible for the value of *ptr to change unexpectedly, it is possible for a and b to be different. Consequently, this code could return a number that is not a square!  The correct way to code this is:
+
+long square(volatile int *ptr)
+
+{
+
+int a;
+
+a = *ptr;
+
+return a * a;
+
+}
+Bit Manipulation
+
+9. Embedded systems always require the user to manipulate bits in registers or variables. Given an integer variable a, write two code fragments. The first should set bit 3 of a. The second should clear bit 3 of a. In both cases, the remaining bits should be unmodified.
+
+These are the three basic responses to this question:
+
+(a) No idea. The interviewee cannot have done any embedded systems work.
+
+(b) Use bit fields.  Bit fields are right up there with trigraphs as the most brain-dead portion of C.  Bit fields are inherently non-portable across compilers, and as such guarantee that your code is not reusable.  I recently had the misfortune to look at a driver written by Infineon for one of their more complex communications chip.  It used bit fields, and was completely useless because my compiler implemented the bit fields the other way around. The moral – never let a non-embedded person anywhere near a real piece of hardware![3]
+
+(c) Use #defines and bit masks.  This is a highly portable method, and is the one that should be used.  My optimal solution to this problem would be:
+
+#define BIT3       (0x1 << 3)
+
+static int a;
+
+void set_bit3(void) {
+
+a |= BIT3;
+
+}
+
+void clear_bit3(void) {
+
+a &= ~BIT3;
+
+}
+
+Some people prefer to define a mask, together with manifest constants for the set & clear values.  This is also acceptable.  The important elements that I’m looking for are the use of manifest constants, together with the |= and &= ~ constructs.
+Accessing fixed memory locations
+
+10. Embedded systems are often characterized by requiring the programmer to access a specific memory location. On a certain project it is required to set an integer variable at the absolute address 0x67a9 to the value 0xaa55. The compiler is a pure ANSI compiler. Write code to accomplish this task.
+
+This problem tests whether you know that it is legal to typecast an integer to a pointer in order to access an absolute location.  The exact syntax varies depending upon one’s style. However, I would typically be looking for something like this:
+
+int *ptr;
+
+ptr = (int *)0x67a9;
+
+*ptr = 0xaa55;
+
+A more obfuscated approach is:
+
+*(int * const)(0x67a9) = 0xaa55;
+
+Even if your taste runs more to the second solution, I suggest the first solution when you are in an interview situation.
+Interrupts
+
+11. Interrupts are an important part of embedded systems. Consequently, many compiler vendors offer an extension to standard C to support interrupts. Typically, this new key word is __interrupt. The following code uses __interrupt to define an interrupt service routine. Comment on the code.
+
+__interrupt double compute_area(double radius) {
+
+{
+
+double area = PI * radius * radius;
+
+printf(“\nArea = %f”, area);
+
+return area;
+
+}
+
+This function has so much wrong with it, it’s almost tough to know where to start.
+
+(a)    Interrupt service routines cannot return a value. If you don’t understand this, then you aren’t hired.
+
+(b)    ISR’s cannot be passed parameters. See item (a) for your employment prospects if you missed this.
+
+(c)    On many processors / compilers, floating point operations are not necessarily re-entrant. In some cases one needs to stack additional registers, in other cases, one simply cannot do floating point in an ISR. Furthermore, given that a general rule of thumb is that ISRs should be short and sweet, one wonders about the wisdom of doing floating point math here.
+
+(d)    In a similar vein to point (c), printf() often has problems with reentrancy and performance.  If you missed points (c) & (d) then I wouldn’t be too hard on you.  Needless to say, if you got these two points, then your employment prospects are looking better and better.
+Code Examples
+
+12. What does the following code output and why?
+
+void foo(void)
+
+{
+
+unsigned int a = 6;
+
+int b = -20;
+
+(a+b > 6) ? puts(“> 6”) : puts(“<= 6”);
+
+}
+
+This question tests whether you understand the integer promotion rules in C – an area that I find is very poorly understood by many developers.  Anyway, the answer is that this outputs “> 6”.  The reason for this is that expressions involving signed and unsigned types have all operands promoted to unsigned types. Thus –20 becomes a very large positive integer and the expression evaluates to greater than 6. This is a very important point in embedded systems where unsigned data types should be used frequently (see reference 2).  If you get this one wrong, then you are perilously close to not being hired.
+
+13. Comment on the following code fragment?
+
+unsigned int zero = 0;
+
+unsigned int compzero = 0xFFFF;       /*1’s complement of zero */
+
+On machines where an int is not 16 bits, this will be incorrect. It should be coded:
+
+unsigned int compzero = ~0;
+
+This question really gets to whether the candidate understands the importance of word length on a computer.  In my experience, good embedded programmers are critically aware of the underlying hardware and its limitations, whereas computer programmers tend to dismiss the hardware as a necessary annoyance.
+
+By this stage, candidates are either completely demoralized – or they are on a roll and having a good time.  If it is obvious that the candidate isn’t very good, then the test is terminated at this point. However, if the candidate is doing well, then I throw in these supplemental questions.  These questions are hard, and I expect that only the very best candidates will do well on them. In posing these questions, I’m looking more at the way the candidate tackles the problems, rather than the answers. Anyway, have fun…
+
+Dynamic memory allocation.
+
+14. Although not as common as in non-embedded computers, embedded systems still do dynamically allocate memory from the heap.  What are the problems with dynamic memory allocation in embedded systems?
+
+Here, I expect the user to mention memory fragmentation, problems with garbage collection, variable execution time, etc. This topic has been covered extensively in ESP, mainly by Plauger.  His explanations are far more insightful than anything I could offer here, so go and read those back issues! Having lulled the candidate into a sense of false security, I then offer up this tidbit:
+
+What does the following code fragment output and why?
+
+char *ptr;
+
+if ((ptr = (char *)malloc(0)) == NULL) {
+
+puts(“Got a null pointer”);
+
+}
+
+else {
+
+puts(“Got a valid pointer”);
+
+}
+
+This is a fun question.  I stumbled across this only recently, when a colleague of mine inadvertently passed a value of 0 to malloc, and got back a valid pointer! After doing some digging, I discovered that the result of malloc(0) is implementation defined, so that the correct answer is ‘it depends’. I use this to start a discussion on what the interviewee thinks is the correct thing for malloc to do.  Getting the right answer here is nowhere near as important as the way you approach the problem and the rationale for your decision.
+Typedef
+
+15. Typedef is frequently used in C to declare synonyms for pre-existing data types.  It is also possible to use the preprocessor to do something similar. For instance, consider the following code fragment:
+
+#define dPS  struct s *
+
+typedef  struct s * tPS;
+
+The intent in both cases is to define dPS and tPS to be pointers to structure s.  Which method (if any) is preferred and why?
+
+This is a very subtle question, and anyone that gets it right (for the right reason) is to be congratulated or condemned (“get a life” springs to mind). The answer is the typedef is preferred. Consider the declarations:
+
+dPS p1,p2;
+
+tPS p3,p4;
+
+The first expands to
+
+struct s * p1, p2;
+
+which defines p1 to be a pointer to the structure and p2 to be an actual structure, which is probably not what you wanted. The second example correctly defines p3 & p4 to be pointers.
+Obfuscated syntax
+
+16. C allows some appalling constructs.  Is this construct legal, and if so what does this code do?
+
+int a = 5, b = 7, c;
+
+c = a+++b; 
+
+This question is intended to be a lighthearted end to the quiz, as, believe it or not, this is perfectly legal syntax.  The question is how does the compiler treat it? Those poor compiler writers actually debated this issue, and came up with the “maximum munch” rule, which stipulates that the compiler should bite off as big a (legal) chunk as it can.  Hence, this code is treated as:
+
+c = a++ + b;
+
+Thus, after this code is executed, a = 6, b = 7 & c = 12;
+
+If you knew the answer, or guessed correctly – then well done.  If you didn’t know the answer then I would not consider this to be a problem.  I find the biggest benefit of this question is that it is very good for stimulating questions on coding styles, the value of code reviews and the benefits of using lint.
+
+Well folks, there you have it.  That was my version of the C test.  I hope you had as much fun doing it as I had writing it.  If you think the test is a good test, then by all means use it in your recruitment.  Who knows, I may get lucky in a year or two and end up being on the receiving end of my own work.
+
+

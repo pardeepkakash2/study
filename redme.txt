@@ -1,0 +1,299 @@
+sudo fdisk  -u -c /dev/sdb
+mount -t type dev dir
+sg_start --eject /dev/sr0
+sg_start --load /dev/scd0
+~/gitweb/rcar3_vanilla_rootfs$ sudo ~/gitweb/tools-rootfs-gen4/scripts/prepare-sd-card-gen4-rcar3.sh rfs.tar.bz2 /dev/sdb
+
+Build user space components:
+buildproduct parameter --env=gen3armmake --mode=release --buildmode=build --info prm
+
+Rescue Mode:
+setenv xtargs $xtargs systemd.unit=rescue.target
+
+sudo lshw -C network  : lists information on your hardware of network class
+lspci  : lspci lists information on your PCI connected cards
+tcpdump -i <interface> -s 65535 -w <some-file>
+
+systemctl get-default 
+systemctl --failed
+systemctl list-units --type=target -all
+systemctl --no-pager
+systemctl list-dependencies rescue.target
+systemctl status 
+systemctl show   
+systemctl daemon-reload
+systemd-analyze blame
+systemd-analyze critical-chain
+systemd-analyze dot
+systemd-analyze plot > something.svg
+journalctl
+systemd-cgtop
+systemd-cgls
+
+gernel commands :
+df -ah
+du -sch /*
+grep -nri string dir
+grep -rnw 'directory' -e "pattern"
+find . | grep '\.xml' | xargs grep -in start_b*.service
+find . -iname *str* | grep str
+find dir -iname file
+find dir -type f -perm 0777 -print -exec chmod 644 {} \;
+ps -auxf
+wheris and whatis
+ln -s targetfile linkname
+sudo mount -o remount,rw /partition/identifier /mount/point
+
+strings 
+Listing the System's Start-Up Time : systemd-analyze
+Listing the Services Start-Up Time : systemd-analyze blame
+Services Start-Up Time Graphics : systemd-analyze plot > jupiter.example.com-startup.svg
+chown owner:group  dir/
+
+perl -d ( which build.pl ) --lsim component name
+perl ${_SWNAVIROOT}/tools/prj_dnl/prepare_lsim.pl
+dpkg --get-selections | grep -v deinstall > ~/Desktop/packages
+
+related to git 
+git checkout -b linux-38-gen3 origin/linux-38-gen3  clone new branch
+gitk --all --date-order  or git log --all or git log --graph --decorate --oneline --all  to know the SHA (hash ID)of commit
+git diff commit1 commit2
+git checkout -- filename undo or discard the previous changes of a file
+git log --pretty=format:"%ci (%h): %s" rootfs_lsim or dir to know number of patches applied to a dir or project
+git log --pretty=format:"%ci (%h): %s" rootfs or git log --pretty=oneline rootfs_lsim
+git stash  to remove 
+git clean -f :to remove untracked file
+git branch -a :to see all branches names.
+git checkout brname :to switch to the created branch.
+git pull : to get the latest changes from the server.
+git clean -f   to remove untracked file
+git reset --soft <commit> : Removing the last commit but changes in file will be there.
+git reset --hard @{u}  : Discarding all local commits on this branch but changes you will not get back
+git reset --hard <commit id> : remove latest all patches upto this commit id.
+git revert -s <commit id> : remove particuler patch
+git log --pretty=oneline --decorate
+git log -p -1 hashvalue
+
+git add file or dir
+git status
+git log --follow drivers/gpio/gpio-inc.c
+git commit -s -m "message"
+git commit --amend    : Updating the last commit's contents or commit message.
+git format-patch -n <commit>
+
+how to apply patch :
+1. git format-patch -n HEAD[ commit ]  	#create the patch using commit-id
+2. git apply --stat file.patch 	# show stats.
+3. git apply --check file.patch	# check for error before applying
+4. git am < file.patch			 # apply the patch finally
+or patch -p1 < file.patch -> to applay a patch in source code
+patch -R -p1 < file.patch -> to undo or revert a patch in source code
+git chery-pick commit-id   apply patch from one brnch to other branch using commit id.
+
+git stash --include-untracked
+git stash pop
+
+run time debugging : userspace
+stat filename
+strace -e open ls
+lsof | morel
+htop 
+ps -auxf
+readelf
+nm
+size
+objdump
+ltrace
+strings
+strip
+ld
+file
+ldd
+ldd $(which nm)
+ldconfig -v to print all shared object library and path
+ltrace -S -tt ./executable
+to get debugging help
+LD_DEBUG=help  dynamic executable
+to get all info
+LD_DEBUG=all  dynamic executable
+LD_DEBUG=libs,versions testApp -m
+to take output in a file
+LD_DEBUG_OUTPUT=sym.log LD_DEBUG=bindings  dynamic executable 
+
+gdb thread debugging
+
+gcc -g -o executable name filename  -lpthread
+./exectablename
+ps -aux | grep executable name
+gdb -pid pidnumber 
+
+gdbserver
+target remote 172.17.0.11:45
+file /home/dus5cob/xxx/debug/x.out
+set sysroot /opt/tooling/x86-staging/DI_BINARY_REPOSITORY_IMX6_LINUX_15.0F27.1/
+set solib-search-path /opt/tooling/x86-staging/DI_BINARY_REPOSITORY_IMX6_LINUX_15.0F27.1/lib/
+info sharedlibrary
+info sources
+file  sharedobject [to check whether unstriped file have debugging symboles or not]
+set verbose on
+break oedt_Cd_TestFuncs.c:OEDT_CD_T151
+
+file /opt/tooling/x86-staging/DI_BINARY_REPOSITORY_IMX6_LINUX_15.0F27.1/lib/libuuid.so.1.3.0
+readelf --debug-dump=info /opt/tooling/x86-staging/DI_BINARY_REPOSITORY_IMX6_LINUX_15.0F27.1/lib/libuuid.so.1.3.0
+
+objdump --syms ... | grep debug
+objdump --debugging libinspected.so
+/opt/tooling/codesourcery/MGC-2014.05-46-arm-gcc-4.8.3/Sourcery_CodeBench_for_ARM_Embedded/bin/arm-none-linux-gnueabi-objdump -DS vmlinux.o  > vmlinux_asm.txt
+
+objcopy --only-keep-debug main main.debug
+strip --strip-debug --strip-unneeded main
+objcopy --add-gnu-debuglink main.debug main
+
+gdb -s main.debug -e main
+or
+gdb
+(gdb) exec-file main
+(gdb) symbol-file main.debug
+
+valgrind
+ g++ -g -Wall -Wextra -pedantic test1.cpp -o test1
+valgrind -v --tool=memcheck --leak-check=yes --leak-check=full --show-reachable=yes --num-callers=20 --track-fds=yes --track-origins=yes --num-callers=50 --db-attach=yes  ./test
+
+shared library creation:
+
+g++ -ggdb -fPIC -shared lib.cpp -o libTest.so
+g++ -ggdb main.cpp libTest.so -o testApp -Wl,--rpath='$ORIGIN'
+
+kernel space :
+lspci: list PCI devices
+lsusb: list USB devices
+fdisk: partition disk
+hdparm: set disk parameters
+ifconfig, iwconfig: configure network interface
+dmesg
+halt, reboot: control system
+hotplug: manage the adding/removal of hardwarel
+modinfo module_name
+modprobe --show-depends module_name
+insmod  : Insert an LKM into the kernel.
+rmmod  : Remove an LKM from the kernel.
+depmod  : Determine interdependencies between LKMs.
+kerneld  : Kerneld daemon program
+ksyms  : Display symbols that are exported by the kernel for use by new LKMs.
+lsmod  : List currently loaded LKMs.
+modinfo  : Display contents of .modinfo section in an LKM object file.
+modprobe  : Insert or remove an LKM or set of LKMs intelligently. For example, if you must load A before loading B, Modprobe will automatically load A when you tell it to load B.
+mknod /dev/device_name c major minor : Make a special character file
+make kernelversion 
+
+gen3 inc modules testing:
+modprobe -r boardcfg
+modprobe -v -r gpio_inc 
+lsmod | grep inc
+inc_send_out.out -p 50946 -b 50946 -r scc 20-03
+modprobe -v gpio_inc
+
+BSP
+make distclean  , make clean,  make mrproper
+depmod -a : command builds a list of Module dependencies
+modprobe --show-depends <module>
+/sbin/modinfo ip_tables
+cat /lib/modules/2.6.32-5-686/modules.dep 
+toolchain/path/aarch64-linux-gnu-objdump -D a.out
+
+1.git checkout -b branchname
+2.export PATH=/opt/tooling/CodeSourcery/Sourcery_CodeBench_for_ARM_GNU_Linux/bin/:$PATH
+3.export ARCH=arm
+4 export CROSS_COMPILE=/opt/tooling/codesourcery/MGC-2014.05-46-arm-gcc-4.8.3/Sourcery_CodeBench_for_ARM_Embedded/bin/arm-none-linux-gnueabi-
+4. make imx_v6_v7_defconfig or menuconfig
+5 make -j8 LOADADDR=0x10008000 uImage
+6 make -j8 modules dtbs
+7 make INSTALL_MOD_PATH=/home/dus5cob/modules modules_install
+
+mount –o remount,rw /
+chattr -i /boot
+
+gen4 build:
+export ARCH=arm64
+export W=123 CROSS_COMPILE=/opt/tooling/codesourcery/MGC-2015.12-138-arm-gcc-5.2.0/Sourcery_CodeBench_for_ARM_Embedded/bin/aarch64-linux-gnu- 
+make rcar3_defconfig
+make -j8 Image
+make modules dtbs
+make INSTALL_MOD_PATH=/home/dus5cob/modules modules_install 
+sudo ./prepare-sd-card-gen4-rcar3.sh ~/gitweb/rcar3_vanilla_rootfs/17.0F02/rfs.tar.bz2 /dev/sdb
+tar -zcvf lib.tar.gz lib
+scp lib.tar.gz root@172.17.0.1:
+
+lsim gen4 :
+pcsim_x86_64_defconfig 
+Gerrit-Project: linux-gen4
+Gerrit-Branch: intel-mentor-staging-41
+make CROSS_COMPILE=/opt/tooling/xxx/OSTC_4.0.1/x86_64-pc-linux-gnu/bin/x86_64-pc-linux-gnu- pcsim_x86_64_defconfig
+make -j8 CROSS_COMPILE=/opt/tooling/xxx/OSTC_4.0.1/x86_64-pc-linux-gnu/bin/x86_64-pc-linux-gnu- 
+make -j8 CROSS_COMPILE=/opt/tooling/xxx/OSTC_4.0.1/x86_64-pc-linux-gnu/bin/x86_64-pc-linux-gnu- modules
+
+make W=123 CROSS_COMPILE=/opt/tooling/xx/OSTC_4.0.1/x86_64-pc-linux-gnu/bin/x86_64-pc-linux-gnu-  drivers/net/inc
+
+./scripts/checkpatch.pl --strict  patch file
+
+cscope -q -R -b and ctags -R and vim :
+
+ctrl + ] -> defination
+ctrl + T -> go back to prvious location.
+hit 'CTRL-\', followed by one of the " cscope search types above (s,g,c,t,e,f,i,d)
+
+       c: Find functions calling this function
+       d: Find functions called by this function
+       e: Find this egrep pattern
+       f: Find this file
+       g: Find this definition
+       i: Find files #including this file
+       s: Find this C symbol
+       t: Find this text string
+
+vim shortcuts:
+:tabe path/filename to open in new tab
+:set mouse =a to use mouse
+:tabn or :tabp to move between tabs or simply click
+:wa save all open tabs
+/string to search
+gg move to top
+GG move to bottom
+A append at end of line
+yy copy/yank one line
+y3 copy 3lines
+p paste at end of current line
+Cut or copy a section of words: 
+	v to begin selecting, d to end and cut or y to copy, p to past
+:%s/old/new/gc	->replace all old with new throughout file with confirmations
+
+terminator :
+F11 Toggle fullscreen
+Ctrl + Shift + O Split terminals horizontally
+Ctrl + Shift + E Split terminals vertically
+Ctrl + Shift + W Close current Panel
+Ctrl + Shift + T Open new tab
+Alt + ↑ Move to the terminal above the current one
+Alt + ↓ Move to the terminal below the current one
+Alt + ← Move to the terminal left of the current one
+Alt + → Move to the terminal right of the current one
+
+file permission:
+u - user/owner g - Group o - others a - all[ugo]
+chmod o=rwx file
+chmod g+rw file
+chmod g-rw file
+r 4, w 2, x 1
+4+2+1 => rwx
+chmod 644 file -> -rwx rw rw--
+
+Changing Ownership and Group:
+change ownership to root for user and group
+chown user:group file
+chown  root:root file
+chown root file
+
+change the ownership for group:
+groups : /etc/grops
+chgrp root file
+

@@ -1,0 +1,531 @@
+menu "ARM architecture"
+	depends on ARM
+
+config SYS_ARCH
+	default "arm"
+
+config ARM64
+	bool
+
+choice
+	prompt "Target select"
+
+config TARGET_INTEGRATORAP_CM720T
+	bool "Support integratorap_cm720t"
+
+config TARGET_INTEGRATORAP_CM920T
+	bool "Support integratorap_cm920t"
+
+config TARGET_INTEGRATORCP_CM920T
+	bool "Support integratorcp_cm920t"
+
+config TARGET_A320EVB
+	bool "Support a320evb"
+
+config TARGET_AT91RM9200EK
+	bool "Support at91rm9200ek"
+
+config TARGET_EB_CPUX9K2
+	bool "Support eb_cpux9k2"
+
+config TARGET_CPUAT91
+	bool "Support cpuat91"
+
+config TARGET_EDB93XX
+	bool "Support edb93xx"
+
+config TARGET_SCB9328
+	bool "Support scb9328"
+
+config TARGET_CM4008
+	bool "Support cm4008"
+
+config TARGET_CM41XX
+	bool "Support cm41xx"
+
+config TARGET_VCMA9
+	bool "Support VCMA9"
+
+config TARGET_SMDK2410
+	bool "Support smdk2410"
+
+config TARGET_INTEGRATORAP_CM926EJS
+	bool "Support integratorap_cm926ejs"
+
+config TARGET_INTEGRATORCP_CM926EJS
+	bool "Support integratorcp_cm926ejs"
+
+config TARGET_ASPENITE
+	bool "Support aspenite"
+
+config TARGET_GPLUGD
+	bool "Support gplugd"
+
+config TARGET_AFEB9260
+	bool "Support afeb9260"
+
+config TARGET_AT91SAM9260EK
+	bool "Support at91sam9260ek"
+
+config TARGET_AT91SAM9261EK
+	bool "Support at91sam9261ek"
+
+config TARGET_AT91SAM9263EK
+	bool "Support at91sam9263ek"
+
+config TARGET_AT91SAM9M10G45EK
+	bool "Support at91sam9m10g45ek"
+
+config TARGET_AT91SAM9N12EK
+	bool "Support at91sam9n12ek"
+
+config TARGET_AT91SAM9RLEK
+	bool "Support at91sam9rlek"
+
+config TARGET_AT91SAM9X5EK
+	bool "Support at91sam9x5ek"
+
+config TARGET_SNAPPER9260
+	bool "Support snapper9260"
+
+config TARGET_VL_MA2SC
+	bool "Support vl_ma2sc"
+
+config TARGET_SBC35_A9G20
+	bool "Support sbc35_a9g20"
+
+config TARGET_TNY_A9260
+	bool "Support tny_a9260"
+
+config TARGET_USB_A9263
+	bool "Support usb_a9263"
+
+config TARGET_ETHERNUT5
+	bool "Support ethernut5"
+
+config TARGET_TOP9000
+	bool "Support top9000"
+
+config TARGET_MEESC
+	bool "Support meesc"
+
+config TARGET_OTC570
+	bool "Support otc570"
+
+config TARGET_CPU9260
+	bool "Support cpu9260"
+
+config TARGET_PM9261
+	bool "Support pm9261"
+
+config TARGET_PM9263
+	bool "Support pm9263"
+
+config TARGET_PM9G45
+	bool "Support pm9g45"
+
+config TARGET_CORVUS
+	bool "Support corvus"
+
+config TARGET_TAURUS
+	bool "Support taurus"
+
+config TARGET_STAMP9G20
+	bool "Support stamp9g20"
+
+config ARCH_DAVINCI
+	bool "TI DaVinci"
+	help
+	  Support for TI's DaVinci platform.
+
+config KIRKWOOD
+	bool "Marvell Kirkwood"
+
+config TARGET_DEVKIT3250
+	bool "Support devkit3250"
+
+config TARGET_JADECPU
+	bool "Support jadecpu"
+
+config TARGET_MX25PDK
+	bool "Support mx25pdk"
+
+config TARGET_TX25
+	bool "Support tx25"
+
+config TARGET_ZMX25
+	bool "Support zmx25"
+
+config TARGET_APF27
+	bool "Support apf27"
+
+config TARGET_IMX27LITE
+	bool "Support imx27lite"
+
+config TARGET_MAGNESIUM
+	bool "Support magnesium"
+
+config TARGET_APX4DEVKIT
+	bool "Support apx4devkit"
+
+config TARGET_XFI3
+	bool "Support xfi3"
+
+config TARGET_M28EVK
+	bool "Support m28evk"
+
+config TARGET_MX23EVK
+	bool "Support mx23evk"
+
+config TARGET_MX28EVK
+	bool "Support mx28evk"
+
+config TARGET_MX23_OLINUXINO
+	bool "Support mx23_olinuxino"
+
+config TARGET_BG0900
+	bool "Support bg0900"
+
+config TARGET_SANSA_FUZE_PLUS
+	bool "Support sansa_fuze_plus"
+
+config TARGET_SC_SPS_1
+	bool "Support sc_sps_1"
+
+config ARCH_NOMADIK
+	bool "ST-Ericsson Nomadik"
+
+config ORION5X
+	bool "Marvell Orion"
+
+config TARGET_DKB
+	bool "Support dkb"
+
+config TARGET_SPEAR300
+	bool "Support spear300"
+
+config TARGET_SPEAR310
+	bool "Support spear310"
+
+config TARGET_SPEAR320
+	bool "Support spear320"
+
+config TARGET_SPEAR600
+	bool "Support spear600"
+
+config TARGET_X600
+	bool "Support x600"
+
+config ARCH_VERSATILE
+	bool "ARM Ltd. Versatile family"
+
+config TARGET_INTEGRATORCP_CM1136
+	bool "Support integratorcp_cm1136"
+
+config TARGET_IMX31_PHYCORE
+	bool "Support imx31_phycore"
+
+config TARGET_QONG
+	bool "Support qong"
+
+config TARGET_MX31ADS
+	bool "Support mx31ads"
+
+config TARGET_MX31PDK
+	bool "Support mx31pdk"
+
+config TARGET_TT01
+	bool "Support tt01"
+
+config TARGET_IMX31_LITEKIT
+	bool "Support imx31_litekit"
+
+config TARGET_WOODBURN
+	bool "Support woodburn"
+
+config TARGET_WOODBURN_SD
+	bool "Support woodburn_sd"
+
+config TARGET_FLEA3
+	bool "Support flea3"
+
+config TARGET_MX35PDK
+	bool "Support mx35pdk"
+
+config TARGET_RPI_B
+	bool "Support rpi_b"
+
+config TARGET_TNETV107X_EVM
+	bool "Support tnetv107x_evm"
+
+config TARGET_INTEGRATORAP_CM946ES
+	bool "Support integratorap_cm946es"
+
+config TARGET_INTEGRATORCP_CM946ES
+	bool "Support integratorcp_cm946es"
+
+config TARGET_VEXPRESS_CA15_TC2
+	bool "Support vexpress_ca15_tc2"
+
+config TARGET_VEXPRESS_CA5X2
+	bool "Support vexpress_ca5x2"
+
+config TARGET_VEXPRESS_CA9X4
+	bool "Support vexpress_ca9x4"
+
+config TARGET_KWB
+	bool "Support kwb"
+
+config TARGET_TSERIES
+	bool "Support tseries"
+
+config TARGET_CM_T335
+	bool "Support cm_t335"
+
+config TARGET_PEPPER
+	bool "Support pepper"
+
+config TARGET_AM335X_IGEP0033
+	bool "Support am335x_igep0033"
+
+config TARGET_PCM051
+	bool "Support pcm051"
+
+config TARGET_DRACO
+	bool "Support draco"
+
+config TARGET_DXR2
+	bool "Support dxr2"
+
+config TARGET_PXM2
+	bool "Support pxm2"
+
+config TARGET_RUT
+	bool "Support rut"
+
+config TARGET_PENGWYN
+	bool "Support pengwyn"
+
+config TARGET_AM335X_EVM
+	bool "Support am335x_evm"
+
+config TARGET_AM43XX_EVM
+	bool "Support am43xx_evm"
+
+config TARGET_TI814X_EVM
+	bool "Support ti814x_evm"
+
+config TARGET_TI816X_EVM
+	bool "Support ti816x_evm"
+
+config TARGET_SAMA5D3_XPLAINED
+	bool "Support sama5d3_xplained"
+
+config TARGET_SAMA5D3XEK
+	bool "Support sama5d3xek"
+
+config TARGET_BCM28155_AP
+	bool "Support bcm28155_ap"
+
+config TARGET_BCM958300K
+	bool "Support bcm958300k"
+
+config TARGET_BCM958622HR
+	bool "Support bcm958622hr"
+
+config ARCH_EXYNOS
+	bool "Samsung EXYNOS"
+
+config ARCH_S5PC1XX
+	bool "Samsung S5PC1XX"
+
+config ARCH_HIGHBANK
+	bool "Calxeda Highbank"
+
+config ARCH_KEYSTONE
+	bool "TI Keystone"
+
+config TARGET_M53EVK
+	bool "Support m53evk"
+
+config TARGET_IMA3_MX53
+	bool "Support ima3-mx53"
+
+config TARGET_MX51EVK
+	bool "Support mx51evk"
+
+config TARGET_MX53ARD
+	bool "Support mx53ard"
+
+config TARGET_MX53EVK
+	bool "Support mx53evk"
+
+config TARGET_MX53LOCO
+	bool "Support mx53loco"
+
+config TARGET_MX53SMD
+	bool "Support mx53smd"
+
+config TARGET_MX51_EFIKAMX
+	bool "Support mx51_efikamx"
+
+config TARGET_VISION2
+	bool "Support vision2"
+
+config TARGET_UDOO
+	bool "Support udoo"
+
+config TARGET_WANDBOARD
+	bool "Support wandboard"
+
+config TARGET_TITANIUM
+	bool "Support titanium"
+
+config TARGET_NITROGEN6X
+	bool "Support nitrogen6x"
+
+config TARGET_CGTQMX6EVAL
+	bool "Support cgtqmx6eval"
+
+config TARGET_EMBESTMX6BOARDS
+	bool "Support embestmx6boards"
+
+config TARGET_ARISTAINETOS
+	bool "Support aristainetos"
+
+config TARGET_MX6QARM2
+	bool "Support mx6qarm2"
+
+config TARGET_MX6QSABREAUTO
+	bool "Support mx6qsabreauto"
+
+config TARGET_MX6SABRESD
+	bool "Support mx6sabresd"
+
+config TARGET_MX6SLEVK
+	bool "Support mx6slevk"
+
+config TARGET_MX6SXSABRESD
+	bool "Support mx6sxsabresd"
+
+config TARGET_GW_VENTANA
+	bool "Support gw_ventana"
+
+config TARGET_HUMMINGBOARD
+	bool "Support hummingboard"
+
+config TARGET_TQMA6
+	bool "TQ Systems TQMa6 board"
+
+config TARGET_OT1200
+	bool "Bachmann OT1200"
+
+config OMAP34XX
+	bool "OMAP34XX SoC"
+
+config OMAP44XX
+	bool "OMAP44XX SoC"
+
+config OMAP54XX
+	bool "OMAP54XX SoC"
+
+config RMOBILE
+	bool "Renesas ARM SoCs"
+
+config TARGET_CM_FX6
+	bool "Support cm_fx6"
+
+config TARGET_SOCFPGA_CYCLONE5
+	bool "Support socfpga_cyclone5"
+
+config TARGET_SUN4I
+	bool "Support sun4i"
+
+config TARGET_SUN5I
+	bool "Support sun5i"
+
+config TARGET_SUN7I
+	bool "Support sun7i"
+
+config TARGET_SNOWBALL
+	bool "Support snowball"
+
+config TARGET_U8500_HREF
+	bool "Support u8500_href"
+
+config TARGET_VF610TWR
+	bool "Support vf610twr"
+
+config ZYNQ
+	bool "Xilinx Zynq Platform"
+
+config TEGRA
+	bool "NVIDIA Tegra"
+	select SPL
+	select OF_CONTROL if !SPL_BUILD
+
+config TARGET_VEXPRESS_AEMV8A
+	bool "Support vexpress_aemv8a"
+	select ARM64
+
+config TARGET_LS2085A_EMU
+	bool "Support ls2085a_emu"
+	select ARM64
+
+config TARGET_LS2085A_SIMU
+	bool "Support ls2085a_simu"
+	select ARM64
+
+config TARGET_LS1021AQDS
+	bool "Support ls1021aqds_nor"
+
+config TARGET_LS1021ATWR
+	bool "Support ls1021atwr_nor"
+
+config TARGET_BALLOON3
+	bool "Support balloon3"
+
+config TARGET_H2200
+	bool "Support h2200"
+
+config TARGET_PALMLD
+	bool "Support palmld"
+
+config TARGET_PALMTC
+	bool "Support palmtc"
+
+config TARGET_PALMTREO680
+	bool "Support palmtreo680"
+
+config TARGET_PXA255_IDP
+	bool "Support pxa255_idp"
+
+config TARGET_TRIZEPSIV
+	bool "Support trizepsiv"
+
+config TARGET_VPAC270
+	bool "Support vpac270"
+
+config TARGET_XAENIAX
+	bool "Support xaeniax"
+
+config TARGET_ZIPITZ2
+	bool "Support zipitz2"
+
+config TARGET_LP8X4X
+	bool "Support lp8x4x"
+
+config TARGET_COLIBRI_PXA270
+	bool "Support colibri_pxa270"
+
+config TARGET_JORNADA
+	bool "Support jornada"
+
+config ARCH_UNIPHIER
+	bool "Panasonic UniPhier platform"
+
+endchoice
+
+source "board/ti/am335x/Kconfig"
+
+endmenu

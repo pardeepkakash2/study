@@ -1,0 +1,4 @@
+#!/bin/bash
+
+scp hrtimer_test.ko root@172.17.0.1:/tmp/ &&
+ssh root@172.17.0.1 "rmmod hrtimer_test; insmod /tmp/hrtimer_test.ko"
