@@ -3,9 +3,9 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include "character_driver.h"
+#include "char_test.h"
 
-char write_buff[100] = "jeevitha";
+char write_buff[100] = "Dharmender sharma";
 
 int main()
 {
@@ -14,7 +14,7 @@ int main()
 
     printf("Do you want to open: 1 - Yes, 0 - No : ");
     scanf("%d", &num);
-    fd = open("/dev/myDev", O_RDWR);
+    fd = open("/dev/chardev", O_RDWR);
 
     printf("Do you want to write: 1 - Yes, 0 - No : ");
     scanf("%d", &num);
