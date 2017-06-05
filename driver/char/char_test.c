@@ -15,7 +15,11 @@ int main()
     printf("Do you want to open: 1 - Yes, 0 - No : ");
     scanf("%d", &num);
     fd = open("/dev/chardev", O_RDWR);
-
+	if (fd < 0)
+		printf("opening device failed :%d\n", fd);
+	else
+		printf("opening device success :%d\n", fd);
+		
     printf("Do you want to write: 1 - Yes, 0 - No : ");
     scanf("%d", &num);
     written_bytes = write(fd, write_buff, 10);
