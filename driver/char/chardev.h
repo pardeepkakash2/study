@@ -23,19 +23,19 @@
 #undef PDEBUGG
 #define PDEBUGG(fmt, args...)
 
-#ifndef SCULL_MAJOR
-#define SCULL_MAJOR     0 /* dynamic major by default */
+#ifndef CHARDEV_MAJOR
+#define CHARDEV_MAJOR     0 /* dynamic major by default */
 #endif
 
-#ifndef SCULL_NR_DEVS
-#define SCULL_NR_DEVS   4 /* scull0 through scull3 */
+#ifndef CHARDEV_NR_DEVS
+#define CHARDEV_NR_DEVS   4 /* scull0 through scull3 */
 #endif
 
 /*
  * Representation of scull quantum sets.
  */
 
-struct scull_dev {
+struct chardev_dev {
 	char pdata[20];
         struct cdev cdev;         /* Char device structure. */
 };
@@ -56,6 +56,6 @@ struct string {
 /*
  * The different configurable parameters
  */
-extern int scull_major;     /* char.c */
-extern int scull_nr_devs;
+extern int chardev_major;     /* char.c */
+extern int chardev_nr_devs;
 
