@@ -28,7 +28,7 @@
 #endif
 
 #ifndef CHARDEV_NR_DEVS
-#define CHARDEV_NR_DEVS   4 /* scull0 through scull3 */
+#define CHARDEV_NR_DEVS   1 /* scull0 through scull3 */
 #endif
 
 /*
@@ -37,6 +37,8 @@
 
 struct chardev_dev {
 	char pdata[20];
+	int count;
+	struct mutex mutex;       /* Mutual exclusion semaphore. */
         struct cdev cdev;         /* Char device structure. */
 };
 
