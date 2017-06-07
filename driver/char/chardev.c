@@ -30,7 +30,7 @@ int chardev_nr_devs = CHARDEV_NR_DEVS;      /* number of bare scull devices */
 
 static char   message[256] = {0};           ///< Memory for the string that is passed from userspace
 static short  size_of_message;              ///< Used to remember the size of the string stored
-static int    count = 0;              ///< Counts the number of times the device is opened
+//static int    count = 0;              ///< Counts the number of times the device is opened
 
 module_param(chardev_major, int, S_IRUGO);
 module_param(chardev_minor, int, S_IRUGO);
@@ -47,11 +47,17 @@ static int     dev_release(struct inode *, struct file *);
 static ssize_t dev_read(struct file *, char *, size_t, loff_t *);
 static ssize_t dev_write(struct file *, const char *, size_t, loff_t *);
 
+/* A macro that is used to declare a new mutex that is visible in this file
+ * results in a semaphore variable ebbchar_mutex with value 1 (unlocked)
+ * DEFINE_MUTEX_LOCKED() results in a variable with value 0 (locked) 
+*/
+static DEFINE_MUTEX(chardev_mutex);
+ 
 int string_rev(char *str)
 {
 	int len, i, j, swap = 0;
 
-	printk(KERN_ALERT "Chardev: %s : %d\n", __FUNCTION__, __LINE__);
+	printk(KERN_ALERT "Chardev: %s : caller: %pS\n",__func__, __builtin_return_address(0));
 	len = strlen(str);
 	for (i = 0, j = (len-1); i < (len/2); i++, j--) {
 		swap = str[i];
@@ -68,9 +74,16 @@ int string_rev(char *str)
  */
 static int dev_open(struct inode *inode, struct file *file)
 {
-	printk(KERN_ALERT "Chardev: %s : %d\n", __FUNCTION__, __LINE__);
-	count++;
-	printk(KERN_INFO "Chardev: Device has been opened %d time(s)\n", count);
+	struct chardev_dev *dev; /* device information */
+
+	printk(KERN_ALERT "Chardev: %s : caller: %pS\n",__func__, __builtin_return_address(0));
+	
+	dev = container_of(inode->i_cdev, struct chardev_dev, cdev);
+	file->private_data = dev; /* for other methods */
+
+	dev->count++;
+	printk(KERN_INFO "Chardev: Device has been opened %d time(s)\n", dev->count);
+
 	return 0;
 }
 /** This function is called whenever device is being read from user space i.e. data is
@@ -84,7 +97,10 @@ static int dev_open(struct inode *inode, struct file *file)
 static ssize_t dev_read(struct file *file, char *buff, size_t len, loff_t *off)
 {
 	int error_count = 0;
-	printk(KERN_ALERT "%s : %d\n", __FUNCTION__, __LINE__);
+	struct chardev_dev *dev = file->private_data;
+
+	printk(KERN_ALERT "Chardev: %s : caller: %pS\n",__func__, __builtin_return_address(0));
+//	printk(KERN_INFO "Chardev: Device has been opened testing private data %d time(s)\n", dev->count);
 	/* copy_to_user has the format ( * to, *from, size) and returns 0 on success */
 	error_count = copy_to_user(buff, message, len);
 	if (error_count==0) {
@@ -109,7 +125,7 @@ static ssize_t dev_read(struct file *file, char *buff, size_t len, loff_t *off)
 static ssize_t dev_write(struct file *file, const char *buff, size_t len, loff_t *off)
 {
 	
-	printk(KERN_ALERT "Chardev: %s : %d\n", __FUNCTION__, __LINE__);
+	printk(KERN_ALERT "Chardev: %s : caller: %pS\n",__func__, __builtin_return_address(0));
 	
 	sprintf(message, "Chardev: %s(%zu letters)", buff, len);   // appending received string with its length
 	size_of_message = strlen(message);                 // store the length of the stored message
@@ -129,7 +145,7 @@ static long dev_ioctl(struct file *fil, unsigned int cmd, unsigned long arg)
 	int rv;
 	struct string tmp_s;
 
-	printk(KERN_ALERT "Chardev: %s : %d\n", __FUNCTION__, __LINE__);
+	printk(KERN_ALERT "Chardev: %s : caller: %pS\n",__func__, __builtin_return_address(0));
  
 	switch (cmd) {
 		case CD_IOC_ALLOC_BUF:
@@ -176,7 +192,7 @@ static long dev_ioctl(struct file *fil, unsigned int cmd, unsigned long arg)
  */
 static int dev_release(struct inode *inode, struct file *file)
 {
-	printk(KERN_ALERT "Chardev: %s : %d\n", __FUNCTION__, __LINE__);
+	printk(KERN_ALERT "Chardev: %s : caller: %pS\n",__func__, __builtin_return_address(0));
 	return 0;
 }
 
@@ -204,7 +220,7 @@ static void chardev_setup_cdev(struct chardev_dev *dev, int index)
 {
         int err, devno = MKDEV(chardev_major, chardev_minor + index);
 
-	printk(KERN_ALERT "Chardev: %s : %d\n", __FUNCTION__, __LINE__);
+	printk(KERN_ALERT "Chardev: %s : caller: %pS\n",__func__, __builtin_return_address(0));
         
 	cdev_init(&dev->cdev, &chardev_fops);
         dev->cdev.owner = THIS_MODULE;
@@ -225,22 +241,26 @@ void chardev_cleanup_module(void)
 {
         dev_t devno = MKDEV(chardev_major, chardev_minor);
 	
-	printk(KERN_ALERT "Chardev: %s : %d\n", __FUNCTION__, __LINE__);
+	printk(KERN_ALERT "Chardev: %s : caller: %pS\n",__func__, __builtin_return_address(0));
+	
 
 	if (charclass) {
-		/* unregister the device class */
-		class_unregister(charclass);
-		/* remove the device class */
+		/* destroy the device */
+		device_destroy(charclass, devno);
+		/* destroy the device class */
 		class_destroy(charclass);
+		printk("Chardev: class and device freed succesfully\n");
 	}
         /* Get rid of our char dev entries. */
         if (chardev_devices) {
 		cdev_del(&chardev_devices->cdev);
         	kfree(chardev_devices);
+		printk("Chardev: cdev resource freed succesfully\n");
         }
 
         /* cleanup_module is never called if registering failed. */
         unregister_chrdev_region(devno, chardev_nr_devs);
+	printk("Chardev: cihardev unregisterd succesfully\n");
 }
 /** The LKM initialization function
  *  The static keyword restricts the visibility of the function to within this C file. The __init
@@ -253,7 +273,7 @@ int chardev_init_module(void)
 	int result = 0;
         dev_t dev = 0;
 
-	printk(KERN_ALERT "Chardev: %s : %d\n", __FUNCTION__, __LINE__);
+	printk(KERN_ALERT "Chardev: %s : caller: %pS\n",__func__, __builtin_return_address(0));
 	
 	#if 0
 	/* Try to dynamically allocate a major number for the device -- more difficult but worth it*/
