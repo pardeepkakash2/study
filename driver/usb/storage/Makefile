@@ -1,7 +1,7 @@
 INSTALL_DIR=modules
 ifneq (${KERNELRELEASE},)
-	obj-m := usb-dev.o
-module-objs := usb-dev.o 
+	obj-m := usb-basic.o
+module-objs := usb-basic.o 
 
 else
 	KERNELDIR ?= /lib/modules/$(shell uname -r)/build
