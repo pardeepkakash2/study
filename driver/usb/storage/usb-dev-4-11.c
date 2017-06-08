@@ -15,6 +15,8 @@
 #define USB_PEN_PRODUCT_ID	0x1000
 #define USB_HARD_VENDOR_ID	0x0BC2
 #define USB_HARD_PRODUCT_ID	0xAB24
+#define USB_HPPEN_VENDOR_ID	0x03F0
+#define USB_HPPEN_PRODUCT_ID	0xAE07
 
 /* table of devices that work with this driver 
 * This is the device id structure, every time when the device with the vendor id x nad product id y is connected 
@@ -24,6 +26,7 @@
 static const struct usb_device_id skel_table[] = {
 	{ USB_DEVICE(USB_SKEL_VENDOR_ID, USB_SKEL_PRODUCT_ID) },
 	{ USB_DEVICE(USB_PEN_VENDOR_ID, USB_PEN_PRODUCT_ID) },
+	{ USB_DEVICE(USB_HPPEN_VENDOR_ID, USB_HPPEN_PRODUCT_ID) },
 	{ USB_DEVICE(USB_HARD_VENDOR_ID, USB_HARD_PRODUCT_ID) },
 	{ }					/* Terminating entry */
 };
@@ -562,12 +565,14 @@ static int skel_probe(struct usb_interface *interface,
 			dev->bulk_in_endpointAddr = endpoint->bEndpointAddress;
 			dev->bulk_in_buffer = kmalloc(buffer_size, GFP_KERNEL);
 			if (!dev->bulk_in_buffer) {
-				printk(KERN_ERR "USBDEV: usb device bulk in buffer is NULL\n");
+				dev_err(&interface->dev,"Could not allocate bulk_in_buffer");
 				goto error;
 			}
 			dev->bulk_in_urb = usb_alloc_urb(0, GFP_KERNEL);
-			if (!dev->bulk_in_urb)
+			if (!dev->bulk_in_urb) {
+				dev_err(&interface->dev,"Could not allocate bulk_in_urb");
 				goto error;
+			}
 		}
 
 		if (!dev->bulk_out_endpointAddr && usb_endpoint_is_bulk_out(endpoint)) {

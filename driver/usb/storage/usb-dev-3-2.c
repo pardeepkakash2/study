@@ -16,11 +16,18 @@
 #define USB_PEN_PRODUCT_ID	0x1000
 #define USB_HARD_VENDOR_ID	0x0BC2
 #define USB_HARD_PRODUCT_ID	0xAB24
+#define USB_HPPEN_VENDOR_ID	0x03F0
+#define USB_HPPEN_PRODUCT_ID	0xAE07
 
-/* table of devices that work with this driver */
+/* table of devices that work with this driver 
+* This is the device id structure, every time when the device with the vendor id x nad product id y is connected 
+* then this device driver get ivoked by the usb core
+* if we want to register the same driver the in the usb_device_id enter the product id and the vendor id of the device.
+*/
 static const struct usb_device_id skel_table[] = {
 	{ USB_DEVICE(USB_SKEL_VENDOR_ID, USB_SKEL_PRODUCT_ID) },
 	{ USB_DEVICE(USB_PEN_VENDOR_ID, USB_PEN_PRODUCT_ID) },
+	{ USB_DEVICE(USB_HPPEN_VENDOR_ID, USB_HPPEN_PRODUCT_ID) },
 	{ USB_DEVICE(USB_HARD_VENDOR_ID, USB_HARD_PRODUCT_ID) },
 	{ }					/* Terminating entry */
 };
@@ -78,7 +85,9 @@ static void skel_delete(struct kref *kref)
 		kfree(dev);
 	}
 }
-
+/* this is the open function here first we findout the interface using the minor number and the usb device
+* then populate the usb device using the get interface data.
+*/
 static int skel_open(struct inode *inode, struct file *file)
 {
 	struct usb_skel *dev;
@@ -88,6 +97,7 @@ static int skel_open(struct inode *inode, struct file *file)
 	printk(KERN_ALERT "USBDEV: %s : caller: %pS\n",__func__, __builtin_return_address(0));
 
 	subminor = iminor(inode);
+	printk(KERN_INFO "USBDEV: minor = %d\n", subminor);
 
 	interface = usb_find_interface(&skel_driver, subminor);
 	if (!interface) {
@@ -99,10 +109,13 @@ static int skel_open(struct inode *inode, struct file *file)
 
 	dev = usb_get_intfdata(interface);
 	if (!dev) {
+		printk(KERN_INFO "USBDEV: usb device is not present\n");
 		retval = -ENODEV;
 		goto exit;
 	}
-
+	printk(KERN_INFO "USBDEV: dev->in endpoint address = %x\n", dev->bulk_in_endpointAddr);
+	printk(KERN_INFO "USBDEV: dev->out endpoint address = %x\n", dev->bulk_out_endpointAddr);
+	
 	/* increment our usage count for the device */
 	kref_get(&dev->kref);
 
@@ -194,8 +207,9 @@ static void skel_read_bulk_callback(struct urb *urb)
 		if (!(urb->status == -ENOENT ||
 		    urb->status == -ECONNRESET ||
 		    urb->status == -ESHUTDOWN))
-			dev_err(&dev->interface->dev,"%s - nonzero write bulk status received: %d",
-			    __func__, urb->status);
+			dev_err(&dev->interface->dev,
+				"%s - nonzero write bulk status received: %d\n",
+				__func__, urb->status);
 
 		dev->errors = urb->status;
 	} else {
@@ -458,7 +472,10 @@ static ssize_t skel_write(struct file *file, const char *user_buffer,
 		retval = -ENOMEM;
 		goto error;
 	}
-
+	
+	/* see if we are already in the middle of a write.
+	*  copy the data from userspace into our urb
+	*/
 	if (copy_from_user(buf, user_buffer, writesize)) {
 		retval = -EFAULT;
 		goto error;
@@ -472,7 +489,10 @@ static ssize_t skel_write(struct file *file, const char *user_buffer,
 		goto error;
 	}
 
-	/* initialize the urb properly */
+	/* initialize or fill the urb properly eg. target urb, usb device, destination endpoint 
+	* (created by usb_sndbulkpipe), data first address, return value of written data, 
+	* callback function, data provided to callback function.
+	*/
 	usb_fill_bulk_urb(urb, dev->udev,
 			  usb_sndbulkpipe(dev->udev, dev->bulk_out_endpointAddr),
 			  buf, writesize, skel_write_bulk_callback, dev);
@@ -519,6 +539,7 @@ static const struct file_operations skel_fops = {
 	.release =	skel_release,
 	.flush =	skel_flush,
 	.llseek =	noop_llseek,
+//	.ioctl =	skel_ioctl,	/*for more info: http://codecloud.net/137587.html*/
 };
 
 /*
@@ -531,6 +552,7 @@ static struct usb_class_driver skel_class = {
 	.minor_base =	USB_SKEL_MINOR_BASE,
 };
 
+/* Called by the usb core when a new device is connected that it thinks */
 static int skel_probe(struct usb_interface *interface,
 		      const struct usb_device_id *id)
 {
@@ -557,16 +579,26 @@ static int skel_probe(struct usb_interface *interface,
 
 	dev->udev = usb_get_dev(interface_to_usbdev(interface));
 	dev->interface = interface;
-
+	
+	printk(KERN_DEBUG "USBDEV: interface = %p\n", interface);
+	printk(KERN_INFO "USBDEV: {product id:vendor id} = {%04x:%04x}\n", id->idProduct, id->idVendor);
+	
 	/* set up the endpoint information */
 	/* use only the first bulk-in and bulk-out endpoints */
 	iface_desc = interface->cur_altsetting;
 	for (i = 0; i < iface_desc->desc.bNumEndpoints; ++i) {
 		endpoint = &iface_desc->endpoint[i].desc;
-
-		if (!dev->bulk_in_endpointAddr &&
-		    usb_endpoint_is_bulk_in(endpoint)) {
+		
+		printk(KERN_INFO "USBDEV: Endpoint[%d] Address = %x\n", i, endpoint->bEndpointAddress);
+		printk(KERN_INFO "USBDEV: packet size = %x\n", endpoint->wMaxPacketSize);
+		
+		/*find a batch into the endpoint and configure the relevant 
+		*information: buffer size, endpoint address, buffer address
+		*/
+		if (!dev->bulk_in_endpointAddr && usb_endpoint_is_bulk_in(endpoint)) {
+			printk(KERN_INFO"ept->EndpointAddres = %x is <In ept Address>\n", endpoint->bEndpointAddress);
 			/* we found a bulk in endpoint */
+			/*maximum packet size that the endpoint can handle*/
 			buffer_size = usb_endpoint_maxp(endpoint);
 			dev->bulk_in_size = buffer_size;
 			dev->bulk_in_endpointAddr = endpoint->bEndpointAddress;
@@ -582,8 +614,8 @@ static int skel_probe(struct usb_interface *interface,
 			}
 		}
 
-		if (!dev->bulk_out_endpointAddr &&
-		    usb_endpoint_is_bulk_out(endpoint)) {
+		if (!dev->bulk_out_endpointAddr && usb_endpoint_is_bulk_out(endpoint)) {
+			printk(KERN_INFO"ept->EndpointAddres = %x is <out ept Address>\n", endpoint->bEndpointAddress);
 			/* we found a bulk out endpoint */
 			dev->bulk_out_endpointAddr = endpoint->bEndpointAddress;
 		}
@@ -594,10 +626,17 @@ static int skel_probe(struct usb_interface *interface,
 		goto error;
 	}
 
-	/* save our data pointer in this interface device */
+	/* save our data pointer in this interface device.
+	* for the interface data that can be used later we will
+	* store it in our local structure.
+	*/
 	usb_set_intfdata(interface, dev);
 
-	/* we can register the device now, as it is ready */
+	/* we can register the device now, as it is ready 
+	* usb_register_dev is used to create a entry in the /dev directory.
+	* the entry is created as with the name skel0. Every time pen the pendrive get insert into thesystem 
+	* then a pen drive entry created.
+	*/
 	retval = usb_register_dev(interface, &skel_class);
 	if (retval) {
 		/* something prevented us from registering this driver */
@@ -620,6 +659,11 @@ error:
 	return retval;
 }
 
+/*Called by the usb core when the device is removed from the system. 
+* it is used to clear the entry from the /dev directory. Note that if the usb_deregister_usb 
+* is not preset in the disconnect function, then every time the a new entry will be created in the /dev.
+* ex skel0, skel1 etc.
+*/
 static void skel_disconnect(struct usb_interface *interface)
 {
 	struct usb_skel *dev;
@@ -629,7 +673,7 @@ static void skel_disconnect(struct usb_interface *interface)
 	dev = usb_get_intfdata(interface);
 	usb_set_intfdata(interface, NULL);
 
-	/* give back our minor */
+	/* deregister this driver with the USB subsystem and give back our minor */
 	usb_deregister_dev(interface, &skel_class);
 
 	/* prevent more I/O from starting */
