@@ -1,17 +1,3 @@
-/*
- * USB Skeleton driver - 2.2
- *
- * Copyright (C) 2001-2004 Greg Kroah-Hartman (greg@kroah.com)
- *
- *	This program is free software; you can redistribute it and/or
- *	modify it under the terms of the GNU General Public License as
- *	published by the Free Software Foundation, version 2.
- *
- * This driver is based on the 2.6.3 version of drivers/usb/usb-skeleton.c
- * but has been rewritten to be easier to read and use.
- *
- */
-
 #include <linux/kernel.h>
 #include <linux/errno.h>
 #include <linux/slab.h>
@@ -25,10 +11,16 @@
 /* Define these values to match your devices */
 #define USB_SKEL_VENDOR_ID	0xfff0
 #define USB_SKEL_PRODUCT_ID	0xfff0
+#define USB_PEN_VENDOR_ID	0x8564
+#define USB_PEN_PRODUCT_ID	0x1000
+#define USB_HARD_VENDOR_ID	0x0BC2
+#define USB_HARD_PRODUCT_ID	0xAB24
 
 /* table of devices that work with this driver */
 static const struct usb_device_id skel_table[] = {
 	{ USB_DEVICE(USB_SKEL_VENDOR_ID, USB_SKEL_PRODUCT_ID) },
+	{ USB_DEVICE(USB_PEN_VENDOR_ID, USB_PEN_PRODUCT_ID) },
+	{ USB_DEVICE(USB_HARD_VENDOR_ID, USB_HARD_PRODUCT_ID) },
 	{ }					/* Terminating entry */
 };
 MODULE_DEVICE_TABLE(usb, skel_table);
@@ -70,14 +62,18 @@ struct usb_skel {
 static struct usb_driver skel_driver;
 static void skel_draw_down(struct usb_skel *dev);
 
+/*The usb driver will call function when it is unloaded*/
 static void skel_delete(struct kref *kref)
 {
 	struct usb_skel *dev = to_skel_dev(kref);
+	printk(KERN_ALERT "USBDEV: %s : caller: %pS\n",__func__, __builtin_return_address(0));
 
-	usb_free_urb(dev->bulk_in_urb);
-	usb_put_dev(dev->udev);
-	kfree(dev->bulk_in_buffer);
-	kfree(dev);
+	if (dev != NULL) {
+		usb_free_urb(dev->bulk_in_urb);
+		usb_put_dev(dev->udev);
+		kfree(dev->bulk_in_buffer);
+		kfree(dev);
+	}
 }
 
 static int skel_open(struct inode *inode, struct file *file)
@@ -86,6 +82,7 @@ static int skel_open(struct inode *inode, struct file *file)
 	struct usb_interface *interface;
 	int subminor;
 	int retval = 0;
+	printk(KERN_ALERT "USBDEV: %s : caller: %pS\n",__func__, __builtin_return_address(0));
 
 	subminor = iminor(inode);
 
@@ -121,6 +118,7 @@ static int skel_release(struct inode *inode, struct file *file)
 {
 	struct usb_skel *dev;
 
+	printk(KERN_ALERT "USBDEV: %s : caller: %pS\n",__func__, __builtin_return_address(0));
 	dev = file->private_data;
 	if (dev == NULL)
 		return -ENODEV;
@@ -140,6 +138,8 @@ static int skel_flush(struct file *file, fl_owner_t id)
 {
 	struct usb_skel *dev;
 	int res;
+
+	printk(KERN_ALERT "USBDEV: %s : caller: %pS\n",__func__, __builtin_return_address(0));
 
 	dev = file->private_data;
 	if (dev == NULL)
@@ -164,6 +164,7 @@ static void skel_read_bulk_callback(struct urb *urb)
 {
 	struct usb_skel *dev;
 
+	printk(KERN_ALERT "USBDEV: %s : caller: %pS\n",__func__, __builtin_return_address(0));
 	dev = urb->context;
 
 	spin_lock(&dev->err_lock);
@@ -190,6 +191,7 @@ static int skel_do_read_io(struct usb_skel *dev, size_t count)
 {
 	int rv;
 
+	printk(KERN_ALERT "USBDEV: %s : caller: %pS\n",__func__, __builtin_return_address(0));
 	/* prepare a read */
 	usb_fill_bulk_urb(dev->bulk_in_urb,
 			dev->udev,
@@ -230,6 +232,7 @@ static ssize_t skel_read(struct file *file, char *buffer, size_t count,
 	int rv;
 	bool ongoing_io;
 
+	printk(KERN_ALERT "USBDEV: %s : caller: %pS\n",__func__, __builtin_return_address(0));
 	dev = file->private_data;
 
 	/* if we cannot read at all, return EOF */
@@ -336,6 +339,7 @@ static void skel_write_bulk_callback(struct urb *urb)
 {
 	struct usb_skel *dev;
 
+	printk(KERN_ALERT "USBDEV: %s : caller: %pS\n",__func__, __builtin_return_address(0));
 	dev = urb->context;
 
 	/* sync/async unlink faults aren't errors */
@@ -367,6 +371,7 @@ static ssize_t skel_write(struct file *file, const char *user_buffer,
 	char *buf = NULL;
 	size_t writesize = min(count, (size_t)MAX_TRANSFER);
 
+	printk(KERN_ALERT "USBDEV: %s : caller: %pS\n",__func__, __builtin_return_address(0));
 	dev = file->private_data;
 
 	/* verify that we actually have some data to write */
@@ -497,6 +502,7 @@ static int skel_probe(struct usb_interface *interface,
 	int i;
 	int retval = -ENOMEM;
 
+	printk(KERN_ALERT "USBDEV: %s : caller: %pS\n",__func__, __builtin_return_address(0));
 	/* allocate memory for our device state and initialize it */
 	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
 	if (!dev)
@@ -574,6 +580,7 @@ static void skel_disconnect(struct usb_interface *interface)
 	struct usb_skel *dev;
 	int minor = interface->minor;
 
+	printk(KERN_ALERT "USBDEV: %s : caller: %pS\n",__func__, __builtin_return_address(0));
 	dev = usb_get_intfdata(interface);
 	usb_set_intfdata(interface, NULL);
 
@@ -597,6 +604,7 @@ static void skel_draw_down(struct usb_skel *dev)
 {
 	int time;
 
+	printk(KERN_ALERT "USBDEV: %s : caller: %pS\n",__func__, __builtin_return_address(0));
 	time = usb_wait_anchor_empty_timeout(&dev->submitted, 1000);
 	if (!time)
 		usb_kill_anchored_urbs(&dev->submitted);
@@ -607,6 +615,7 @@ static int skel_suspend(struct usb_interface *intf, pm_message_t message)
 {
 	struct usb_skel *dev = usb_get_intfdata(intf);
 
+	printk(KERN_ALERT "USBDEV: %s : caller: %pS\n",__func__, __builtin_return_address(0));
 	if (!dev)
 		return 0;
 	skel_draw_down(dev);
@@ -615,6 +624,7 @@ static int skel_suspend(struct usb_interface *intf, pm_message_t message)
 
 static int skel_resume(struct usb_interface *intf)
 {
+	printk(KERN_ALERT "USBDEV: %s : caller: %pS\n",__func__, __builtin_return_address(0));
 	return 0;
 }
 
@@ -622,6 +632,7 @@ static int skel_pre_reset(struct usb_interface *intf)
 {
 	struct usb_skel *dev = usb_get_intfdata(intf);
 
+	printk(KERN_ALERT "USBDEV: %s : caller: %pS\n",__func__, __builtin_return_address(0));
 	mutex_lock(&dev->io_mutex);
 	skel_draw_down(dev);
 
@@ -632,6 +643,7 @@ static int skel_post_reset(struct usb_interface *intf)
 {
 	struct usb_skel *dev = usb_get_intfdata(intf);
 
+	printk(KERN_ALERT "USBDEV: %s : caller: %pS\n",__func__, __builtin_return_address(0));
 	/* we are sure no URBs are active - no locking needed */
 	dev->errors = -EPIPE;
 	mutex_unlock(&dev->io_mutex);
