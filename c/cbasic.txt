@@ -1,0 +1,581 @@
+Data type :
+	. Primary (primitive, fundamental) data types : char, int, flot, double, void.
+	. Drived data types : array,function, pointer.
+	. user defined : enum, struct, union.
+
+Note : default data type is signed int.
+Note : size of primitive data type in c depends upon the word length of the microprocessor. 
+	In general we can say size of int is word length of microprocessor.
+Note : Why range of signed char is -128 to 127 not -127 to 128?
+Note : How to remember size of data type in c? ans : <limits.h>
+
+variable is container of data.
+Variable Attributes :
+	. Name [identifier]
+	. Value
+	. Address
+
+Name:
+Note: In c any name is called identifier. 
+This name can be variable name, function name, enum constant name, micro constant name, goto label name, 
+any other data type name like structure, union, enum names or typedef name.
+
+Value : 
+Data which any variable keeps is known as value of variable.
+Note : Name of variable always returns value of the variable.
+
+Lvalue = Rvalue
+LValue must be any variable in c it cannot be a constant, function or any other data type of c.
+
+Note :
+LValue cannot be a integer constant, macro contant, const variable, data type and enum const. 
+
+Address:
+Location in a memory where a variable stores its data or value is known as address of variable. 
+To know address of any variable c has provided a special unary operator & which is known as deference operator or address operator. 
+This operator is only used with variables not with the constant.
+
+Note:
+We cannot write: &&a, because:
+&&a=& (&a) =& (address of variable a) =& (a constant number)
+And we cannot use address operator with constant.
+
+Note : it is not possible to have two variable with same name with same visibility. 
+	But it is possible that two variable with same name but different visibility.
+	In this case variable name can access only that variable which is more local. 
+	In c there is not any way to access global variable if any local variable is present of same name.
+
+Important points about address of variables in c:
+
+1. Address of any variable in c is an unsigned integer. 
+It cannot be a negative number. So in printf statement we should use %u instead of %d, to print the address of any variable.
+%d: It is used to print signed decimal number.
+%u: It is used to print unsigned decimal number.
+Since, if the address of any variable will beyond the range of signed short int it will print a cyclic value.
+
+2. A programmer cannot know at which address a variable will store the data. It is decided by compiler or operating system.
+3. Any two variables in c cannot have same physical address.
+4. Address of any variable in c is not integer type so to assign an address to a integral variable we have to type cast the address.
+
+Address arithmetic in c:
+
+1. We can subtract address of any two variables but cannot add, multiply, divide two addresses.
+2. we can add or subtract a integer number with address.
+3. Other operators which can be used with addresses are:
+(a) Negation operator: !
+(b) Size operator: sizeof
+(c) Type casting operator: (Type)
+(e) Deference operator: *
+(f) Logical operator: &&, ||
+
+Modifiers : which modify the meaning the basic data type in c.
+
+	group		modifier
+1. Size modifier	short, long
+2. Signed modifier	signed, unsigned
+3. Constant modifier	const , not const
+4. Volatile modifier	volatole, non volatile
+5. Storage class	auto, register, static, extern
+
+Note :
+1. Default modifier of storage class is auto when we declared the variable inside any function 
+and default modifier of storage class is static when we declared variable outside of all functions. 
+In other word we can say if variable has declared locally then default storage class is auto and if 
+it has declared globally then default storage class of variable is extern.
+
+2. Default storage class of function is extern.
+
+Rules for using modifier in c:
+1. We cannot use two modifiers of same groups in any particular data type of c.
+2. We can write modifier either before the data type or after the data type.
+3. Order of modifier including data type doesn’t affect the meaning of declaration.
+4. There is one exception in rule 3. POINTER, FUNCTION and INTERRUPT modifier must be written after the data type.
+
+const modifier :
+1. You can assign the value to the constant variables only at the time of declaration.
+2. Uninitialized constant variable is not cause of any compilation error. But you cannot assign any value after the declaration.
+Note : If you have declared the uninitialized variable globally then default initial value will be zero in case of integral data type 
+	and null in case of non-integral data type. 
+	If you have declared the uninitialized const variable locally then default initial value will be garbage.
+3. Constant variables executes faster than not constant variables.
+4. You can modify constant variable with the help of pointers.
+
+https://stackoverflow.com/questions/1143262/what-is-the-difference-between-const-int-const-int-const-and-int-const
+
+const char *ptr :
+	ptr is a pointer to a char, where you can't change the value of the char (at least not through the pointer 
+	(without casting the constness away)).
+char * const ptr :
+	ptr is a constant pointer to a char, where you can change the char, but you can't make the pointer point to a different char.
+const char *const ptr:
+	ptr is a constant pointer to a constant char, i.e. you can change neither where the pointer points nor the value of the pointee.
+
+Now the first const can be on either side of the type so:
+
+const int * == int const *
+const int * const == int const * const
+
+If you want to go really crazy you can do things like this:
+
+int ** - pointer to pointer to int
+int ** const - a const pointer to a pointer to an int
+int * const * - a pointer to a const pointer to an int
+int const ** - a pointer to a pointer to a const int
+int * const * const - a const pointer to a const pointer to an int
+
+volatile :
+1. A volatile variable can be changed by the background routine of preprocessor. 
+This background routine may be interrupt signals by microprocessor, threads, real times clocks etc.
+
+2. In simple word we can say a value volatile variable which has stored in the memory can be by any external sources.
+
+3. Whenever compiler encounter any reference of volatile variable is always load the value of variable from memory 
+so that if any external source has modified the value in the memory complier will get its updated value.
+
+4. Working principle of volatile variable is opposite to the register variable in c. 
+Hence volatile variables take more execution time than non-volatile variables.
+
+Question: What is meaning of following declaration in c?
+const volatile float f;
+register volatile char c;
+
+storage class :
+
+Storage class is modifier or qualifier of data types which decides:
+1. In which area of memory a particular variable will be stored?  
+2. What is scope of variable?
+3. What is visibility of variable? 
+
+Visibility :  means accessibility. Up to witch part or area of a program can be access.
+Scope : Meaning of scope is to check either variable is alive or dead. Alive means data of a variable has not destroyed from memory.
+	Up to which part or area of the program a variable is alive, that area or part is known as scope of a variable.
+
+scope types:
+1. Block scope.
+2. Function scope.
+3. File scope.
+3. Program scope.
+
+storage class Types:
+
+storage class		declared	scope 		visibility
+1. auto
+			Globel		
+			local		block		block
+2. register		
+			globel		
+			local		block		block
+3. static
+			globel		program		file
+			local		program		block
+4. extern
+			globel		program		program
+			local		program		block
+
+auto :
+Automatic variables or auto variables are default storage class of local variable. An auto variable cannot be declared globally. (Why?)
+Properties :
+1. Default initial value of auto variable is garbage.
+2. Visibility of auto variable is within the block where it has declared.
+3. Scope of auto variable is within the block where it has declared.
+4. auto variable initialize each time.
+5. An auto variable gets memory at run time.
+
+register :
+All register variable in c stores in CPU not in the memory.
+
+properties :
+1. register int a; We are only requesting not forcing to compiler to store variable a in CPU.
+2. A register variable execute faster than other variables because it is stored in CPU 
+	so during the execution compiler has no extra burden to bring the variable from memory to CPU.
+3. Since a CPU have limited number of register so it is programmer responsibility which variable should declared 
+	as register variable i.e. variable which are using many times should declared as a register variable.
+4. We cannot dereference register variable since it has not any memory address.
+5. Default initial value of register variable is garbage.
+6. Scope and visibility of register variable is block.
+
+static :
+properties :
+1. It is not default storage class of global variables.
+2. Default initial value of static integral type variables are zero otherwise null.
+3. A same static variable can be declared many times but we can initialize at only one time.
+4. We cannot write any assignment statement globally.
+Note: Assigning any value to the variable at the time of declaration is known as initialization 
+	while assigning any value to variable not at the time of declaration is known assignment.
+5. A static variable initializes only one time in whole program.
+6. If we declared static variable locally then its visibility will within a block where it has declared.
+7. If declared a static variable or function globally then its visibility will only the file 
+	in which it has declared not in the other files.
+
+extern :
+properties:
+1. It is default storage class of all global variables as well all functions.
+2. When we use extern modifier with any variables it is only declaration i.e. memory is not allocated for these variable.
+3. If you will not use extern keyword with global variables then compiler will automatically 
+	initialize with default value to extern variable.
+4. Default initial value of extern integral type variable is zero otherwise null.
+5. We cannot initialize extern variable locally i.e. within any block either at the time of declaration or separately. 
+	We can only initialize extern variable globally.
+6. If we declare any variable as extern variable then it searches that variable either it has been initialized or not. 
+	If it has been initialized which may be either extern or static* then it is ok otherwise compiler will show an error.
+7. A particular extern variable can be declared many times but we can initialize at only one time.
+8. We cannot write any assignment statement globally.
+9. If declared an extern variables or function globally then its visibility will whole the program 
+	which may contain one file or many files.
+
+Loop :
+Looping is the process of repeating of same code until a specific condition doesn’t satisfy.
+
+types :
+
+1. while
+2. do while
+3. for
+
+for (Expression 1; Expression 2; Expression 3) {
+	Loop body
+}
+
+Expression 1:
+It is called initialization expression. Task of this expression is to initialize the looping variables.
+
+Properties of expression 1:
+1. Expression1 can initialize the more than one variable.
+2. Expression1 is optional.
+3. we cannot declare the variable at the expression1.
+
+Expression 2: 
+It is called as conditional expression. Task of expression is to check the condition and if it is false then it terminates the loop.
+
+Properties of expression2:
+1.  Expression2 can have more than one checking condition and if any condition is false loop will terminate.
+2. it is also optional.
+3. It can perform task of expression1 as well as expression3. That is it can initialize the variables as well as increment the variables.
+4. If expression2 is zero means condition is false and any non zero number means condition is true.
+
+Expression 3:
+It is called as instrumentation expression. Task of this expression is to increment the variable. 
+
+Properties:
+1. We can increment more than one variable at the same time in the expression3.
+2. it is also optional.
+
+Loop body:
+Loop body contains the part of code which we have to execute multiple numbers of times.
+
+Properties of loop body:
+1. If loop body contain only one statement then brace is optional.
+2. Loop without body is possible.
+3. Braces of loop body behave as block.
+
+While loop:
+while (Expression) {
+Loop body
+}
+
+Properties of while loop:
+1. Task of the expression is to check the condition. Loop will execute until condition is true otherwise loop will terminate.  
+2. If any expression returns zero then condition will false and if it returns any non- zero number then condition will true.
+3. In while loop condition expression is compulsory.
+4. While loop without any body is possible.
+5. In while loop there can be more than one conditional expression.
+6. If loop body contain only one statement the brace is optional.
+
+do while :
+It is also called as post tested loop. It is used when it is necessary to execute the loop at least one time. Syntax:
+
+do {
+	Loop body
+} while (Expression);
+
+break keyword in c:
+It is keyword of c programming. Task of this keyword is to bring the control from out of the loop in the case of looping.
+Another task of break keyword is to switch the control from one case to another case in case of switch case control statement.
+
+continue:
+It is keyword of c and task of this keyword is to transfer the control of program at the beginning of loop.
+
+Array :
+An array is derived data type in c programming language which can store similar type of data in continuous memory location. 
+Data may be primitive type (int, char, float, double…), address of union, structure, pointer, function or another array.
+
+Array is useful when:
+1. We have to store large number of data of similar type. If we have large number of similar kind of variable 
+	then it is very difficult to remember name of all variables and write the program.
+2. We want to store large number of data in continuous memory location. Array always stores data in continuous memory location.
+
+Advantage of using array:
+1. An array provides singe name .So it easy to remember the name of all element of an array.
+2. Array name gives base address of an array .So with the help increment operator we can visit one by one all the element of an array.
+3. Array has many application data structure.
+
+Array of pointers in c:
+Array whose content is address of another variable is known as array pointers.
+
+pointer :
+
+opertor		precedence		associative
+(), []		1			L -> R
+*, identifier	2			R -> L
+data type	3			
+
+(): This operator behaves as bracket operator or function operator.
+[]: This operator behaves as array subscription operator.
+*: This operator behaves as pointer operator not as multiplication operator.
+
+Identifier: It is not an operator but it is name of pointer variable. You will always find the first priority 
+will be assigned to the name of pointer.
+
+Data type: It is also not an operator. Data types also includes modifier (like signed int, long double etc.)
+
+How to read complex pointer :
+
+void (*ptr)( int (*)[2], int (*)[3]);
+ptr is pointer to such function which first parameter is pointer to one dimensional array of size two 
+which content int type data and second parameter is pointer to such function which parameter is void 
+and return type is int data type and return type is void.
+
+int ( * ( * ptr ) [ 5 ] ) ( );
+ptr is pointer to such array of size five which content are pointer to such function 
+which parameter is void and return type is int type data.
+
+double*(*(*ptr)(int))(double **,char c);
+ptr is pointer to function which parameter is int type data and return type is pointer to function 
+which first parameter is pointer to pointer of double data type and second parameter is char type data type 
+and return type is pointer to double data type.
+
+Rule 1: Arithmetic operation with pointer :
+Address + Number= Address
+Address - Number= Address
+
+Address++ = Address
+Address-- = Address
+
+++Address = Address
+--Address = Address
+
+New address = old address + number sizeof(data type) which ponter is pointing.
+New address = old address - number * Size of data type to which pointer is pointing
+
+Rule 2: Difference arithmetic with pointers
+If two pointers are of same type then:
+adr2 - addr1 = ( simple subtraction of two address) / size of data type which pointer points.
+
+Rule 3: Illegal arithmetic with pointers:
+Address + Address=Illegal
+Address * Address=Illegal
+Address / Address=Illegal
+Address % Address=Illegal
+
+Rule 4: Bit wise arithmetic with pointers
+We can perform bit wise operation between two pointers like
+
+Address & Address=Illegal
+Address | Address=Illegal
+Address ^ Address=Illegal
+~Address=Illegal
+
+Rule 5: We can find size of a pointer using sizeof operator.
+
+tricks :
+
+p[i] = *(p+i) : P[0][0][0]=*(p[0][0]+0)=**p[0]=***p
+*(p+i) = p[i]
+*&i = i
+-> = (*).
+
+Note: %s is used to print stream of characters up to null (\0) character.
+
+Generic pointer:
+void pointer in c is known as generic pointer. Literal meaning of generic pointer is a pointer which can point type of data.
+Example:
+void *ptr;
+Here ptr is generic pointer.
+
+1. We cannot dereference generic pointer.
+2. We can find the size of generic pointer using sizeof operator.
+3. Generic pointer can hold any type of pointers like char pointer, struct pointer, array of pointer etc without any typecasting.
+4. Any type of pointer can hold generic pointer without any typecasting.
+5. Generic pointers are used when we want to return such pointer which is applicable to all types of pointers. 
+	For example return type of malloc function is generic pointer because it can dynamically allocate the memory space to stores 
+	integer, float, structure etc. hence we type cast its return type to appropriate pointer type.
+
+NULL pointer:
+Literal meaning of NULL pointer is a pointer which is pointing to nothing. NULL pointer points the base address of segment.
+
+Examples of NULL pointer:
+1. int *ptr=(char *)0;
+2. float *ptr=(float *)0;
+3. char *ptr=(char *)0;
+4. double *ptr=(double *)0;
+5. char *ptr=’\0’;
+6. int *ptr=NULL;
+
+What is meaning of NULL?
+NULL is macro constant which has been defined in the heard file stdio.h, alloc.h, mem.h, stddef.h and stdlib.h as
+#define NULL 0
+
+We cannot copy any thing in the NULL pointer.
+
+Wild pointer:
+A pointer in c which has not been initialized is known as wild pointer.
+
+There is difference between the NULL pointer and wild pointer. Null pointer points the base address of 
+segment while wild pointer doesn’t point any specific memory location.
+
+Dangling pointer:
+
+If any pointer is pointing the memory address of any variable but after some variable has deleted from that memory location 
+while pointer is still pointing such memory location. Such pointer is known as dangling pointer 
+and this problem is known as dangling pointer problem.
+
+Solution of this problem: Make the variable as static variable.
+
+Note: In some compiler you may get warning message returning address of local variable or temporary.
+
+Function :
+
+Properties :
+1. If function definition has written after the function call then it is necessary to declare the function 
+	before the function call because function call statement has no idea about prototype of calling function.
+
+2.If function definition has written before the function call statement then it is not necessary to write function declaration.
+3.If return type of function is signed int data type then it not necessary to write function declaration 
+	even though function definition has written after the function call.
+4.Function’s declaration doesn’t reserve any memory space.
+5.In declaration statement it is not necessary to write variable name in parameter of function.
+6. C doesn't support function overloading. In c it is not possible to declare two function of same name 
+	but different signatures like number of parameters, data type of parameters, order of parameter etc.
+
+Main function : 
+Properties of main function:
+1. Any c program can have only one main function.
+2. main function is called by operating system.
+3. main is not keyword of c. So any variable name can be main.
+4. Programmer can also call the main function.
+5. Default return type of main function is int and default parameter is void.
+
+Prototype of main function in c:
+int main (int arg_counter, char *arg_vector[], char *env_vector[]);
+1. Argument counter: 
+	First parameter of main function is argument counter. It stores an integer number which is equal to number of parameters 
+	passed including file name from the command prompt.
+2. Argument vector: 
+	Second parameter of main function is argument vector. It is array which is array of string. 
+	This string array contains the actual parameters which have passed from the command prompt.
+3. Environment vector :
+	Third parameter of main function is environment variable. It is also array of string which contains 
+	all the environments variables of the system.
+
+
+
+function declarations : Declaration of function is also known as prototype of a function.
+
+<return type > <function name> ( < parameters >, ...)
+
+Function defination :
+
+<return type > <function name > ( < parameters >, ...) {
+	/* body */
+	statement 1;
+	statment 2;
+	...
+	return [ < expression >];
+}
+
+Parameter of function can be:
+1. Primitive data type.
+2. Derived data type.
+3. User defined data type.
+4. Ellipsis i.e. variable number of parameter.
+5. We can use modifier with data type in return type.
+
+Note : parameter cannot be intilized as parameter in function in c.
+
+How to pass parameters in the function in C :
+
+Pass by value: 
+In this approach we pass copy of actual variables in function as a parameter. 
+Hence any modification on parameters inside the function will not reflect in the actual variable.
+
+Pass by reference: 
+In this approach we pass memory address actual variables in function as a parameter. 
+Hence any modification on parameters inside the function will reflect in the actual variable.
+
+Return type of a function: 
+
+1. Default return type of function is signed int data type.
+2. Function can return only one value at a time.
+3. Storage classes allowed with return type are static, extern, typedef i.e. we cannot use auto and register storage class 
+	with the return type of any function.
+4. Default storage class of return type of a function is extern.
+5. In return type we can use modifier like short, long, signed, unsigned, extern, static, const, volatile etc.
+
+Return type of function can be:
+1. Primitive data type: Primitive data types are: char, int, float, double, void.
+2. Derived data types are: array, function, pointer.
+3. User defined data types are: structure, union, enum.
+
+How to calculate size of a function in c? 
+	Size of function = Size of all local variable which has declared in function + Size of those global variables which 
+	has used in function + Size of all its parameter+ Size of returned value if it is an address.
+
+Recursion function :
+Calling of same function from its function body is known as function recursion.It is alternative of loop.
+Any c program which is possible using loop it must be possible using function recursion.
+
+http://www.cquestions.com/2009/06/function-recursion-in-c-programming.html
+How to write function recursion program in easier way:
+Step1: First of all write same program using while loop and function. (Except main function)
+Step 2: In that function make all local variable static.
+Step 3: Replace while keyword by if.
+Step 4: The increment or decrement of variable which is used for condition checking, replace with function call 
+	and pass the parameter of that incremented or decremented variable.
+
+properties :
+1. It is very slow process.
+2. Nature of function recursion is infinite loop or stack over flow.
+3. It follows LIFO data structure.
+4. We can use break keyword in function recursion.
+5. We can not use goto to move the control from one function to another function.
+
+
+preprocessors :
+There are two operators in c preprocessor:
+1. # : This operator is called stringizing operator which convert any argument in the macro function in the string. 
+	So we can say pound sign # is string maker.
+2. ## : This operator is called token pasting operator. When we use a macro function with various argument 
+	then we can merge the argument with the help of ## operator.
+
+#if directive in c
+There are total six conditional compilation directives. There are:
+(a)#if
+(b)#elif
+(c)#else
+(d)#endif
+(e)ifdef
+(f)ifndef
+
+Syntax 1:
+
+#if <Constant_expression>
+    -------------
+    -------------
+#endif
+
+If constant expression will return 0 then condition will ture if it will return any non zero number condition will true.
+
+Syntax 2:
+
+#if <Constant_expression>
+    -----------------
+    -----------------
+#else
+    -----------------
+    -----------------
+#endif
+
+Note: Consonant expression in #if condition should not include any c programming variable since all 
+	preprocessor directives execute just before the actual c code.
+Note: Constant expression in #if directive cannot be string constant. 
+	It can be character constant which returns its ASCII value to directive.
