@@ -223,6 +223,47 @@ properties:
 9. If declared an extern variables or function globally then its visibility will whole the program 
 	which may contain one file or many files.
 
+switch case :
+
+switch(expression) {
+
+	case constant-expression  :
+		statement(s);
+      		break; /* optional */
+	
+   	case constant-expression  :
+   	   	statement(s);
+   	   	break; /* optional */
+  
+   	/* you can have any number of case statements */
+   	default : /* Optional */
+   		statement(s);
+}
+
+properties :
+
+1. If we will not use break keyword in each case the program control will come in each case after the case
+	witch satisfy the switch condition.
+2. We can write case statement in any order including the default case. That default case may be first case, 
+	last case or in between the any case in the switch case statement.
+3. Case expression cannot be constant variable, string const.
+4. Case expression can be enum constant, character constant, macro constant.
+5. Case expression must be integral constant expression. If it is not integer then it is automatically type casted into integer value.
+6. duplicate case is not possible.
+7. switch expression must return an integer value. It cannot be float, double or long double
+8. switch case statement program control always move from the case which satisfy the switch condition 
+	and end with either break keyword, terminating} or any null character which will come first.
+9. it is possible a switch case statement without any case but it is meaning less.
+10. We cannot use continue keyword in switch case. It is part loop.
+11. Nesting of switch case is possible in c.
+12. It is possible to write label of goto statement in the case of switch case statement.
+13. We can not declare any variable in any case of switch case statement.
+14.  switch case will not affect the value of variable a.
+	Also sizeof operator doesn't affect the value of the any variable
+15. The expression used in a switch statement must have an integral or enumerated type, or be of a class type 
+	in which the class has a single conversion function to an integral or enumerated type.
+
+
 Loop :
 Looping is the process of repeating of same code until a specific condition doesn’t satisfy.
 
@@ -295,14 +336,37 @@ Another task of break keyword is to switch the control from one case to another 
 continue:
 It is keyword of c and task of this keyword is to transfer the control of program at the beginning of loop.
 
+goto statement :
+Transfers control to the labeled statement.
+
 Array :
 An array is derived data type in c programming language which can store similar type of data in continuous memory location. 
 Data may be primitive type (int, char, float, double…), address of union, structure, pointer, function or another array.
+
+syntex :
+data type arrayname [ arraysize ] = { elements };
 
 Array is useful when:
 1. We have to store large number of data of similar type. If we have large number of similar kind of variable 
 	then it is very difficult to remember name of all variables and write the program.
 2. We want to store large number of data in continuous memory location. Array always stores data in continuous memory location.
+3. The number of values between braces { } cannot be larger than the number of elements that we declare for the array
+	 between square brackets [ ].
+4. Arrays have 0 as the first index not 1.
+5. If the size of an array is n, to access the last element, (n-1)
+6. Array name is constant pointer and we cannot assign any value in constant data type after declaration.
+eg. 
+char arr[10];
+arr = "world";
+7. Size of any character array cannot be less than the number of characters in any string which it has assigned. 
+	Size of an array can be equal (excluding null character) or greater than but never less than.
+8. Size of any array in c cannot be constantan variable but it can be enum const and macro const.
+9. Member of an array cannot be address of auto variable because array gets memory at load time 
+	while auto variable gets memory at run time.
+10. If we initialize any array at the time of declaration the compiler will treat such array as static variable 
+	and its default value of uninitialized member is zero.
+
+Note: In any expression lower type data is always automatically type casted into the higher data type.
 
 Advantage of using array:
 1. An array provides singe name .So it easy to remember the name of all element of an array.
@@ -311,6 +375,96 @@ Advantage of using array:
 
 Array of pointers in c:
 Array whose content is address of another variable is known as array pointers.
+
+strings :
+Strings are actually one-dimensional array of characters terminated by a null character '\0'. 
+Thus a null-terminated string contains the characters that comprise the string followed by a null.
+
+intilization of strings :
+
+using array :
+
+char c[] = "abcd";
+     OR,
+char c[50] = "abcd";
+     OR,
+char c[] = {'a', 'b', 'c', 'd', '\0'};
+     OR,
+char c[5] = {'a', 'b', 'c', 'd', '\0'};
+
+using pointer :
+
+char *c = "abcd";
+
+
+structure :
+
+struct [structure tag] {
+
+   member definition;
+   member definition;
+   ...
+   member definition;
+} [one or more structure variables];  
+
+Union :
+
+union [union tag] {
+   member definition;
+   member definition;
+   ...
+   member definition;
+} [one or more union variables];
+
+Bit field :
+
+struct < identifier > {
+	type member_variable_name: size_in_bits;
+};
+
+identifier : the name of the bit field that is being declared. 
+	The name is optional: nameless bitfields introduce the specified number of bits of padding
+size_in_bits : an integral constant expression with a value greater or equal to zero. 
+	When greater than zero, this is the number of bits that this bit field will occupy. 
+	The value zero is only allowed for nameless bitfields and has special meaning: 
+	it specifies that the next bit field in the class definition will begin at an allocation unit's boundary.
+
+eg. 
+struct S {
+ // three-bit unsigned field,
+ // allowed values are 0...7
+ unsigned int b : 3;
+};
+
+enum :
+
+enum identifier <optional> { const1, const2, ..., constN };
+
+enumerator = constant-expression ;
+
+identifier, enumerator 	- 	identifiers that are introduced by this declaration
+constant-expression 	- 	integer constant expression whose value is representable as a value of type int
+
+Here, name of the enumeration is identifier.
+And, const1, const2,...., constN are values of type identfier.
+By default, const1 is 0, const2  is 1 and so on. You can change default values of enum elements during declaration (if necessary).
+
+typedef :
+typedef is a keyword used in C language to assign alternative names to existing types. 
+Its mostly used with user defined data types, when names of data types get slightly complicated.
+
+typedef existing_name alias_name;
+
+eg.
+typedef struct member
+{
+  type member1;
+  type member2;
+  type member3;
+} type_name ;
+
+type_name v1, v2.
+
 
 pointer :
 
@@ -378,11 +532,13 @@ Address ^ Address=Illegal
 Rule 5: We can find size of a pointer using sizeof operator.
 
 tricks :
-
+*array = *(array +0) = array[0];
+arr[0] = &arr1;
 p[i] = *(p+i) : P[0][0][0]=*(p[0][0]+0)=**p[0]=***p
 *(p+i) = p[i]
 *&i = i
 -> = (*).
+Rule: * and & always cancel to each other
 
 Note: %s is used to print stream of characters up to null (\0) character.
 
