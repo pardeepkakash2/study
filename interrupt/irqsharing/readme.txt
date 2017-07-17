@@ -1,3 +1,87 @@
+The Process : Another name for a process is a task ie: struct task_struct (struct thread_info).	
+
+processes include a set of resources:
+
+	Open files
+	Pending signals
+	Internal kernel data
+	Processor state
+	Memory address space with one or more memory mappings
+	Thread(s) of execution
+	Data section containing global variables
+
+Threads of execution :
+Threads of execution, often shortened to threads, are the objects of activity within the process.
+Each thread includes:
+	Program counter
+	Process stack
+	Set of processor registers
+
+The kernel schedules individual threads, not processes. Linux does not differentiate between threads and processes. 
+To Linux, a thread is just a special kind of process.
+
+Virtualized processor and virtual memory :
+
+virtual processor : gives the process the illusion that it alone monopolizes the system, 
+	despite possibly sharing the processor among hundreds of other processes. 
+Virtual memory : lets the process allocate and manage memory as if it alone owned all the memory in the system
+
+Note : Threads share the virtual memory abstraction, whereas each receives its own virtualized processor.
+
+Life of a process :
+A process is an active program and related resources:
+    Two or more processes can exist that are executing the same program.
+    Two or more processes can exist that share various resources, such as open files or an address space.
+
+fork, exec, exit and wait :
+
+In Linux, the fork() system call creates a new process by duplicating an existing one.
+    The process that calls fork() is the parent, whereas the new process is the child.
+    The parent resumes execution and the child starts execution at the same place: where the call to fork() returns.
+    The fork() system call returns from the kernel twice: once in the parent process and again in the newborn child.
+
+The exec() family of function calls creates a new address space and loads a new program into the newborn child immediately after a fork. 
+In contemporary Linux kernels, fork() is actually implemented via the clone() system call, which is discussed in a following section.
+
+The exit() system call terminates the process and frees all its resources. A parent process can inquire about the status of a terminated 
+child via the wait4() system call. A process can wait for the termination of a specific process. 
+When a process exits, it is placed into a special zombie state that represents terminated processes until the parent 
+calls wait() or waitpid(). 
+
+Kernel Threads :
+	Kernel threads are standard processes that exist solely in kernel-space. 
+	They are useful for the kernel to perform some operations in the background.
+
+Difference from normal threads:
+    Kernel threads do not have an address space. Their mm pointer, which points at their address space, is NULL.
+    Kernel threads operate only in kernel-space and do not context switch into user-space.
+
+Similarity with normal threads:
+    Kernel threads are schedulable and preemptable.
+
+	Kernel threads are created on system boot by other kernel threads.
+	A kernel thread can be created only by another kernel thread. The kernel handles this automatically by forking 
+		all new kernel threads off of the kthreadd kernel process.
+
+create kernel thread :
+	struct task_struct *kthread_create(int (*threadfn)(void *data),
+                                   void *data,
+                                   const char namefmt[],
+                                   ...)
+
+    The new process will run the threadfn function, which is passed the data argument.
+    The process will be named namefmt, which takes printf-style formatting arguments in the variable argument list.
+    The process is created in an unrunnable state; it will not start running until explicitly woken up via wake_up_process().
+
+A process can be created and made runnable with a single function, kthread_run():
+
+struct task_struct *kthread_run(int (*threadfn)(void *data),
+                                void *data,
+                                const char namefmt[],
+                                ...)
+stop the kernel thread :
+	int kthread_stop(struct task_struct *k)
+
 http://learnlinuxconcepts.blogspot.in/2014/01/bottom-halves.html
 https://notes.shichao.io/lkd/ch8/
 http://wiki.dreamrunner.org/public_html/BooksReview/Linux%20DeviceDrivers/LinuxDeviceDriversNotes.html
