@@ -1,0 +1,5 @@
+Device driver :
+https://jlmedina123.wordpress.com/category/linux-kernel-and-linux-drivers/
+http://wiki.dreamrunner.org/public_html/BooksReview/Linux%20DeviceDrivers/LinuxDeviceDriversNotes.html
+https://notes.shichao.io/lkd/ch8/
+

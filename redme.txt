@@ -1,3 +1,4 @@
+
 sudo fdisk  -u -c /dev/sdb
 mount -t type dev dir
 sg_start --eject /dev/sr0
@@ -182,9 +183,12 @@ kerneld  : Kerneld daemon program
 ksyms  : Display symbols that are exported by the kernel for use by new LKMs.
 lsmod  : List currently loaded LKMs.
 modinfo  : Display contents of .modinfo section in an LKM object file.
-modprobe  : Insert or remove an LKM or set of LKMs intelligently. For example, if you must load A before loading B, Modprobe will automatically load A when you tell it to load B.
+modprobe  : Insert or remove an LKM or set of LKMs intelligently. For example, if you must load A before loading B, 
+	Modprobe will automatically load A when you tell it to load B.
 mknod /dev/device_name c major minor : Make a special character file
+sudo mknod -m og+rw /dev/XXX c MAJNUM 0
 make kernelversion 
+sudo insmod xxx.ko   or sudo modprobe xxx.ko
 
 gen3 inc modules testing:
 modprobe -r boardcfg
