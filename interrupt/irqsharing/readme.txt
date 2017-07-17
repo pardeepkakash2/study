@@ -40,9 +40,13 @@ softirq :
 3. softirq is guaranteed to run on the CPU it was scheduled on in SMP systems.
 4. It Runs in interrupt context, so Interrupt context cannot perform certain actions that can result in the kernel putting 
 	the current context to sleep, such as downing a semaphore, copying to or from user-space memory or non-atomically allocating memory
-5. it can’t preempted and can’t scheduled
+5. it can’t preempted and can’t scheduled ie: A softirq never preempts another softirq.
+	 The only event that can preempt a softirq is an interrupt handler.
 6. Atomic execution
 7. it can run simultaneously on one or more processor, even two of the same type of softirq can run concurrently
+
+Note : Currently, only two subsystems directly use softirqs: Networking devices and Block devices
+Additionally, kernel timers and tasklets are built on top of softirqs.
 
 Note : Softirqs are most often raised from within interrupt handlers. 
 	First the interrupt handler(top half) performs the basic hardware-related work, raises the softirq, and then exits. 
@@ -59,6 +63,34 @@ Interrupt
 
        | do_softirq() (Execution of softirq (bottom half) with )
 
+Softirqs are represented by the softirq_action.
+
+struct softirq_action
+{
+    void    (*action)(struct softirq_action *);
+};
+
+static struct softirq_action softirq_vec[NR_SOFTIRQS];
+
+The Softirq Handler :
+void softirq_handler(struct softirq_action *);
+
+The following table contains a list of the existing softirq types.
+
+Tasklet 	Priority 	Softirq Description
+HI_SOFTIRQ 	0 		High-priority tasklets
+TIMER_SOFTIRQ 	1 		Timers
+NET_TX_SOFTIRQ 	2 		Send network packets
+NET_RX_SOFTIRQ 	3 		Receive network packets
+BLOCK_SOFTIRQ 	4 		Block devices
+TASKLET_SOFTIRQ 5 		Normal priority tasklets
+SCHED_SOFTIRQ 	6 		Scheduler
+HRTIMER_SOFTIRQ 7 		High-resolution timers
+RCU_SOFTIRQ 	8 		RCU locking
+
+Raising Your Softirq :
+	raise_softirq(NET_TX_SOFTIRQ);
+
 Tasklet :
 	Tasklets are build on top of softirq. The central idea of tasklet is to provide rich bottom half mechanisum. 
 	Only below points diffres from softirq.
@@ -74,14 +106,57 @@ Tasklet :
 7. Tasklet is strictly serialized wrt itself, but not wrt another tasklets.
 8. Tasklet runs on same CPU from where is raised
 
+Declaration : 
+Both these macros statically create a struct tasklet_struct with the given name :
+DECLARE_TASKLET(name, func, data)
+DECLARE_TASKLET_DISABLED(name, func, data);
+
+Writing Your Tasklet Handler :
+	void tasklet_handler(unsigned long data);
+
+Scheduling Your Tasklet :
+	tasklet_schedule(&my_tasklet); /* mark my_tasklet as pending */
+
+enable and disable tasklet :
+	tasklet_enable(), tasklet_diaable(),tasklet_disable_nosync()
+
+ksoftirqd :
+	There is one thread per processor, each named ksoftirqd/n where n is the processor number.
+
+
 
 Workqueue :
 Workqueues are also like tasklets. They are useful to schedule a task that for future. There is some identical difference between  two,
 Runs in kenrel process context. Because work queues run in process context (kernel threads), they are capable of sleeping
 
-	Non atomic execution
-	Workqueue runs on same CPU from where is raised
-	Higher latency compared to tasklet
+1. Run in process contact ie. Non atomic execution
+2. Workqueue runs on same CPU from where is raised
+3. Higher latency compared to tasklet
+4. Because work queues run in process context (kernel threads), they are capable of sleeping
+5. alternative to work queues is kernel threads
+
+Creating Work :
+	staticaly : DECLARE_WORK(name, void (*func)(void *), void *data);
+	dynamicaly : INIT_WORK(struct work_struct *work, void (*func)(void *), void *data);
+
+Your Work Queue Handler :
+	void work_handler(void *data)
+
+Scheduling Work :
+	schedule_work(&work), schedule_delayed_work(&work, delay);
+
+Flushing Work : 
+	void flush_scheduled_work(void);
+	int cancel_delayed_work(struct work_struct *work);
+
+creating New Work Queues :
+	struct workqueue_struct *create_workqueue(const char *name);
+	eg. struct workqueue_struct *keventd_wq;
+	keventd_wq = create_workqueue("events");
+
+flush workqueue :
+	flush_workqueue(struct workqueue_struct *wq)
+
 
 Tasklets Vs SoftIrqs and Why softIRQ if tasklet is there ??
 
@@ -280,3 +355,106 @@ Disable interrupt
 Exit
 ----
 Call free_irq()
+
+Synchronization :
+
+The kernel has causes of concurrency:
+
+Interrupts:
+	 An interrupt can occur asynchronously at almost any time, interrupting the currently executing code.
+Softirqs and tasklets:
+	 The kernel can raise or schedule a softirq or tasklet at almost any time, interrupting the currently executing code.
+Kernel preemption:
+	 Because the kernel is preemptive, one task in the kernel can preempt another.
+Sleeping and synchronization with user-space:
+	 A task in the kernel can sleep and thus invoke the scheduler, resulting in the running of a new process.
+Symmetrical multiprocessing:
+	 Two or more processors can execute kernel code at exactly the same time.
+
+Kernel developers need to understand and prepare for these causes of concurrency:
+
+	1. It is a major bug if an interrupt occurs in the middle of code that is manipulating a resource 
+		and the interrupt handler can access the same resource.
+	2. Similarly, it is a bug if kernel code is preemptive while it is accessing a shared resource.
+	3. Likewise, it is a bug if code in the kernel sleeps while in the middle of a critical section.
+	4. Finally, two processors should never simultaneously access the same piece of data.
+
+
+knowing What to Protect:
+	1.Obviously, any data that is local to one particular thread of execution does not need protection, 
+		because only that thread can access the data. For example, local automatic variables 
+		(and dynamically allocated data structures whose address is stored only on the stack) do not need any sort of locking 
+		because they exist solely on the stack of the executing thread.
+	2. Likewise, data that is accessed by only a specific task does not require locking 
+		(because a process can execute on only one processor at a time)
+	
+Ask yourself these questions whenever you write kernel code:
+
+1. Is the data global? Can a thread of execution other than the current one access it?
+2. Is the data shared between process context and interrupt context? Is it shared between two different interrupt handlers?
+3. If a process is preempted while accessing this data, can the newly scheduled process access the same data?
+4. Can the current process sleep (block) on anything? If it does, in what state does that leave any shared data?
+5. What prevents the data from being freed out from under me?
+6. What happens if this function is called again on another processor?
+7. Given the proceeding points, how am I going to ensure that my code is safe from concurrency?
+
+Note : all global and shared data in the kernel requires some form of the synchronization methods
+
+Deadlocks:
+
+A deadlock is a condition involving one or more threads of execution and one or more resources, 
+such that each thread waits for one of the resources, but all the resources are already held. 
+The threads all wait for each other, but they never make any progress toward releasing the resources that they already hold. 
+Therefore, none of the threads can continue, which results in a deadlock.
+
+Note : The simplest example of a deadlock is the self-deadlock.
+	solution : recursive lock.
+
+Starvation :
+
+	
+
+Atomin Bitwise 
+void set_bit(int nr, void *addr) 		Atomically set the nr-th bit starting from addr.
+void clear_bit(int nr, void *addr) 		Atomically clear the nr-th bit starting from addr.
+void change_bit(int nr, void *addr) 		Atomically flip the value of the nr-th bit starting from addr.
+int test_and_set_bit(int nr, void *addr) 	Atomically set the nr-th bit starting from addr and return the previous value.
+int test_and_clear_bit(int nr, void *addr) 	Atomically clear the nr-th bit starting from addr and return the previous value.
+int test_and_change_bit(int nr, void *addr) 	Atomically flip the nr-th bit starting from addr and return the previous value.
+int test_bit(int nr, void *addr) 		Atomically return the value of the nr-th bit starting from addr
+
+int find_first_bit(unsigned long *addr, unsigned int size)
+int find_first_zero_bit(unsigned long *addr, unsigned int size)
+
+spinlock :
+
+Mutex:
+
+Kernel Data Structures :
+	linklist:
+	queaue :i
+
+linklist: Singly and Doubly Linked Lists and circuler linklist.
+
+single :	
+/* an element in a linked list */
+struct list_element {
+    void *data; /* the payload */
+    struct list_element *next; /* pointer to the next element */
+};
+
+doubley :
+/* an element in a linked list */
+struct list_element {
+    void *data; /* the payload */
+    struct list_element *next; /* pointer to the next element */
+    struct list_element *prev; /* pointer to the previous element */
+};
+
+Using the macro container_of(), we can easily find the parent structure containing any given member variable. 
+In C, the offset of a given variable into a structure is fixed by the ABI at compile time.
+#define container_of(ptr, type, member) ({ \
+        const typeof( ((type *)0)->member ) *__mptr = (ptr); \
+        (type *)( (char *)__mptr - offsetof(type,member) );})
+
+
