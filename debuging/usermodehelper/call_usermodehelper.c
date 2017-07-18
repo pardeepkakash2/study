@@ -112,9 +112,10 @@ static void dump_debug_info(char* cFuncName )
 		if (mm->exe_file) {
 			pathname = kmalloc(PATH_MAX, GFP_ATOMIC);
 			if (pathname) {
+				/*Now you have the path name of exe in p*/
 				p = d_path(&mm->exe_file->f_path, pathname, PATH_MAX);
 				printk(KERN_EMERG "%s : - Process command: '%s', Process name :'%s', (pid: %d), \
-					State: '%ld' \n", (cFuncName ? cFuncName : "---unknown---"), p, current->comm, 						current->pid, current->state) ;
+					State: '%ld' \n", (cFuncName ? cFuncName : "---unknown---"), p, current->comm, current->pid, current->state) ;
 			}
 		}
 		up_read(&mm->mmap_sem);
