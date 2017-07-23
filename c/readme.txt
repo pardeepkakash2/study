@@ -1,4 +1,266 @@
- C PROGRAMMING INTERVIEW QUESTIONS AND ANSWER
+The C Languagei :
+	C Program Compilation
+	Execution Process
+	Tokens of C Program
+	C Instructions
+	Constants, Variables
+	Identifiers and Keywords
+	Primitive Data Types
+	Structures – The Definition
+	Structures – Declaration & Type
+	Accessing Elements of Structure
+	Range of Signed/Unsigned Data-types
+	Efficient way of Printing Pointer
+	Compiler Memory Allocation for Data-types
+	Compiler Memory Allocation for Structures
+	Data-type Alignments
+	Compiler Memory Allocation for Unions
+	Union – Data Corruption
+	Practical Usage of Unions
+	Practical Usage of Bitfields
+	Bitfields Overflow
+	Printing every byte of an Integer
+	Enumeration
+	Typedef Statements
+	Practical example of Typedef Usage
+	typedef’ing a Function Pointer
+	Bit-Fields in Structure
+	Practical examples of Bitfield Usage
+	Structure Padding & Pitfalls
+	Programming Model & Memory Sizes
+	Why Sizeof Int and Long is 4 or 8?
+	Use of long long in 32-bit Architecture
+	Practical Example of long long
+	IA-32, IA-64, ILP-32, LP64, x86-64
+	Array – Representation
+	Array – Memory Allocation
+	Array – Declaration & Initialization
+	Two Dimensional Arrays
+
+	Pointers
+	Accessing a Variable Through Pointer
+	Pointer – Memory Allocation
+	Pointer – Declaration & Initialization
+	Pointer – Dereferencing
+	Pointers & Arrays
+	Character Arrays using Pointers
+	Array of Character Pointers
+	Memory Diagram – Array of Char Pointers
+	Arrays as Pointers – a[i] == i[a]?
+	Constant Pointers
+	Pointer Arithmetic
+	String Handling Functions
+	String Conversion Functions
+	Efficient usage of sscanf()/sprintf()
+
+	Computing Basic
+	Binary & Octal Systems
+	Decimal & Hexadecimal Systems
+	Signed Representations in Memory
+	Binary Shifts – Right & Left
+	Sign Bits and Bit-Shift Operations
+	Right Shift – Logical Vs Arithmetic Shift
+	Bit-Shift Overflow
+	ASCII Representations
+	Endian-ness – Little Vs Big
+	Endian-ness – Portability Issues
+	Operators
+	Bitwise Operations
+	Logical Operators – Short Circuit
+	Bitwise Vs Logical Operations
+	sizeof() operator
+	Pitfalls/Issues with sizeof() usage
+	Pointer Increment & Scaling
+	Operator Precedence
+	Operator Associativity
+	True meaning of Associativity
+	Examples of Precedence & Associativity
+	Ternary Operator Associativity Rule
+	Data-type Conversion Rules
+	Float to Int to Float Conversions
+	Variadic functions & default promotion rules
+	Printf Idiosynchracies
+	Pointer Format Specifiers
+	Signed Vs Unsigned – Pitfalls
+	Evaluation of i = ++i + ++i
+	Evaluation of i = ++i + ++i + ++i
+	Concept of Sequence Points
+	Example of Sequence Points
+	
+	Storage Classes
+	Storage Class Specifiers
+	Scope of a Variable
+	Register, Auto, Static, Extern
+	Why Register Class and Practical Examples
+	Automatic Variables and Stack
+	Static Variables and Functions
+	True meaning of Extern
+	How to Use extern across Multiple Files with Examples
+	Best Practices for Extern Usage
+	Local/Block/Global Scope
+	Nesting of Scope
+	Lifetime of a Variable
+	Linkage of a Variable
+	What is Const?
+	Practical Examples of Const Qualifier
+	Usage of Constant in library functions (libc)
+	What is Volatile?
+	Practical Examples of Volatile Qualifier
+	Const Volatile Together?
+	Register Vs Volatile Performance?
+	Practical Examples of Const Volatile
+	Pointer Aliasing
+	What is Restrict Qualifier?
+	Restrict Keyword and Compiler Optimization
+	Examples of Restrict Qualifier
+	
+
+	Memory
+	Dynamic Memory Allocations
+	malloc, calloc, realloc, free
+	malloc Vs calloc
+	Heap Memory
+	Stack Memory – Pitfalls
+	Dangling Pointers
+	DMA – Errors
+	Best Practices for malloc() & free()
+	DMA – Unspecified Behaviour
+
+	Functions & Pointers
+	Invoking Functions
+	Passing Arguments to Functions
+	Call by Value & Reference
+	Is C call by Value?
+	Is C call by Reference?
+	Array as Function Argument
+	Rules for Array Argument Passing
+	Multi-dimensional Array Argument Passing
+	Structure as Function Argument
+	Static Vs Dynamic Runtime Environment
+	Function Call and Runtime Stack
+	Rules for Evaluation of Function Arguments
+	Memory Organization
+	Code Segment
+	Data Segment
+	Heap Segment
+	Stack Segment
+	free space
+	register space
+	Stack Frames
+	Calling Sequence
+	View of Runtime Stack with Example
+	Access to Local Variable in Stack
+	Local Temporaries
+	Function Pointers
+	Declaration and Usage of Function Pointers
+	Function Pointers as Function Parameters
+	Practical Example of Function Pointers
+	Pointer to an Integer Array
+	C Pointers Complexity Chart
+	int **p
+	int (*p)()
+	int (*p)[] int *p()
+	int *(*p[])()
+	int *(**p)[]
+
+	Preprocessor
+	Preprocessor – #include statements
+	Multiple Inclusion of a Header File?
+	Preprocessor – #define statements
+	Preprocessor – Conditional Compilation
+	Preprocessor – Nested Macros
+	Preprocessor – Multiline Macros
+	Preprocessor – Stringizer
+	Preprocessor – Token Concatenation
+	Preprocessor – Useful Directives
+	Conditional Directives for Debugging
+	Where Macros are Heavily Used
+	Practical Examples of Macros
+	Macros Pitfalls
+	Macros Vs Enums
+	Inline Functions
+	Macros Vs Inline
+	Inline Recursive Functions
+
+	Command Line Argument
+	Environment Variables in C Programs
+	Recursion Example
+	Recursion Vs Iteration
+	Code/Space/Time Complexity
+
+	Standard I/O Library
+	Files & Streams
+	Streams Buffers
+	IO Buffers – Line Vs Full Vs No-Buffers
+	Setting & Flushing Buffers
+	File Access
+	File Access Modes
+	Sequential Vs Random Access
+	Concept of File Offsets
+	File Operation Errors
+	End-of-File Condition?
+	Return Values and Error Values
+	Character Based File I/O
+	Line Based File I/O
+	Formatted File I/O
+	Block File I/O
+	Dangerous – gets() Vs fgets()
+	File Random Access Methods 
+ 
+debugging:
+
+
+    C program to Process
+    Compilation Steps
+    Preprocessor
+    Compiler
+    Assembler
+    Linker / Loader
+    GCC options
+    Fixing Warnings in the Code
+    Include Files
+    Libraries
+    Static Vs Dynamic Library
+    Static Library Generation
+    Dynamic Library Generation
+    Linking with Libraries
+    File Formats
+    ELF Format
+    Symbol Tables
+    Anatomy of a Process
+    Process Map
+    Memory Layout
+    Code Segment
+    Data Segment
+    Stack Segment
+    Heap Segment
+    Object Dump
+    Stack Frames
+    Mapping Assembly to C
+    Managing Heap
+    Pmap / Pstack
+    Strace
+    Debugging Tools
+    GDB Debugger
+    Debugging Running Process
+    Core dump analysis
+    Symbols & Optimizations
+    Default Optimization Levels
+    Common Failures
+    Failure Notifications
+    Common Faults
+    Segmentation Violation
+    Stack Overflow
+    Heap Overflow
+    Arithmetic Overflow
+    Illegal code execution
+    Stack Issue
+    Endian-ness issue
+    C library assertion
+    Data Type mismatch
+
+
+C PROGRAMMING INTERVIEW QUESTIONS AND ANSWER
 
 C programming interview questions and answer for freshers
 

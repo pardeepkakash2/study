@@ -1,5 +1,74 @@
 https://www.softlab.ntua.gr/facilities/documentation/unix/unix-socket-faq/unix-socket-faq.html
 
+Networking :
+
+	TCP/IP Protocol Stacks
+	Intro to Network Programming
+	Sockets : Port Numbers + IP address
+	Common Port Numbers
+	Common Protocol Numbers
+	Internet Domain Socket
+	Socket Functions
+	Socket System Calls
+	Byte Ordering Requirements
+	Concurrent Server Design
+	Iterative Server Design
+	Socket Debugging Techniques
+	Advanced Socket Options
+	Changing Socket Buffer Sizes
+	Reusing Socket Addresses
+	Keeping the Connections Alive
+	TCP Socket Options
+	Setting Max Segment Size
+	Setting TCP No-Delay
+	Advanced I/O Functions
+	Socket Timeouts
+	Vectored Read/Writes
+	Netstat – Network Stat Utility
+	Tcpdump – Packet Dump Utility 
+
+MultiThread :
+    Introduction to Threads
+    Parallelism
+    Multi-cores
+    Introduction to Thread
+    Threads – Application
+    User Level Threads (ULT)
+    Advantage of ULT
+    Disadvantage of ULT
+    Kernel Level Threads (KLT)
+    Advantage of KLT
+    Disadvantage of KLT
+    Threads Vs Processes
+    Process Memory Layout
+    Child Process Memory
+    Threads Inside Processes
+    Thread Memory Layout
+
+    Thread Programming – I
+    Introduction to Pthreads (POSIX Threads)
+    Thread Creation
+    Thread Termination
+    Thread Id & Attributes
+    Thread Joining & Detaching
+    Thread Priorities
+    Thread Cancellations
+    Thread Cleanup Handling
+    Passing Info to Threads
+
+    Thread Programming – II
+    Thread Synchronizations
+    Mutual Exclusions
+    Condition Variables
+    Thread Safe Operations
+    Thread Signal Handling
+    Thread Signal Masking
+    Issues @ Threads
+    Races & Deadlocks
+    Threads  & Process Resources
+    Threads – File Handling
+    Threads – IPC Handling
+
 Questions regarding both Clients and Servers (TCP/SOCK_STREAM)
 
     2.1 How can I tell when a socket is closed on the other end?
@@ -88,4 +157,16 @@ Multi-Threading
     How would you measure the context switch overhead between threads?
     How would you make a MT-safe hash table, while allowing for maximal concurrency?
 
-
+What is a socket? What is it used for?
+How are IP addresses resolved? What is the difference between an IP4 and IP6 address? How does that affect the socket calls?
+How do you determine what port to connect to? What are some of the common ones? What ports wouldn't you use?
+What is the difference between a TCP socket and a UDP socket? Why would you use one or the other?
+What list of calls are used to establish a TCP and/or UDP socket connection? What information is needed?
+How are the socket calls different if you are establishing a server side socket?
+How do you test whether a socket is ready to be read or written?
+If a socket closes unexpectedly, how would you know and how would you handle it?
+What happens to the connection, thread, process if a socket is not closed out properly?
+How long does a socket connection stay open when idle? How would you change that behavior?
+How would you set a socket to non-blocking mode? In what situations would you do that?
+How would you handle writing a multi-process and/or multi-threaded socket application? 
+What considerations are there? Is there more than one way to handle it?

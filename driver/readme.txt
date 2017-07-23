@@ -59,6 +59,16 @@ Block:
 	SCSI implementation
 	USB protocol
 	SCSI over usb
+	
+	Storage Technologies
+	Linux Block I/O Layer
+	I/O Schedulers
+	Block Driver Data Structures and Methods
+	Block/Storage Device Example
+	Advanced Topics
+	Debugging
+	Writing a sample Block Device Driver
+
 
 USB:
 	simple driver for LED, SSD, LCD
@@ -69,4 +79,48 @@ USB:
 	USB Input drivers
 	USB audio
 
+	USB Architecture
+	Linux-USB Subsystem
+	Driver Data Structures
+	Enumeration
+	USB Device Example
+	Class Drivers
+	Debugging Aspects
+	Writing a sample USB Device Driver
+
+	i2c:
+	What’s I2C/SMBus?
+	I2C Core
+	Bus Transactions
+	Device Examples
+	I2C-dev
+	Debugging Aspects
+	Writing a sample I2C Device Driver
+
+	Audio :
+	Audio Architecture
+	Linux-Sound Subsystem
+	Device Example
+	Debugging Aspects
+	Writing a sample Audio Device Driver
+
+	video:
+	Display Architecture
+	Linux-Video Subsystem
+	Display Parameters
+	The Frame Buffer API
+	Frame Buffer Drivers
+	Console Drivers
+	Debugging Aspects
+	Writing a sample Video Device Driver
+
 Network:
+
+	Networking Driver Data Structures
+	Communicating with Protocol Layers
+	Buffer Management and Concurrency Control
+	Network Device Example
+	Network Throughput
+	Debugging Aspects
+	Writing a sample Network Device Driver
+
