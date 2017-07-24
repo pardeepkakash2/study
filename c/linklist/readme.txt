@@ -24,3 +24,5 @@ Linklist:
 21 Frequency of a given number in a Linked List
 22 Delete alternate nodes of a Linked List
 23 Rotate linked list by K nodes
+24 array vs linklist ?
+25 merge two sorted linklist ?
