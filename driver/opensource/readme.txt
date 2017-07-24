@@ -1,5 +1,14 @@
 http://opensourceforu.com/2011/06/generic-hardware-access-in-linux/
 
+
+#include <asm/io.h>
+unsigned int ioread8(void *virt_addr);
+unsigned int ioread16(void *virt_addr);
+unsigned int ioread32(void *virt_addr);
+unsigned int iowrite8(u8 value, void *virt_addr);
+unsigned int iowrite16(u16 value, void *virt_addr);
+unsigned int iowrite32(u32 value, void *virt_addr);
+
 sudo apt-get install hardinfo
 sudo apt-get install sysinfo
 lshw
