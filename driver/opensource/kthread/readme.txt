@@ -147,6 +147,15 @@ How to call exported kernel module functions from another module?
 difference between API (Application Programming Interface) and system call?
 what is the size of pid_t, uid_t, and gid_t?
 
+what is a real time priority and how to set it?
+	"Processes scheduled under one of the real-time policies (SCHED_FIFO, SCHED_RR) have a sched_priority value in the range 1 (low) to 99 (high)."
+nice value vs priority?
+how to change the kernel thread priority?
+schedule a kernel thread on a spacific core?
+disable a kernel core?
+set the affinity of kernel processor?
+
+
 What is Monolithic Kernel?
 monolithic kernel operating system as a single large static binary file process running entirely in a single address space. 
 Basic OS services such as process management, memory management, interrupt handling, IO communication, file system, device drivers, networking, etc all run in kernel space. 

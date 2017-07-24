@@ -16,7 +16,11 @@ static int thread_fn(void *unused)
 	// Allow the SIGKILL signal kill -9 <thread_id>, ps -elf | grep thread.
 	allow_signal(SIGKILL);
 
-	/*Note : what will happen if i use while(1) insted of kthread_should_stop() and schedule() vs schedule_timeout vs sleep() */
+	/*Note : what will happen if i use while(1) insted of kthread_should_stop()? schedule() vs schedule_timeout() vs sleep()?
+	  A schedule_timeout() function makes a current task sleep until timeout jiffies have expired. schedule_timeout() will be internally invoke schedule() 
+	  which will cause a current task to be removed from a runqueue, if there is no pending signals for the current process.
+	  wake_up_process: The purpose of this function is to put a task back into a runqueue and set its state to TASK_RUNNING before returning. 
+	*/
 	while (!kthread_should_stop()) {
 		/*set_current_state(TASK_UNINTERRUPTIBLE), schedule_timeout(HZ);*/
 		printk(KERN_INFO "Thread Running\n");
@@ -67,8 +71,8 @@ static int __init init_thread(void)
 	/*in the kernel, each thread has it's own ID, called a PID (although it would possibly make more sense to call this a TID, or thread ID) 
 	  and they also have a TGID (thread group ID) which is the PID of the thread that started the whole process.*/
 	//pid_t tid = current->pid;
-	pid_t tid = thread_st->pid;
-	printk(KERN_INFO "Thread Created successfully : %d\n", (int)tid);
+	//pid_t tid = thread_st->pid;
+	printk("thread PID = %i :PPID = %i :State = %ld\n", thread_st->pid, thread_st->parent->pid, thread_st->state);
 	return 0;
 }
 
