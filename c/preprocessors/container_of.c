@@ -34,5 +34,7 @@ int main()
 	struct test1 *obj1 = &obj->z;
 	struct test2 *obj2 = container_of(obj1, struct test2, z);
 	printf("container_of:%p : obj2->b = %d\n", obj2, obj2->b);
+	printf("ofset of c: %ld\n",offsetof(struct test2, c));
+	printf("ofset of a: %ld\n",offsetof(struct test1, a));
 	return EXIT_SUCCESS;
 }
