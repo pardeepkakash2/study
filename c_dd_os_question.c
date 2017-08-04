@@ -1,104 +1,38 @@
 Operating System Interview Questions :
 
 Kernel Synchronization :
-1. What are the differences between mutex and semaphore?
-2. What is a race condition and How to avoid a race conditon?
-3. What is a critial region?
-4. What are atomic operations?
+What are the differences between mutex and semaphore?
+What is a race condition and How to avoid a race conditon?
+What are atomic operations?
+What is priority inversion and how to solve that problem?
+what is difference between process and thread.
+what is task_struct thread_info?
+difference betwen fork() and vfork()
+what is zombie and orphan process?how parent less process is handles in linux.
+How context switching is handled in linux.
+what is user preemption and kernel preemption
+how system calls are implemented in linux.
 
-RTOS:
-1. What are the differences between general purpose OS and and RTOS?
-2. What are the characteristics of an RTOS?
-3. What is the difference between a hard real time system and a soft real time system?
-4. What is priority inversion and how to solve that problem?
-5. What is priority inheritence?
-
-Process management:
-1. how to manipulate the current process
-2. what are kernel thread.
-3. how threads are implemented in linux kernel.
-4. What are different state of a process in lunix.
-5. what is difference between process and thread.
-6. generally what resources are shared between threads.
-7. what is process descriptor
-8. what is task_struct.
-9. what is therad_info structure for.
-10. what was the need of thread_info structure.
-11. difference betwen fork() and vfork()
-12. what is process context.
-13. what is zombie process.
-14. how parent less process is handles in linux.
-
-Process Scheduling
-1. what is process scheduling
-2. what is cooperative multitasking and pre-emptive multitasking.
-3. what is yielding.
-4. what is limitation of cooperative multitasking.
-5. I/O bound versus Processor bound process.
-6. what is process priority.
-7. What kind of priority is maintained in linux.
-8. what is nice value.
-9. what is virtual run time.
-10. what are the available scheduling classes in linux.
-11. which type os scheduling used in linux.
-12. how next task is picked for scheduling.
-13. what is scheduler entry point in linux.
-14. what is waitqueus.
-15. How context switching is handled in linux.
-16. what is user preemption and kernel preemption
-
-Syscalls:
-1. what is syscalls.
-2. how system calls are implemented in linux.
-3. what happens when process in userspace calls a syscall.
-4. what is the need of verifying parameter in definition of syscall.
-5. what is system calls context.
-6. why it is not recommended to writing new syscall.
  
 Interrupts and interrupt handlers
-1. what is interrupt and Types of interrupts e.g Software interrupts, Hardware interrupts, Edge Triggering and Level triggering ?
-2. what is interrupt handler or ISR.
-3. what is top halves and bottom halves.
-4. How interrupt is registered.
-5. what are different interrupt handler flags.
-6. How interrupt are freed.
-7. what are the considerations needs to taken care while writing interrupt handler.
-8. what are shared handlers.
-9. what is interrupt context.
-10. how to disable and enable interrupts.
-11. what are different bottom halves techniques in linux.
-12. what is tasklets , softirq and workqueus and difference among them.
-13. when to choose which bottom halves.
-14. how to implements softirq , tasklets and workqueus.
-15. how to schedule tasklet.
-16. what is ksoftirqd.
-17. How to disable bottom halves.
-18. How locking between bottom halves handled.
-19. Why we need preemption.
-20. Explain about the interrupt mechanims in linux?
-21. What are the APIs that are used to register an interrupt handler?
-22. How do you register an interrupt handler on a shared IRQ line?
-23. Explain about the flags that are passed to request_irq().
-24. Explain about the internals of Interrupt handling in case of Linux running on ARM.
-25. What are the precautions to be taken while writing an interrupt handler?
-26. What is request_threaded_irq()
-27. If same interrupts occurs in two cpu how are they handled?
-28. How to synchronize data between 'two interrupts' and 'interrupts and process'.
-29. How are nested interrupts handled?
-30. How is task context saved during interrupt.
-31. How to disable and enable interrupts ?
-32. What are the different bottom-half mechanisms in Linux? Softirq, Tasklet and Workqueues and When to choose which bottom halves ? 
-33. Explain about the concurrent work queues.
-34. How to schedule tasklet or bottom half ?
-35. How to disable bottom halves ?
-36. What is ksoftirqd ?
-37. How locking between bottom halves handled ?
-38. diff b/w interrupt, signal,isr and callback ?
-40 What happens if interrupt handler goes to sleep?
-41. What happens if interrupt handler uses semaphores
-41. How to protect variable between two interrupt handlers?
-42. How to protect variable between task and interrupt handler?
-43. What is the difference between interruptible and uninterruptible task states?
+what is interrupt and Types of interrupts e.g Software interrupts, Hardware interrupts, Edge Triggering and Level triggering ?
+what is top halves and bottom halves [tasklets , softirq and workqueus].
+what are the considerations needs to taken care while writing interrupt handler.
+what are shared handlers.
+what is interrupt context.
+how to disable and enable interrupts.
+what is ksoftirqd.
+How do you register an interrupt handler on a shared IRQ line?
+What is request_threaded_irq()
+If same interrupts occurs in two cpu how are they handled?
+How to synchronize data between 'two interrupts' and 'interrupts and process'.
+How are nested interrupts handled?
+Explain about the concurrent work queues.
+diff b/w interrupt, signal,isr and callback ?
+What happens if interrupt handler goes to sleep?
+What happens if interrupt handler uses semaphores
+How to protect variable between two interrupt handlers?
+How to protect variable between task and interrupt handler?
 How to debug GPIO interrupt functions?
 Timer interrrupts vs Dummy loops ?
 How does MSI interrupt work in linux driver?
@@ -108,339 +42,164 @@ Retrieving pid of tasklet
 How do I write to a __user memory from within the top half of an interrupt handler?
 Why can interrupt handler has sleep functionality?
 Are the Interrupt Stack and the Kernel Stack the same stack?
-
 Why interrupt handler cannot use user stack ?
 What is a user thread and a kernel thread?
 Number of kernel threads = cores?
 Maximum number of threads per process in Linux?
-cat /proc/sys/kernel/threads-max
-There is also a limit on the number of processes (an hence threads) that a single user may create, see ulimit/getrlimit
-Linux implements max number of threads per process indirectly!!
-number of threads = total virtual memory / (stack size*1024*1024)
-ulimit -s
+	cat /proc/sys/kernel/threads-max
+	There is also a limit on the number of processes (an hence threads) that a single user may create, see ulimit/getrlimit
+	Linux implements max number of threads per process indirectly!!
+	number of threads = total virtual memory / (stack size*1024*1024)
+	ulimit -s
+Which are the synchronization technoques you use 'between processes', 'between processe and interrupt' and 'between interrupts'; why and how ?
+what is race condition and deadlock and hung task.
+What are the differences between spinlock and mutex?
+what is atomic operations.
+what is preemption disabling and what is the use of this.
+Which synchronization mechanism is safe to use in interrupt context and why?
+Explain about the implementation of spinlock in case of ARM architecture.
+Explain about the implementation of mutex in case of ARM architecture.
+Explain about the notifier chains.
+Explain about RCU locks and when are they used?
+What is the difference between fork( ) and vfork( ) and execv?
+Which is the first task what is spawned in linux kernel?
+What are the processes with PID 0 and PID 1? PID 0 - idle task and PID 1 - init .
+How to extract task_struct of a particular process if the stack pointer is given?
+How does scheduler picks particular task?
+what is tick rate and jiffies and HZ.
+what are the various way of applying delay in linux.
+what is blocking and non blocking call
+what is Real time clock (RTC).
+how busy looping is implemented in linux.
+What is the initial value of jiffies when the system has started? and how to check it ?
+Explain about HR timers and normal timers?
+How to declare that a specific hardware timers is used for kernel periodic timer interrupt used by the scheduler?
+How software timers are implemented?
 
-Kernel Synchronization:
-1. what is synchronization and various synchronization techniques in linux and Why do we need synchronization mechanisms in Linux kernel?
-2. what is critical section
-3. what is race condition and deadlock and hung task.
-4. why we need to take care of synchronization
-5. What are the differences between spinlock and mutex?
-6. what is deadlocks.
-7. what is atomic operations.
-8. what is spin locks.
-9. what is reader-writer spin lock.
-10. what is semaphore.
-11. what is binary semaphore.
-12. what is difference between semaphore and spin lock.
-13. when to choose what among spin lock and semaphore.
-14. what is difference between semaphore and mutex.
-15. what is preemption disabling and what is the use of this.
-16. What is lockdep?
-17. Which synchronization mechanism is safe to use in interrupt context and why?
-18. Explain about the implementation of spinlock in case of ARM architecture.
-19. Explain about the implementation of mutex in case of ARM architecture.
-20. Explain about the notifier chains.
-21. Explain about RCU locks and when are they used?
-22. Explain about RW spinlocks locks and when are they used?
-23. Which are the synchronization technoques you use 'between processes', 'between processe and interrupt' and 'between interrupts'; why and how ?
+how memory is managed in linux.what are different memory zones in linux.
+what us kmalloc and what are action modifier we can pass while using kmalloc.
+What are the differences between malloc,zmalloc, vmalloc and kmalloc? Which is preferred to use in device drivers?
+What is virtual memory and what are the advanatages of using virtual memory?
+What's paging and swapping?
+Is it better to enable swapping in embedded systems? and why?
+What is the page size in Linux kernel in case of 32-bit ARM architecture?
 
-Process Management and Process Scheduling:
-1. What are the different schedulers class present in the linux kernel?
-2. How to create a new process?
-3. What is the difference between fork( ) and vfork( ) and execv?
-4. Which is the first task what is spawned in linux kernel?
-5. What are the processes with PID 0 and PID 1? PID 0 - idle task and PID 1 - init .
-6. How to extract task_struct of a particular process if the stack pointer is given?
-7. How does scheduler picks particular task?
-8. How is timeout managed?
-9. How does load balancing happens?
-
-Timers and Time Management:
-1. what is tick rate and jiffies and HZ.
-2. what are the various way of applying delay in linux.
-3. what is blocking and non blocking call
-4. what is Real time clock (RTC).
-5. how busy looping is implemented in linux.
-6. What is the initial value of jiffies when the system has started? and how to check it ?
-7. Explain about HR timers and normal timers?
-8. On what hardware timers, does the HR timers are based on?
-9. How to declare that a specific hardware timers is used for kernel periodic timer interrupt used by the scheduler?
-10. How software timers are implemented?
-
-Memory management:
-1. how memory is managed in linux.
-2. what are pages.
-3. what are different memory zones in linux.
-4. how to allocated pages.
-5. how to freeing page.
-6. what us kmalloc and what are action modifier we can pass while using kmalloc.
-7. what is zone modifier in linux.
-8. what is vmalloc
-9. What are the differences between malloc,zmalloc, vmalloc and kmalloc? Which is preferred to use in device drivers?
-10. What are the differences between slab allocator and slub allocator?
-11. What is boot memory allocator?
-12. How do you reserve block of memory?
-13. What is virtual memory and what are the advanatages of using virtual memory?
-14. What's paging and swapping?
-15. Is it better to enable swapping in embedded systems? and why?
-16. What is the page size in Linux kernel in case of 32-bit ARM architecture?
-17. What is page frame?
-18. What are the different memory zones and why does different zones exist?
-19. What is high memory and when is it needed?
-20 Why is high memory zone not needed in case of 64-bit machine?
-21. How to allocate a page frame from high memory?
-22. In ARM, an abort exception if generated, if the page table doesn't contain a virtual to physical map for a particular page. How exactly does the MMU know that a virtual to physical map is present in the pagetable or not?
-
-Virtual file system: 
-1. what is virtual file system and what is the need of it in linux.
-2. are are different object types in VFS.
-3. what are the operations possible on inode and superblock objects.
-
-1. What is the need for Virtual Memory ?
-2. What is the difference between the term 'Virtual Memory' and 'Virtual Address Space' ?
-3. Can an user space application view the physical address Or Can an user space application access the physical address space ?
-4. Is it possible for two different application to have a same virtual address but point to different physical memory ?
-5. What are the functionalities performed by _start ?
-6. What is the difference between Code section, Data section, ro Data section & BSS section ?
-7. What is the expansion of BSS and What is the need for BSS ?
-8. What is the size of the Kernel space and that of User space ? Who decides the size of it . Is it dependent/done by Processor or MMU ?
-9. Tell one of the etry point to kernel ?
-10. Explain the system call mechanism such that the flow is from User space to Kernel space & returning back to User space ?
-11. What is the use of SYSENTER ? Does it get executed in Userspace ?
-12. What is the use of SYSEXIT ? Does it get executed in Kernelspace ?
-13. What is the role of __sys_open ?
-14. What is the use of ABI (Application Binary Interface) document ? Who provides that manual ?
-15. How do you see the size of an executable file in Linux ?
-16. What is the probable size of normal vmlinux ? What kind of sizes have you come across in normal linux and embedded linux scenarios ?
-17. What is vmlinux.lds ?
-18. Why do you find all addresses to start after '0xC0000000' if you do 'readelf -a vmlinux' ? Can you access those addresses ?
-19. What is a FDT (File Descriptor Table) ?
-20. Explain the relation between File Descriptor table, Symbol File table, iNode table and harddrive/phy memory ?
-21. What command is used to setup/create the relation between the device and inode ?
-22. What command/API is used to create an inode for a file ?
-23. What is the use of 'file_operations' ? How have you used it ?
-24. What is the use of /proc/PID/maps ?
-25. What is task_struct ?
-26. Explain the relation between file struct,File Descriptor Table(FDT), task_struct, MM_struct, vm_area_struct, Heap, Page Global Directory(PGD), Page table(PT) & user page .
-27. What is the use of ioctl fuction ?
-28. Explain one level page table address translation between VA and PA with an example ?
-29. Explain multi level page table address translation between VA and PA with an example ?
-30. Is it better to have less level of page table address translation or more levels of page table address translation ? What is the impact on performance w.r.t memory size and memory access ?
-31. What is the difference between malloc and vmalloc ?
-32. What is PAE (Physical Address Extension) ?
-33. What is Dual Mapping ? Can a user virtual address and kernel virtual address map to the same physical address ?
-
-
-Process Address Space:
-1. what is process address space.
-2. what is memory descriptor in linux and which structure represents it.
-3. how to allocate and destroy a memory descriptor
-4. does kernel thread has any association with mm_struct.
-5. what is VMA and what are various VMA operations possible in linux kernel.
-6. how to manipulate memory area in linux.
-7. what mmap and do_mmap().
-8. what is page tables.
+What is the difference between the term 'Virtual Memory' and 'Virtual Address Space' ?
+Can an user space application view the physical address Or Can an user space application access the physical address space ?
+Is it possible for two different application to have a same virtual address but point to different physical memory ?
+What is the difference between Code section, Data section, ro Data section & BSS section ?
+What is the use of /proc/PID/maps ?
+Explain the relation between file struct,File Descriptor Table(FDT), task_struct, MM_struct, vm_area_struct, Heap, Page Global Directory(PGD), Page table(PT) & user page .
+What is the use of ioctl fuction ?how to add new ioctl inkernel?
+what mmap and do_mmap().
  
 Linux Device Driver :
-1. What is device driver and what is the need of it.
-2. what are different kind of devices.
-3. what is module in linux.
-4. how mudules are loaded in linux.
-5. difference between insmod and modprobe.
-6. how parameters are shared between driver modules.
-7. what are IOCTLS.
-8. what is syscalls.
-9. what are the benefits of syscalls.
-10. how character driver is registered in linux.
-11. what is init and exit function of a driver.
-12. how and when init and exit function of driver get called.
-13. what is probe function.
-14. when probe is get called.
-15. what is platform devices.
-16. what is device tree.
-17. what are the benefits of device tree over board files.
-18. what is sysfs and procfs.
-19. how logs are printed in linux kernel and what are the logs level available in linux.
-20. what is copy_to_user and copy_from_user.
-21. what do you mean by kernel configuration and what are the various way of configuring kernel.
-22. what is menuconfig.
-23. what is ioremap
-24. what is seagmentation fault.
-25. what are the various ways od debugging linux kernel.
-26. how linux kernel boots.
-27. what is zimage and bzimage.
-28. what are different booting arguments in linux.
-29. how parameter are passed from boot loader to kernel.
-30. what is ATAGS.
-31. from which file kernel execution starts.
-32. what is bootloader.
-33. what is primary and secondary bootloader.
-34. why we need two bootloader.
-35. difference between poll and select.
-36. what is priority inheritance and priority inversion.
-37. what are different type of kernel.
-38. what is DMA.
-39. what is cache coherency.
-40. what is copy on write.
-41. what is highmem and lowmem.
-42. what happens if we pass invalid address from userspace by using ioctls.
-43. what are different ipc mechanism in linux.
-44. what are sockets.
-45. how page fault is handled in linux.
-46. difference between memory based io and port based io.
-47. what is I2c and SPI.
-48. how physical to virtual translations works in linux.
-49. what is thrashing, segmentation and fragmentation.
-50. what is preempt_count and what is the need of that.
-51. What is mknod and it's usage ?
-52. In how many ways we can allocate device number ?
-53. How can we allocate device number statically and dynamically and how to free device number?
+What is device driver and what is the need of it.
+what are different kind of devices.
+Explain about the Linux Device Model (LDM)? how mudules are loaded in linux.
+How to make a module as loadable module? How to make a module as in-built module?
+difference between insmod and modprobe.
+how parameters are shared between driver modules.
+what are IOCTLS.
+what is syscalls.what are the benefits of syscalls.
+what is init and exit function of a driver.how and when init and exit function of driver get called.
+what is probe function.when probe is get called.
+what is platform devices.
+what is device tree.what are the benefits of device tree over board files.
+what is sysfs and procfs.
+how logs are printed in linux kernel and what are the logs level available in linux.
+what is copy_to_user and copy_from_user.
+what do you mean by kernel configuration and what are the various way of configuring kernel.
+what is ioremap
+what are the various ways od debugging linux kernel.
+how linux kernel boots. what are different booting arguments in linux. how parameter are passed from boot loader to kernel.
+what is zimage and bzimage.
+difference between poll and select.
+what are different type of kernel.
+what is DMA.
+what is cache coherency.
+what is copy on write.
+what happens if we pass invalid address from userspace by using ioctls.
+what are different ipc mechanism in linux.
+difference between memory based io and port based io.
+what is I2c and SPI.
+how physical to virtual translations works in linux.
+what is thrashing, segmentation and fragmentation.
+what is preempt_count and what is the need of that.
+What is mknod and it's usage ?
+In how many ways we can allocate device number ?
+How can we allocate device number statically and dynamically and how to free device number?
+Explain about about ksets, kobjects and ktypes. How are they related?
 
-Linux Kernel Modules:
-1. Explain about the Linux Device Model (LDM)?
-2. Explain about about ksets, kobjects and ktypes. How are they related?
-3. How to make a module as loadable module?
-4. How to make a module as in-built module?
-5. Explain about Kconfig build system?
-6. Explain about the init call mechanism.
-7. What is the difference between early init and late init?
-8. What is process kernel stack and process user stack? What is the size of each and how are they allocated?
-9. Why do we need seperate kernel stack for each process?
-10. What all happens during context switch?
-11. What is thread_info? Why is it stored at the end of kernel stack?
-12. What is the use of preempt_count variable?
-13. What is the difference between interruptible and uninterruptible task states?
-14. How processes and threads are created? (from user level till kernel level)
-15. How is virtual run time (vruntime) calculated?
-16. Difference between uart_register_driver and platform_driver_register?
-17. How to do a single dma transaction in kernel?
-18. Translating virtual address to physical address in kernel space?
-19. Can we have same major number for more than one device file ?
-20. What is minor  number and it's usage ?
-21. What is range of major and minor numbers?
-22. How to retrieve major and minor number from dev_t type ?
-23. How can i use my own major and minor number for a device file ?
-24. How to see  statically assigned major numbers ?
-25. how interrupt id and ISR is mapped?
-26. How to pin a interrupt to a CPU in driver
-27. How many maximum different CPU-Cores can be used to processing of one IP-packet?
-28. What are the different modes in ARM.
-29. What is the difference between IRQ & FIQ.
-30. how the synchronisation works in single processor system(spinlock_irq_save).
-31. how external devices access the physical address.
-32. what is basic difference in insmod & modprobe.
-33. What is the difference between Platform driver and normal device driver..?
-34. What happens to the idle thread when a core is taken offline logically?
-35. What is meant by system call?
-36. What is the difference between programs and Kernel Modules?
-37. What is the difference between user space and kernel space?
-38. What is the importance of  /proc and /sys File system ? 
-39. What is the difference between printf() and printk() ?
-40. How a user mode is transferred to kernel mode?
-41. How system call causes change from user to kernel space
-42. Which RTOS worked on. Difference between various OS/RTOS
-43. Measure of performance of OS. Define performance
-44. What are the various code optimization techniques used
-45. memory leak deduction and various ways of handling
-46. How to proceed if system is sluggish
-47. How to determine if some high prio task is hogging CPU
-48. Important things to look for in code reviews
-49. Understanding of schematics
-50. Why driver code in not written in C++/Java
-51. How to debug while system is running
-52. Run Time optimization
-53. what is repeate sequence in I2C?
-54. How this signal will look on CRO?
-55. How many lines required for SPI communication?
-56. Do you need to change Clock polarity and phase for SPI?
-57. Who has control of SPI clock?
-58. Explain board bring up.
-59. how will you verify I2C communication?How will you know if there was a software or hw problem?
-60. How will you know if the I2C lines are noisy?
-61. Have you worked in crash dump?
-62. How will you solve memory crash, what steps would you take if a crash occurs?
-63. Data sharing between ISR and threads?
-64. what is NAND and NOR flash, diff between them?
-65. What monitoring tools have you used like I2C sniffer
-66. who schedules the scheduler
-67. what is cache coherence?
-68. Can a scheduler can be locked?
-69. At what frequency scheduler looks for threads/processes ready for schedule?
-70. what actually does a system does in a tick?
-71. When cahche is enabled in a operating system ,DMA is enabled,how does DMA access the cache?
-72. Diff btwn SPI & I2C
-73. When a signal is raised on a interrupt line what will be passed to processor either interrupt number or anything else?
-74. How kernel comes to know which device raised an interrupt when  interrupt  is shared.
-75. How can an application can talk to specific device in this below case ?
-      having Hard Disk devices
-        SATA,SATA1,SATA2
-76. if their a devce driver registered for these devices and a single drivere is used to manage thesr devies then how can an application talk to a sepcific device
-Ex: if i want to read from SATA1 hard disk and Write to SATA0 and SATA1  hard disk.
-How do you establish a sync mechanisam in above hard disk scenarios.
-When a Mutex lock is aquired by a low priority task and High priority trys to acquires the lock
-      will the low priority task will be pre emitted
-The same above scenario is with sema and spinlock
-77. How can two slaves can communicate with master in i2c protocol at a time?
-78. How can we address different devices from same vendor i2c?
-79. What is I2C protocol,I2C- dummy write,repeated start,arbitration,synchronization between masters
-80. How to know whether a interrupt is an edge triggered or level triggered from registering an interrupt handler?
-81. what is  i2c bus error
-82. What are the different data transfer modes?
-83. What are the different types of device descriptors?
-84. How many END point descriptors can be present per device?
-85. DO you know container macros? In all most all kernel drivers it is used?
-86. What is the clock frequency used in your I2C driver designed?
-87. What is the start bit condition in I2C?
-88. How the master knows what is the start condition ?
-89. while in between I2C communication what happens if clocks happends to be dragged low which is not as per i2c standard?
-90. What if the slave device is not responding or no acknowledge bit is sent by slave device?
-91. how to get physically contiguousness memory allocation if kmalloc is giving logical contiguousness allocations?
-92. what is the entry points in kernel?
-93. How to write a makefile to build a customized kernel
-94. How to debug crash, what is the first line you see when you see a crash/oops message, explain crash console
-95. How do you build only a static (.a) library for kernel modules.
-96. Kernel thread vs user space thread and kernel process vs user space process and What was the need of thread_info structure?
-97. Thread switching and process switching in linux kernel ?
-98. How context switching is handled in linux?
-99 zombiee and orphon process and How parent less process is handles in linux ?
-100. What is page fualt and how it is handled in linux kernel?
-101. What is local static and global static with example? 
-102. Device tree  vs board file?
-103. what is ioctl and What happens if you pass a invalid user space address in an ioctl?
-104. Tell me any issue in which you debugged and found that there is some issue in hardware?
-105. pull up / pull down register?
-106. Maximum size you can allocate using kmalloc?
-107. What message you will get if memory is not availeble?
-108. What kind of priority is maintained in linux ?
-109. What is user preemption and kernel preemptio
-110. Why is interrupt disabled between spin_lock and spin_unlock in Linux?
-111. sleep-free kernel functions ?
-112. What is the exact definition of 'process preemption'?
-113. nested interrupt is allowed in linux, but the size of interrupt stack is limited,is there any chance that too many nested interrupts cause stack overflow which crashes the whole system!
-114. how it differs from user thread ?.
-what is the relationship between the two threads ?.
-how can i implement kernel threads ?.
-Why must all user threads be mapped to a kernel thread?
-What kind of hardware do the newer kernels support?
+What is the difference between early init and late init?
+What is process kernel stack and process user stack? What is the size of each and how are they allocated?
+What all happens during context switch?
+How to do a single dma transaction in kernel?
+Translating virtual address to physical address in kernel space?
+Can we have same major number for more than one device file ?
+What is minor  number and it's usage ?
+What is range of major and minor numbers?
+How to retrieve major and minor number from dev_t type ?
+How can i use my own major and minor number for a device file ?
+How to see  statically assigned major numbers ?
+how interrupt id and ISR is mapped?
+How to pin a interrupt to a CPU in driver
+How many maximum different CPU-Cores can be used to processing of one IP-packet?
+What are the different modes in ARM.
+What is the difference between IRQ & FIQ.
+how the synchronisation works in single processor system(spinlock_irq_save).
+how external devices access the physical address.
+What is the difference between Platform driver and normal device driver..?
+What happens to the idle thread when a core is taken offline logically?
+
+Measure of performance of OS. Define performance
+What are the various code optimization techniques used
+memory leak deduction and various ways of handling
+How to proceed if system is sluggish
+How to determine if some high prio task is hogging CPU
+Important things to look for in code reviews
+Understanding of schematics
+Run Time optimization
+Have you worked in crash dump?
+How will you solve memory crash, what steps would you take if a crash occurs?
+Data sharing between ISR and threads?
+what is NAND and NOR flash, diff between them?
+who schedules the scheduler
+what is cache coherence?
+Can a scheduler can be locked?
+At what frequency scheduler looks for threads/processes ready for schedule?
+what actually does a system does in a tick?
+When cahche is enabled in a operating system ,DMA is enabled,how does DMA access the cache?
+Diff btwn SPI & I2C
+How kernel comes to know which device raised an interrupt when  interrupt  is shared.
+how to get physically contiguousness memory allocation if kmalloc is giving logical contiguousness allocations?
+How do you build only a static (.a) library for kernel modules.
+Kernel thread vs user space thread and kernel process vs user space process and What was the need of thread_info structure?
+Thread switching and process switching in linux kernel ?
+How context switching is handled in linux?
+zombiee and orphon process and How parent less process is handles in linux ?
+Device tree  vs board file?
+what is ioctl and What happens if you pass a invalid user space address in an ioctl?
+Tell me any issue in which you debugged and found that there is some issue in hardware?
+Maximum size you can allocate using kmalloc?
+What is the exact definition of 'process preemption'?
+nested interrupt is allowed in linux, but the size of interrupt stack is limited,is there any chance that too many nested interrupts cause stack overflow which crashes the whole system!
 How do I identify which interrupt line shown in /proc/interrupts list is shared?
 How does the Linux kernel handle shared IRQs?
 What is the relationship between fork() and pthread_atfork() in Linux?
 What is the relationship between System Call and Software Interrupt in Linux?
-How does the fork() system call in Linux work?
 user/kernel interface (system calls, procfs/sysfs, ioctl) :
 synchronization between contexts (how would you synchronize access to a shared memory area used from an interrupt handler and a workqueue on a SMP preemptive kernel).
-are you familiar with the Linux kernel development process? Do you have any patch accepted in the mainline?
+
 What are good ways to debug memory corruption in C under Linux?
 How do I debug a kernel module in which a NULL pointer appears?
-How to let kernel not run the printk with KERN_DEBUG
 How do I include the device tree with my kernel?
 How to attach file operations to sysfs attribute in platform driver?
-How size of virtual memory is decided and calculated in Linux ?
 How to remove packet from UDP read buffer in kernel?
-How can I bind my own serial device with a driver?
+
 How does Linux Kernel know where to look for driver firmware?
 How to create a device in /dev automatically upon loading of the kernel module for a device driver?
-sudo mknod -m 0666 /dev/msio c 22 0
+	sudo mknod -m 0666 /dev/msio c 22 0
 How to use netlink socket to communicate with a kernel module?
 How to implement a Linux Device Driver for Data Acquisition Hardware?
 How to find owner socket of sk_buff in Linux kernel?
@@ -448,641 +207,85 @@ Why Socket Connection Blocked and TCP Kernel Keeps Retransmitting [ACK] packets
 
 
 Linux Kernel Debugging
-1. What is Oops and kernel panic and how to understand the panic stack?
-2. Does all Oops result in kernel panic?
-3. What are the tools that you have used for debugging the Linux kernel?
-4. What are the log levels in printk?
-4. Can printk's be used in interrupt context?
-6. How to print a stack trace from a particular function?
-7. What's the use of early_printk( )?
-8. Explan about the various gdb commands and features of gdb ?
+What is Oops and kernel panic and how to understand the panic stack?
+Does all Oops result in kernel panic?
+What are the tools that you have used for debugging the Linux kernel?
+What are the log levels in printk?
+Can printk's be used in interrupt context?
+How to print a stack trace from a particular function?
+What's the use of early_printk( )?
+Explan about the various gdb commands and features of gdb ?
 
 Power Management in Linux:
-1. Explain about cpuidle framework.
-2. Explain about cpufreq framework.
-3. Explain about clock framework.
-4. Explain about regulator framework.
-5. Explain about suspened and resume framwork.
-6. Explain about early suspend and late resume.
-7. Explain about wakelocks.
+Explain about cpuidle framework.
+Explain about cpufreq framework.
+Explain about clock framework.
+Explain about regulator framework.
+Explain about suspened and resume framwork.
+Explain about early suspend and late resume.
+Explain about wakelocks.
 
 Miscellaneous:
-1. How are the atomic functions implemented in case of ARM architecture?
-2. How is container_of( ) macro implemented? 
-3. Explain about system call flow in case of ARM Linux.
-4. What 's the use of __init and __exit macros?
-5. How to ensure that init function of a partiuclar driver was called before our driver's init function is called (assume that both these drivers are 	 built into the kenrel image)?
-6. What's a segementation fault and what are the scenarios in which segmentation fault is triggered?
-7. If the scenarios which triggers the segmentation fault has occurred, how the kernel identifies it and what are the actions that the kernel takes?
+How are the atomic functions implemented in case of ARM architecture?
+How is container_of( ) macro implemented? 
+What 's the use of __init and __exit macros?
+How to ensure that init function of a partiuclar driver was called before our driver's init function is called (assume that both these drivers are 	 built into the kenrel image)?
+What's a segementation fault and what are the scenarios in which segmentation fault is triggered?
+How are the command line arguments passed to Linux kernel by the u-boot (bootloader)?
 
-Linux Boot Sequence:
-1. Explain about the Linux boot sequence in case of ARM architecture?
-2. How are the command line arguments passed to Linux kernel by the u-boot (bootloader)?
-3. Explain about ATAGS?
-4. Explain about command line arguments that are passed to linux kernel and how/where they are parsed in kernel code?
-5. Explain about device tree.
+What is the need of volatile constant in embedded systems?
+What is difference  between inline function and macro?
+Why can't we go for sleep while handling interrupt?
+How nested interrupts are handled in ARM?
+What are the benefits using FIQ?
+What is reset vector
+What is the significance of spinlock on uniprocessor system?
+Difference between Monolithic kernel, Micro kernel and Hybrid kernel ?
+What is priority inversion ?
+What are the solutions for priority inversion ?
+What is priority inheritance ?
+What is priority ceiling ?
+What is deadlock ?
 
-Below is the interview questions asked in an interview in Vihaan Networks for the position of Embedded Engineer having  skills of Linux Device Driver , Linux Kernel Programming, Embedded C programming , BSP, RTOS , Linux Kernel Debugging , I2C, SPI , Bootloader etc.
-1.	What is breakpoints?
-2.	How software and hardware breakpoints are implemented?
-3.	What is volatile constant ?
-4.	What is the need of volatile constant in embedded systems?
-5.	How you will analyze Linux Kernel   crash dumps ?
-6.	How pagefault is handled in linux kernel?
-7.	What is sempahore and mutex?
-8.	What is the difference  in semaphore and Mutex?
-9.	What is the difference  b/w spinlock and semaphore?
-10.	When to use Semaphore and Mutex?
-11.	What is the difference  between constant and macro?
-12.	What is difference  between inline function and macro?
-13.	Questions Related to i2c
-14.	Question Related to DMA
-15.	Tell about Process address space of a c program?
-16.	Difference  between local static and global static? 
-17.	How compiler maintain the scope of local static or global static variable?
-18.	Why can't we go for sleep while handling interrupt?
-19.	How nested interrupts are handled in ARM?
-20.	Different modes in ARM ?
-21.	What are the benefits using FIQ?
-22.	Tell me the Linux kernel Booting sequence? 
-23.	How you will find out the issues if your device is not booting?
-24.	What is reset vector
-25.	pull up and pull down register?
-26.	Edge triggered and level triggered Interrupt?
-27.	Maximum size you can allocate using kmalloc?
-28.	What message you will get if memory is not available?
-29.	What is the significance of spinlock on uniprocessor system?
+What is the use of the method of temporarily masking / disabling interrupts ? When is it used ? What should be taken care while doing this method ?
+Since, disabling/masking of interrupts can be done whent the critical section is ONLY SHORT,What method can be used if the critical section is longer than few source lines or if it involves few lengthy loopings ?
+Even if we never enables interrupts in the code, the processor automatically disables them often during hardware access - True/False ? In this case how to reduce interrupt latency ?
+When should we re-enable the interrupts in an ISR and why ?
+How do you measure the latency of your system ?
+What is data race ?
+What is Indefinite Postponement / Indefinite blocking or starvation ?
+How Many Processes or Threads Are Enough for an application ?
 
-
-I2C and SPI :
-Hey dudes, the following interesting questions related to I2C and SPI protocol can be used for  discussion.
-
-1. Can devices be added and removed while the system is running (Hot swapping) in I2C ?
-2. What is the standard bus speed in I2C ?
-3. How many devices can be connected in a standard I2C communication ?
-4. What are the 2 roles of nodes in I2C communication ?
-5. What are the modes of operation in I2C communication ?
-6. What is bus arbitration ?
-7. Advantages and limitations of I2C communication ?
-8. How many wires are required for I2C communication ? What are the signals involved in I2C ?
-9. What is START bit and STOP bit ?
-10. How will the master indicate that it is either address / data ? How will it intimate to the slave that it is going to either read / write ?
-11. Is it possible to have multiple masters in I2C ?
-12. In write transaction, the Master monitors the last ACK and issues STOP condition - True/False ?
-13. In read transaction, the master doesnot acknowledge the final byte it receives and issues STOP condition - True/False ?
-14. What is SPI communication ?
-15. How many wires are required for SPI communication ?
-16. What are the 4 logic signals specified by SPI bus ?
-17. Does SPI slave acknowledge the receipt of data ?
-18. SPI has higher throughput than I2C - True / False ?
-19. Is it better to use I2C or SPI for data communication between a microprocessor and DSP ?
-20. Is it better to use I2C or SPI for data communication from ADC ?
-21. Duplex communication is possible by simultaneously using MOSI and MISO during each SPI clock cycle - True / False ?
-22. Is it possible to connect SPI slaves in daisy chain ?
-23. What is the role of shift register in Master and Slave devices in SPI ?
-24. How will the master convey that it is stopping the transmission of data ?
-25. What is bit banging ?
-What is the difference between RS232 and UART?
-What makes SPI faster than I2C protocol ?
-What is the difference between Synchronous and Asynchronous?
-How many i2c slaves can a i2c master support?
-
-Kernel :
-1. How are FLIHs and SLIHs termed in Linux ?
-2. What is the main drawback for not considering Linux as realtime ?
-3. What is the type of scheduler used in Linux Kernel 2.5 ?
-4. What are the types of scheduler used in Linux Kernel 2.6 to 2.6.23 and after Linux kernel 2.6.23 ?
-5. CFS scheduler in Linux is based on red-black tree - True / False ?
-6. O(1) scheduler in Linux is based on run queues - True / False ?
-7. Is the architecture of linux kernel monolithic / microkernel ?
-8. How will you trace the system calls made into the kernel of lInux ?
-9. Tell about the Linux Kernel Compilation method ?
-10. What is 'make mrproper' and how is it different from 'make clean' ?
-11. What is Kmalloc and how does it differ from normal malloc ? or Why can't we use malloc in kernel code ?
-12. Does the scheduler assign a zombie state to a process ?
-13. Brief up 'vmalloc' vs 'kmalloc' ?
-14. Brief up 'malloc' vs 'kmalloc' ?
-15. How modules begin and end in LInux ? Tell the difference between Modules and Program ?
-16. What is mmap ?
-17. What are the advantages of mmap over read ?
-18. Most of Unix kernels are monolithic - True / False ?
-19. Why is microkernel slower than monolithic kernel ?
-20. What are the advantges of microkernel over monolithic kernel ?
-21. What is a 'Module' ?
-22. What are the main advantages of using a 'Module' ?
-23. Once linked in, the object code of a 'module' is equivalent to the object code of the statically linked kernel - True / False ?
-24. What are the limitations of hard links / What are advantages of soft links ?
-25. Unix Kernels are Reentrant - True / False ?
-26. What is Kernel Control Path ?
-27. What is the drawback in using semaphore for synchronization ? How does spinlock help in overcoming it ?
-28. What does a semaphore consist of ? and What does a spinlock consist of ?
-29. Why spinlocks are useless in uniprocessor systems ?
-30. What are the two kinds of system events ?
-
-Microprocessor
-This is a collection of microprocessor(general) based questions that can be discussed.
-
-1. What are the two famous architecture of CPU ?
-2. What is the difference between Harvard and Von Neuman architecture ?
-3. What is the use of instruction cache ?
-4. Is it good to have more instruction cache or data cache ?
-5. What is the use of data cache ?
-6. What is the use of TLB ?
-7. What do you mean by Cache Hit or Cache Miss ? What is cache hit rate ?
-8. What is the difference between read miss and write miss ?
-9. How does cache hit or cache miss determine the selection of processor ?
-10. What is cache line or cache block ?
-11. What is write-back or copy-back cache ?
-12. What is the need for cache coherence protocol ?
-13. What are the 3 kinds of cache misses ? or Which of the below causes the most delay and why ? Instruction read miss, Data read miss, and Data write miss .
-14. What is boundary alignment and what is the use of it ?
-15. What will happen if the data being fetched exceeds the cache line size ? or
-if the data is not being aligned at the beginning of cache block ?
-16. How can grouping of data can improve the cache based operations from application-side ?
-17. What is cache prefetch ?
-18. Brief up on pipelined versus Run-to-Completion processor software architecture ?
-19. Why multicore processors are preferred to improve performance rather than trying to make a single processor based system faster ?
-20. Does memory access speed varies at various stages ? Which is the fastest memory that you can directly deal with from a processor or Which type of memory of a CPU has almost zero percent latency ?
-21. What is temporal locality and spatial locality ?
-22. What are the applications of temporal locality and spatial locality ? or where are they applied in a CPU architecture ?
-23. What is the use of Shadow Registers in ARM architecture ?
-24. How will you calculate the idle time off a processor ?
-25. How will you identify the endianness of a processor programatically ?
-26. What is Memory Overlay ?
-27. Tell about Bank Switching ?
-28. What are the Disadvantages of Bank Switching ?
-29. Why is the size of L1 cache smaller than that of the L2 cache in most of the processors ?
-30. When should one use polling method and when should one use interrupt based method ? Are there scenarios in which both can be used ?
-31. What could be the better way to determine the exact locations in which the prefetch instruction should be used ?
-32. Considering that a processor runs at 100 MHz and the data is coming to the processor from an external device/peripheral at the rate of 1000 Mbit/s (8 Bits/Clockcycle @ 125 MHz), which is the best way to handle traffic that comes at a higher speed to the processor ?
-33. Consider that there are 100 plus ways of interrupts occuring from various sensors. There are chances that all can occur at the same time too. How can the software be designed to handle it efficiently ?
-34. What is Write-Back Cache ?
-35. What is Write-Through Cache ?
-36. What is cache coherency ?
-37. What is Clock Cycles Per Instruction (CPI) ?
-38. What is IPC(Instructions per cycle) ?
-39. Tell about the 'nested interrupt handler' , 'reentrant interrupt handler' and ' prioritized direct interrupt handler' ?
-40. What is Memory Banking ? Explain w.r.t 8051 architecture
-41. What is Primary Memory and What is Secondary Memory ?
-42. What is the advantage of MMU ?
-43. How do you determine the direction of stack growth ?
-44. What is the debugger that you have used ?
-45. Have you used any emulator. If yes, how have you used it ?
-46. Can you tell a scenario that was very difficult to solve / fix ?
-47. Have you worked on optimization w.r.t memory usage ? What techniques have you followed to optimize ?
-47. Have you worked on optimization w.r.t throughput / speed ? What techniques have you followed to optimize ?
-48. What kind of co-processors have you used ?
-
-Multicore processor
-Initially multicore processors were used mainly in telecom industry. But, nowadays, these multicore processors have made inroads into almost every technology/industry. Here are a few basic multicore processor based questions that can be discussed upon..
-
-1. Will increasing the number of cores, increase the throughput of your system ?
-2. What are the general methods of communication between the cores ?
-3. When is it better to use single core processor compared to multi-core processor ?
-4. If the CPU in a multi-core processor updates the data in the cache, copies of data in caches associated with other cores will become stale. How is the multicore processor designed to handle this scenario ?
-5. What is 'Run to Completion' software architecture ?
-6. What is a 'Pipelined' software architecture ?
-7. What is the difference between 'Run to Completion' and 'Pipelined' software architecture ?
-8. How is the debugging and testing environment in the case of multithreaded/multiprocessing applications ?
-9. At what point does adding more processors or computers to the computation pool slow things down instead of speeding them up?
-10. Is there an optimal number of processors for any given parallel program?
-11. How Many Processes or Threads are enough for an application ?
-
-Operating System
-Earlier, i listed few of the good and highly interesting RTOS queries for discussion. Here, i am listing general Operating System based interview questions that can be discussed upon.
-
-1. What is an interrupt Vector ?
-2. How CPUs find the ISR and distinguish between the various devices ?
-Is it possible for two devices to share an interrupt request line but have different ISR for those two devices ?
-3. What is page fault ?
-4. Which hardware unit of processor detects the page fault ?
-5. Difference between Monolithic kernel, Micro kernel and Hybrid kernel ?
-6. What is Interrupt Descriptor Table (IDT) ?
-7. Main Difference between a process and thread ?
-8. Threads are lightweight. Why and How ?
-9. STACK growth is in downward direction in the case of 80x86 processor - True/False.
-10. What is the difference between Multiprogramming and Multiprocessing ?
-11. What is parallel programming ?
-12. What is a time slice ?
-13. What is the difference between multiprogramming and multiprocessing ?
-14. What is parallel programming ?
-15. What is ABI (Application Binary Interface ) ?
-16. What is the layout of a program image in main memory ?
-17. What are the types of IPC mechanisms ?
-18. Tell about shared memory ? Does it provide locking mechanism ? When is it typically used ?
-19. What are the types of synchronization problems and what are the resources that can cause such problems ?
-20. What is data race ?
-21. What is Indefinite Postponement / Indefinite blocking or starvation ?
-22. What is Deadlock ?
-23. What are the synchronization relationships that are present in a multithreaded or mulitprogramming applications ?
-24. How Many Processes or Threads Are Enough for an application ?
-25. How does memory segmentation help in memory protection ?
-
- RTOS
-RTOS has become very important as it is concerned with time critical events. Okay, let me list down few of the famous RTOS questions that can be discussed here.
-
-1. What is priority inversion ?
-2. What are the solutions for priority inversion ?
-3. What is priority inheritance ?
-4. What is priority ceiling ?
-5. What is deadlock ?
-6. What is the famous diners problem ?
-7. What is mutex ?
-8. What is spinlock ?
-9. Where are spinlocks used ?
-10. What do you mean by atomic operations ?
-11. what is a semaphore ?
-12. What are the types of semaphore ?
-13. What is binary semaphore ?
-14. What is a counting semaphore ?
-15. What is message queue ?
-16. What is the role of a scheduler ? How does it function ?
-17. What is the difference between a normal OS and RTOS ?
-18. What is preemption ?
-19. What is preemptive multi-tasking/time-sharing ? What is its difference with co-operative multi-tasking/time-sharing ?
-20. Threads are described as lightweight because switching between threads does not involve changing the memory context - True/False ?
-21.What are the factors considered for a RTOS selection ?
-22. What is the use of the method of temporarily masking / disabling interrupts ? When is it used ? What should be taken care while doing this method ?
-23. Since, disabling/masking of interrupts can be done whent the critical section is ONLY SHORT,What method can be used if the critical section is longer than few source lines or if it involves few lengthy loopings ?
-24. Difference between semaphores and disabling/masking of interrupts method ?
-25. Binary semaphore is equivalent to Mutex - True/False. How ?
-26. How can you avoid deadlocks incase of semaphore based designs ?
-27. What is Message passing method ? What is its advantages ?
-28. Tell about the design of Interrupt Handler and Scheduler in RTOS ?
-29. What is interrupt latency ?
-30. Even if we never enables interrupts in the code, the processor automatically disables them often during hardware access - True/False ? In this case how to reduce interrupt latency ?
-31. When should we re-enable the interrupts in an ISR and why ?
-32. How do you measure the latency of your system ?
-33. What are First Level Interrupt handlers and Second level Interrupt handlers ?
-34. What could be the typical design/implementation of FLIH and SLIH ?
-35. Reentrant interrupt handlers might cause a stack overflow from multiple preemptions by the same interrupt vector - True / False ?
-36. What kind of memory allocation procedure is good for embedded systems ?
-37. Is there any RTOS that has non-preemptive scheduling ?
-38. What is reentrant code ?
-39. What is preemptive multitasking ?
-40. What does timeslice refer to ?
-41. If the time slice is too short then the scheduler will consume too much of processing time - True / False
-42. What is I/O bound ? What is CPU bound ?
-43. What is non-preemptive multitasking ?
-44. CFS uses 'nanosecond' granularity accounting, the atomic units by which individual process share the CPU instead of previous notion of 'timeslice' - True/False .
-45. When will you use binary semaphore ?
-46. When will you choose busy-wait instead of context switch ?
-47. What are the possible scenarios in which context switching of threads can occur ?
-48. Can you use mutex/semaphore inside an ISR ?
-49. Explain a scenari that could cause deadlock ? What is the best solution for a deadlock ?
-50. Will the performance of your application improve if it has only a single thread and it is running on multiple cores of a processor ?
-51. What will happen if there are more threads requesting for CPU resource such as time ?
-52. What is Gang Scheduling and how is it useful ?
-53. Can you sleep in interrupt handler ?
-54. What is the main drawback for not considering Linux as realtime / RTOS ?
-55. What is the drawback in using semaphore for synchronization ? How does spinlock help in overcoming it ?
-56. What does a semaphore consist of ? and What does a spinlock consist of ?
-57. Why spinlocks are useless in uniprocessor systems ?
-58. What is timeslice ?
-59. What is the difference between multiprogramming and multiprocessing ?
-60. What is parallel programming ?
-61. What are the types of IPC mechanisms ?
-62. What are the types of synchronization problems and what are the resources that can cause such problems ?
-63. What is data race ?
-64. What is Indefinite Postponement / Indefinite blocking or starvation ?
-65. What are the synchronization relationships that are present in a multithreaded or mulitprogramming applications ?
-66. How Many Processes or Threads Are Enough for an application ?
-67. Tell the advantages and disadvantages of Co-operative multitasking.
-67. When should we use mutex and when should we use semaphore ?
-
- Boot loader
-Here are boot loader related questions that are of great interest and that can be used for our discussions.... Check it out !
-
-1. What are the various boot loaders that you have worked on ?
-2. Where is the boot loader present in an embedded system design ?
-3. In general, what does the boot loader do ?
-4. What is the role of boot loader in embedded systems ?
-5. How will you handle a scenario in which the boot software is erased/corrupted ?
-6. How will you handle boot software erasure/corruption scenario if Boot ROM is not available ?
-7. What do you mean by bootstrap loader and what does it do ?
-8. Is booting different from bootstrapping ?
-9. When the computer is powered ON, it does not have OS it in neither ROM nor RAM - True/False ?
-10. What is a second-stage boot loader ?
-11. Do LILO/GRUB/Syslinux belong to either first stage boot loader(small program) or second-stage boot loaders ?
-12. What is network booting ?
-13. What is Chain loading or Multi-stage boot loader ?
-14. Can you brief up the boot sequence of a normal desktop computer ?
-15. Tell about OMAP CPU booting ?
-16. What are the most common boot modes of DSP processor ?
-17. Give few examples for systems that use Host Port(HPI Boot) for DSP booting ?
-18. How will you put U-Boot into the target board ?
-19. TFTP is a stripped down version of FTP that does not require authentication - True/False ?
-20. Why do you need 2 stage boot process in OMAP processor ?
-21. Can you give a highlevel view of Linux Boot process ?
-22. What is the role of MBR and its relation with BIOS ?
-23. Where is the MBR located ?
-24. What is the structure of MBR ?
-25. The secondary, or second-stage, boot loader could be more aptly called the kernel loader - True / False
-26. What is the relation between GRUB and filesystem while booting ? or Main Difference between LILO and GRUB ?
-27. What is the difference between zImage and bzImage ?
-28. What is the role of initrd/Initial RAM disk ?
-29. What is the role of initrd/Initial RAM disk in Embedded systems ?
-30. Can you tell about the major function-level flow for Linux i386 booting ?
-31. Does GRUB involve a 3-stage boot loading ? If yes, what are they . Brief it ?
-
- Networking & Telecom - I
+Networking & Telecom - I
 Hey guys, few questions that can keep us discussing for sometime...
 
-1. What is network throughput ?
-2. What is bandwidth ?
-3. In which layer is network throughput normally measured ?
-4. What is Bandwidth-delay product ?
-5. What is goodput ?
-6. What is maximum bandwidth for a TCP based communication ?
-7. What is MTU ?
-8. What is MSS ?
-9. What is Path MTU discovery ?
-10. Which layer of OSI model does fragmentation based on MTU ?
-11. What is a LFN (Long Fat Network) ?
-12. What is Jumbo Frames ?
-13. What is difference between Fast ethernet n/w i/f card and Gigabit ethernet n/w i/f card ?
-14. What is the difference between outb and outportb APIs ?
-15. What is the need for retransmission mechanism ?
-16. What is the need for retransmission mechanism at various layers ?
-17. What is socket communication ?
-18. What is the use of the following APIs - socket, bind, listen, connect, accept, send, poll, receive ?
-19. Have you used 'select' API ?
-20. What are the types of sockets ? What is the difference between the following - datagram sockets, stream sockets and raw sockets ?
-21. Provide a brief description about TCP Connection Establishment / 3 way handshake method of TCP connection establishment.
-22. What is the data structure used in TCP communication ?
-23. Tell about TCP and UDP wrt Transport Layer of OSI model ?
-24. Why is MTU size 576 bytes ?
-25. Explain the communication between DCE(Modem) and DTE(PC) ?
-26. What happens as soon as a packet arrives from the network in Linux ?
-27. Why is the design of TCP servers mostly such that whenever it accepts a connection, a new process is invoked to handle it . But, why in the case of UDP servers, mostly there is only a single process that handles all client requests ?
-28. Why does the client end of a connection use high port number(ephemeral ports) whereas the applications listen on typically small port numbers ?
-29. When should you use UDP and When should you use TCP ? Also, give some realtime examples of applications that use TCP or UDP .
-30. Difference between TCP and UDP ?
+What is network throughput ?
+What is bandwidth ?
+In which layer is network throughput normally measured ?
+What is Bandwidth-delay product ?
+What is goodput ?
+What is maximum bandwidth for a TCP based communication ?
+What is MTU ?
+What is MSS ?
+What is Jumbo Frames ?
+What is difference between Fast ethernet n/w i/f card and Gigabit ethernet n/w i/f card ?
+What is the difference between outb and outportb APIs ?
+What is the need for retransmission mechanism ?
+What is the use of the following APIs - socket, bind, listen, connect, accept, send, poll, receive ?
+Have you used 'select' API ?
+What are the types of sockets ? What is the difference between the following - datagram sockets, stream sockets and raw sockets ?
+Provide a brief description about TCP Connection Establishment / 3 way handshake method of TCP connection establishment.
+What happens as soon as a packet arrives from the network in Linux ?
+Why is the design of TCP servers mostly such that whenever it accepts a connection, a new process is invoked to handle it . But, why in the case of UDP servers, mostly there is only a single process that handles all client requests ?
+Why does the client end of a connection use high port number(ephemeral ports) whereas the applications listen on typically small port numbers ?
+When should you use UDP and When should you use TCP ? Also, give some realtime examples of applications that use TCP or UDP .
 What is the difference between symbol rate and bit rate ?
-31. What is BER (Bit error Rate / Bit Error Ratio)?
-32. What is Spatial Multiplexing ?
-33. What are the advantages of OFDM ?
-34. In practice, OFDM signals are generated and detected using the FFT algorithm - True/False
-35. What parameters can be changed for OFDM systems / Why should we not change Frequency ?
-36. What is a Symbol in OFDM ?
-37. What is the purpose of guard bands in OFDM ?
-38. What do you mean by Tones in OFDM ?
-39. Tell the 2 important tasks to be performed on the Receiver end of OFDM system ?
-40. What is Turbo Codes ?
-41. What are the advantages of Turbo Coding ?
-42. What is Hybrid-ARQ ?
-43. What is Frequency Reuse ?
-44. What is Delay Spread ?
-45. What is Call Processing ?
-46. What is Reed-Solomon Error Correction ?
-47. What is Reed-Solomon code and its areas of Uses ?
-48. What is Shannon and its relation with Channel Capacity ?
-49. What is "Channel Access Method" ?
-50. What is FHSS - "Frequency-hopping spread spectrum" ?
-51. What is TDM ?
-52. Applications of TDM ?
-53. What is TDMA ?
-54. What are the features of TDMA ?
-55. Tell few Systems that use TDMA ?
-56. Tell about TDMA in 2G and 3G ?
-57. Tell about CDMA vs TDMA ?
-58. What is TDD ?
-59. Examples of TDD systems ?
-60. What is FDM ?
-61. Applications of FDM ?
-62. What is FDMA ?
-63. What are the features of FDMA ?
-64. What is FDD ?
-65. Explain CDMA / IS-95 ?
-66. What is spread spectrum and its use ?
-67. What is the difference between UMTS and WCDMA ?
-68. What does LAC stand for in CDMA ?
-69. What is RLP and What is RLC ?
-70. What are the basic ways to design the channel code and protocol for an error correcting system ?
-71. What is convolutional code ?
-72. What is the technology behind Mobile WiMAX ?
-73. What is the technology behind LTE ?
-
- Flash Memory
-The below set of queries can be used for discussion on Flash Memory.
-
-1. Why is serial flash memory preferred in embedded systems ?
-2. Flash Memory is costlier than byte programmable EEPROM - True / False ?
-3. MiniSD, MemoryStick are of NAND flash memory type - True / False ?
-4. Flash memory's read access time is less than that of DRAM memory 's read access time - True / False ?
-5. Flash memory has infinite number of erase-write cycles - True / False ?
-6. NOR flash memory's usage is for random access read - True / False ?
-7. NOR flash memory is preferred for XIP - True / False ?
-8. NOR flash memory is more expensive than NAND flash memory - True/False ?
-9. NAND flash memory's usage is for replacing the HDD and also to save space - True/False ?
-10. NAND requires copying of memory contents into memory mapped RAM - True / False ?
-11. A completely erased flash memory will have all corresponding bits set to 1 - True / False ?
-12. Flash memory erases in both NOR and NAND flash memory is block basis - True / False ?
-13. NAND flash memroy is not suitable for micrprocessor/microcontroller ROM - True / False ?
-14. NOR memory is suitable for BIOS as it gives random access read/program - True/False ?
-15. Why is NAND flash memory not suitable for ROM/Program memory of Microprocessor/Microcontroller ?
-16. Erasure time of NOR flash memory is more than that of NAND flash memory - True/False ?
-17. Write time of NOR flash memory is more than that of NAND flash memory - True/False ?
-18. Why is blockwise erasure faster than that of bytewise erasure ?
-19. Flash memory is a specific type of EEPROM - True / False ?
-20. NAND flash memory is used for filesystems - True / False ? Why ?
-21. In general, Flash Memory erase operation is slower than program operation . And the program operation is slower than read operation - True / False ?
-22. In general, SPI interface is used by serial flash memory - True / False ?
-23. What are the main areas of application of serial flash in embedded systems ?
-24. NAND flash memory has greater storage density and lower cost per bit than NOR flash - True / False ?
-25. What is XIP ? Where is it useful ?
-26. What are the common Flash Memory problems ?
-27. How will you test a Flash Memory ? Have you written any power on self test ?
-How will you perform the following test procedures for flash memory -
-a. Address bus test
-b. Data bus test
-c. Control signal test
-d. Missing memory device test
-28. Is writing to a flash memory straightforward ? How will you set/clear a particular bit of flash memory ?
-29. How do you expand program memory space using Bank Switching/Code Banking ? Consider for 8051.
-30. What are the disadvantages of Bank switching/Code Banking ? Consider for 8051.
-31. Any alternative method to overcome drawbacks of Bank switching ?
-32. What is the use of Common area in Code Banking ?
-33. What is Overlaying ? Why is it popular in embedded systems ?
-
- ADC and DAC
-Hey geeks, the below is a set of possible ADC/DAC basic questions that can be discussed.
-
-1. What are the factors you consider for the selection of ADC ?
-2. What do you mean by Resolution of ADC ?
-3. How do you determine the number of bits of ADC is required for you ?
-4. Which factor determines the number of iterations in SAR done to approximate the input voltage ?
-5. What are the 2 methods of ADC interface ?
-6. Can you brief up the steps involved in ADC interface with 8051 or any microprocessor for the EOC based method ?
-7. Can you brief up the steps involved in ADC interface with 8051 or any microprocessor for the Interrupt based method ?
-8. How do you select the particular channel of a ADC . For example, can you tell for ADC0809 ?
-9. When will you make the OE high in case of ADC0809 ?
-10. What will happen if SC and EOC are tied together in ADC0809 ?
-11. What is sampling rate/frequency ?
-12. What is the use of interpolation formula ? Are you aware of any interpolation formula ?
-13. What is sample and hold ?
-14. Are there any Megasample / Gigasample converters ? Where are they used ?
-15. What is aliasing ?
-16. What is Nyquist-Shannon theorem ?
-17. Is it good to sample at a rate that is higher than that of Nyquist Frequency ?
-18. What is quantization error and when does it occur ? What is the unit of measurement of it ?
-19. How can dithering improve digitization of slowly varying signal ?
-20. Which type of ADC implementation is good or should be chosen, if we need lot of channels ?
-
- ARM Processor
-Hey All,
-These are few very simple and general ARM processor questions that can be discussed -
-
-1. What are the types of CORTEX-M series ?
-2. How do you select a specific CORTEX-M processor ?
-3. What is Trustzone System IP block ?
-4. What is the use of T604 ? Have you used it ?
-5. Have you come across LINARO ? Have you been involved in LINARO ?
-6. What is pipeline shutdown ?
-7. what are the kinds of protection available for SRAMS ?
-How to use the single bit or double bit fault correction ?
-8. What is interrupt pipelining ?
-9. Explain the architecture of the CORTEX series ARM that you have used .
-10. What is the use of the AMBA interface and where is it present in the architecture ?
-11. What is branch prediction ?
-12. What is out of order execution ? Have you considered it in selection of processor ?
-13. If the pipleline is wider , the instruction throughput is high - True/False ?
-14. What is the use of Neon Floating point engine ?
-15. In what scenarios can neon do better than normal core ?
-16. Is power dissipation more in neon compared to normal core ?
-17. Incase of multimedia applications, what is the approximate number of times by which the throughput
-is increased compared to normal core ?
-18. Is Neon available with Cortex M or Cortex A series ?
-19. Have you used RVDS ? Have you used gcc arm toolchain ? Which of these two tools is better ?
-20. What is the use of --vectorize option ?
-21. Have you used Palladium emulator ? Is it JTAG based ?
-22. Have you used XDS510 emulator ?
-23. What is Coresight System Trace Macrocell(STM) ?
-24. What is the difference between 'intrusive trace' and 'non-intrusive trace' mechanisms ?
-25. Which of the following is intrusive - printf, lttng, strace, ftrace, ltrace ?
-26. Can you explain the flow from User application and the role of STM driver ?
-27. What are the advantages and disadvantages of LTTng ?
-28. What is hardware assisted instrumentation ?
-29. What is the advantage of hardware assisted instrumentation over software instrumentation ?
-30. What is PTM ?
-31. What is TPIU ?
-32. What is ITM ?
-33. What is ETM ?
-34. Low latency instrumentation is required for ISR tracing, Bootcode tracing . How is low latency
-tracing achieved ?
-35. STM cannot trace instructions. It traces only system level calls - True / False.
-36. ETM is for data/program instructions & for cache/DMA level instructions - True / False.
-37. In Kinetis, can SRAM be configured to act as either NVRAM or EEPROM ? Have you configured or tried it ?
-38. How many power modes are there in Kinetis ? Can you tell the wakeup/recovery time for every mode ?
-Which mode has the fastest recovery time ? Which mode has the lowest current consumption ?
-39. Cortex M4 has Run , Sleep and Deep sleep modes - True / False ?
-40. Is 32-pin Cortex M4 compatible with 256 pin Cortex M4 processor ?
-41. What is I2S interface ?
-42. What are the features of Cortex M4 ?
-43. Tell about the Exception Handling in ARM processor. What does the ARM Core do automatically for every exception ?
-44. Can you tell about DSP in ARM7TDMI or DSP in STRONGARM or DSP in ARM9E ?
-45. Why should you design the DSP algorithm in general ARM architecture so that saturation is not required ?
-46. Tell about AIF(Arm Image Format) and AOF(Arm Object Format) ?
-47. What are the Memory initialization directives ?
-48. What is the use of 'SWI' in ARM assembly ?
-49. How to Represent a Digital Signal in ARM ?
-50. Give Example of STMFD w.r.t Stack Operation push/pop ?
-51. Tell about Extended Multiply Instructions in ARM
-52. Tell about the NORMAL Multiply Instructions in ARM
-53. Tell about ADR's relation with LDR and the Advantage of using LDR together with '=' ?
-54. When does the Processor Stall in ARM and what is the pipeline hazard in ARM?
-55. What is called 'pipeline bubble' in ARM ?
-56. What is Saturating Arithmetic ? Explain
-57. Tell the 2 software methods available to remove interlocks following load instructions
-58. Tell about 'Load Scheduling By Preloading' and 'Load Scheduling by unrolling' ?
-59. How will you flush the instuction Cache in ARM processor ?
-60. List the issues when porting C code to the ARM processor ?
-61. What are the advantages of writing in Assembly in ARM processor?
-62. Explain this -> "AREA |.text|, CODE, READONLY"
-63. What is the use of the 'EXPORT' directive ?
-64. What is the use of various directives ?
-65. How to build using command line tools w.r.t ARM ?
-66. Write a simple square.s program in ARM assembly called from a C file ?
-67. What will you change that program when calling ARM code from C compiled as Thumb ?
-68. How will you allow Thumb C code to call the ARM assembly Code ?
-69. What is the use of 'RN' directive in ARM assembly ?
-70. What imports the libraries like printf automatically in the assembly side of ARM ?
-71. What is the DCB directive and its relation with strings ?
-72. What is ARMulator ? Where and How have you used it ?
-73. How will you handle the Register Shortage problem in ARM ?
-74. Relation between CPSR flags, S Suffix Instructions and Comparison Instructions ?
-75. What is Conditional Execution in ARM ?
-76. What is single issue multiple data (SIMD) processing ?
-77. What is a Coprorcessor / CP15 in ARM ?
-78. What does the 'B' mean in LDRB or What is the difference between LDR and LDRB in ARM ?
-79. What is the use of Write-Back ?
-80. When should i use '!' in ARM programming and where is it Not Allowed to be used in ARM programming ?
-81. Tell about 'Single Data Transfer' and 'Multiple Data Transfer' in ARM
-82. How will you manually Enable / Disable an interrupt in ARM Processor ?
-83. Tell about MRS and MSR instructions ?
-84. Can you tell a 32-bit branch instruction and the way you used it ?
-85. When have you used Thumb instructions in ARM processor ?
-86. Write a program to mask bytes in ARM assembly ?
-87. ARM7 family of processors does not use any branch prediction scheme. Neither
-ARM9 nor ARM9E family implements branch prediction - True / False
-88. The ARM11 micro-architecture uses two techniques to predict branches - True / False
-89. What is Translation Lookaside Buffer (TLB) ?
-90. What are the types of addressing modes in ARM ?
-91. Can you brief up the evolution of ARM architecture ?
-92. Why ARM7TDMI alone highlights the features that it supports in its naming and why not other ARM architectures ?
-93. When will you choose to use ARM and when will you choose to use Thumb instructions ?
-94. Can you explain the operation of ARM7 pipeline for simple instructions ?
-95. Can you tell about function performed by this instruction - ADD r3, r5, r12 ?
-
- Linux and Linux Device driver
-Linux is one of the very common Operating Systems and hope many would like to have some linux discussion. Here is a collection of questions for our linux and linux device driver related discussion...
-
-1. What is the difference in features between kernel 2.2, 2.4 and 2.6 ?
-2. What are Static and Shared libraries ?
-3. What is dynamic linking ? What is static linking ?
-4. What are the advantages of Dynamic linking or Shared libraries ?
-5. Does gcc search for both static and shared libraries ? Which is searched initially by gcc compiler ?
-6. What should be done for Shared library based linking in gcc ?
-7. What should be done for static library based linking in gcc ?
-8. What is object file and what are symbols ?
-9. Can you tell the memory layout based on Data,BSS,HEAP and STACK ?
-10. What are the ways in which linux kernel can be compiled ?
-11. How will get the driver added into the kernel ? What are Kconfig files ?
-12. What is a kernel module ?
-13. What is the difference between insmod and modprobe ?
-14. How will you list the modules ?
-15. How do you get the list of currently available drivers ?
-16. How will you Access userspace memory from kernel ? What are the various methods ?
-17. What is the use of ioctl(inode,file,cmd,arg) ApI ?
-18. What is the use of the poll(file, polltable) API ?
-19. What is the use of file->private_data in a device driver structure ?
-20. What is a device number ?
-21. What are the two types of devices drivers from VFS point of view ?
-22. What are character devices ?
-23. How does the character device driver adds and remove itself from the kernel ?
-What is the use of register_chrdev and unregister_chrdev ?
-24. What is the role of interrupts in a device driver ? How are interrupts handled in device driver ?
-25. How will you make interrupt handlers as fast as possible ?
-26. What are the types of softirqs ?
-27. Difference between Timer Softirq and Tasklet Softirq ?
-28. What are tasklets ? How are they activated ? when and How are they initialized ?
-29. What is task_struct and how are task states maintained ?
-30. What is rwlock and spinlock ? Briefly explain about both of them ?
-31. When will you use rwlock instead of spinlock ?
-32. Can spinlock/rwlock be used in Interrupt handler ?
-33. Tell about the Memory Layout of a Process in Linux .
-34. How will you trace the system calls made into the kernel of lInux ?
-35. What is mmap ? MMAP & malloc ? MMAP & brk ? MMAP adv & dis-adv.
-36. Tell the relation between Malloc and MMAP
-37. Advantages of MMAP over Read ?
-38. Tell the role of brk() in malloc / Tell the relation between heap and brk?
-39. Example of using MMAP and MUNMAP in C ?
-40. Tell about the method/steps in Linux Kernel Compilation.
-41. What is Kmalloc and how does it differ from normal malloc ? or Why can't we use malloc in kernel code ?
-42. What happens as soon as a packet arrives from the network in Linux ?
-43. What is a stack frame, stack pointer & frame pointer ?
-44. What is a profiler ? Which one have you used ?
-45. How do you determine the direction of stack growth ?
+What is BER (Bit error Rate / Bit Error Ratio)?
+How will you Access userspace memory from kernel ? What are the various methods ?
+What is the use of ioctl(inode,file,cmd,arg) ApI ?
+What is the use of the poll(file, polltable) API ?
+What is the use of file->private_data in a device driver structure ?
+Difference between Timer Softirq and Tasklet Softirq ?
 
  Networking - I
 Let me share few networking related queries that can be used for our discussion ...
