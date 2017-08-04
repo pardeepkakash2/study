@@ -1,0 +1,1878 @@
+Normal OS vs RTOS ? What is the difference between hard real-time and soft real-time OS? What type of scheduling is there in RTOS?
+	RTOS: http://careerride.com/embedded-systems-interview-questions.aspx
+	In an operating system, there is a module called the scheduler, which schedules different tasks and determines when a process will execute on the processor. This way, the multi-tasking is achieved. 
+	The scheduler in a Real Time Operating System (RTOS) is designed to provide a predictable execution pattern. In an embedded system, a certain event must be entertained in strictly defined time.
+	To meet real time requirements, the behaviour of the scheduler must be predictable. This type of OS which have a scheduler with predictable execution pattern is called Real Time OS(RTOS). The features of an RTOS are
+
+    Context switching latency should be short.
+    Interrupt latency should be short.
+    Interrupt dispatch latency should be short.
+    Reliable and time bound inter process mechanisms.
+    Should support kernel preemption.
+	Compatibility with several plugin devices.
+	Deterministic operating system having guaranteed worst-case interrupt latency and context-switch times.
+	Documentation providing for the minimum, average, and maximum number of clock cycles required by each system call.
+	Overall it should be very reliable.
+
+	A Hard real-time system strictly adheres to the deadline associated with the task. If the system fails to meet the deadline, even once, the system is considered to have failed. 
+	In case of a soft real-time system, missing a deadline is acceptable. In this type of system, a critical real-time task gets priority over other tasks and retains that priority until it completes
+	
+	RTOS uses pre-emptive scheduling
+
+Is it necessary to start the execution of a program from the main() in C?*.
+Explain why cannot arrays be passed by values to functions?
+Advantages and disadvantagesof using macro and inline functions?
+	inline :A: 
+	The ARM compilers support inline functions with the keyword __inline. This results ineach call to an inline function being substituted by its body, instead of a normal call. This
+	results in faster code, but it adversely affects code size, particularly if theinline function islarge and used often.
+
+How is function itoa() written in c ?
+What is difference between micro processor & micro controller?
+Explain Order of constructor and destructor call in case of multiple inheritance?
+Explain Can structures be passed to the functions by value?
+
+what is qualifiers? 
+	Qualifiers defines the property of the variable. Two qualifiers are const and volatile. 
+
+Can static variables be declared in a header file?
+	you can’t declare a static variable without defining it as well (this isbecause the storage class modifiers static and extern are mutuallyexclusive). 
+	A static variable can be defined in a header file, but thiswould cause each source file that included the header file to have its  own private copy of the variable, which is probably not what wasintended.
+	
+Can a static variable accessed from outside of the file?
+
+	storage class           declared        scope           visibility
+	1. auto
+                        Globel
+                        local           block           block
+	2. register
+                        globel
+                        local           block           block
+	3. static
+                        globel          program         file
+                        local           program         block
+	4. extern
+                        globel          program         program
+                        local           program         block
+auto :
+	Automatic variables or auto variables are default storage class of local variable. An auto variable cannot be declared globally. (Why?)
+	Properties :
+	1. Default initial value of auto variable is garbage.
+	2. Visibility of auto variable is within the block where it has declared.
+	3. Scope of auto variable is within the block where it has declared.
+	4. auto variable initialize each time.
+	5. An auto variable gets memory at run time.
+
+register : 
+	when we required to optimize the execution time, move the critical variable to processor register. this can be done by using the register key word.
+	Automatic variables are allocated in the main memory of the processor; accessing these memory location for computation will take long time.
+	NOTE: Allocation of register is not guaranteed always, it depends on number register available in processor and number register used for manipulation. 
+		if you define 4 variable as register storage class and and processor has only 2 register for variable allocation, then compiler will allocate 2 variable in registers and treat the remaining 2 variable as auto variable. 
+		therefore usage of register keyword should should be justified and cross checked with disassembly weather register is allocated or not.
+	All register variable in c stores in CPU not in the memory so We cannot dereference register variable since it has not any memory address.
+	properties :
+	1. register int a; We are only requesting not forcing to compiler to store variable a in CPU.
+	2. A register variable execute faster than other variables because it is stored in CPU
+        so during the execution compiler has no extra burden to bring the variable from memory to CPU.
+	3. Since a CPU have limited number of register so it is programmer responsibility which variable should declared
+        as register variable i.e. variable which are using many times should declared as a register variable.
+	4. We cannot dereference register variable since it has not any memory address.
+	5. Default initial value of register variable is garbage.
+	6. Scope and visibility of register variable is block.
+
+static :
+	properties :
+	1. It is not default storage class of global variables.
+	2. Default initial value of static integral type variables are zero otherwise null.
+	3. A same static variable can be declared many times but we can initialize at only one time.
+	4. We cannot write any assignment statement globally.
+	Note: Assigning any value to the variable at the time of declaration is known as initialization
+        while assigning any value to variable not at the time of declaration is known assignment.
+	5. A static variable initializes only one time in whole program.
+	6. If we declared static variable locally then its visibility will within a block where it has declared.
+	7. If declared a static variable or function globally then its visibility will only the file
+        in which it has declared not in the other files.
+
+	(a) A variable declared static within the body of a function maintains its value between function invocations.
+	(b) A variable declared static within a module [1], (but outside the body of a function) is accessible by all functions within that module. 
+		It is not accessible by functions within any other module. That is, it is a localized global.
+	(c) Functions declared static within a module may only be called by other functions within that module. That is, the scope of the function is localized to the module within which it is declared.
+
+extern :
+	properties:
+	1. It is default storage class of all global variables as well all functions.
+	2. When we use extern modifier with any variables it is only declaration i.e. memory is not allocated for these variable.
+	3. If you will not use extern keyword with global variables then compiler will automatically
+		initialize with default value to extern variable.
+	4. Default initial value of extern integral type variable is zero otherwise null.
+	5. We cannot initialize extern variable locally i.e. within any block either at the time of declaration or separately.
+        We can only initialize extern variable globally.
+	6. If we declare any variable as extern variable then it searches that variable either it has been initialized or not.
+        If it has been initialized which may be either extern or static* then it is ok otherwise compiler will show an error.
+	7. A particular extern variable can be declared many times but we can initialize at only one time.
+	8. We cannot write any assignment statement globally.
+	9. If declared an extern variables or function globally then its visibility will whole the program
+        which may contain one file or many files.
+		
+#define vs #include?
+
+#define vs typedef?  
+Consider the two statements below and point out which one is preferred and why?
+	#define dPS struct s *
+	typedef struct s * tPS;
+
+	dPS p1,p2; => struct s * p1, p2; 
+	tPS p3,p4; => struct s * p1,struct s * p2;
+
+What is the use of typedef?
+	i)It increases the portability.
+	(ii) It simplify the complex declaration and improve readability of the program.
+
+What are macros? What are its advantages and disadvantages?
+	Macro is a Pre-processor.Major advantage of using the macro is to increase the speed of the execution of the program.
+	Major disadvantage of the macros are:
+		(i) No type checking is performed in macro. This may cause error.
+	(ii)  A macro call may cause unexpected results.
+
+
+#define vs enum; Which one is better? And Why?
+	The use of an enumeration constant (enum) has many advantages over using the traditional symbolic constant style of #define. These advantages include a lower maintenance requirement, 
+	improved program readability, and better debugging capability.
+	1) The first advantage is that enumerated constants are generated automatically by the compiler. Conversely, symbolic constants must be manually assigned values by the programmer.
+	2) Another advantage of using the enumeration constant method is that your programs are more readable and thus can be understood better by others who might have to update your program later.
+	3) A third advantage to using enumeration constants is that some symbolic debuggers can print the value of an enumeration constant. Conversely, most symbolic debuggers cannot print the value of a symbolic constant. 
+		This can be an enormous help in debugging your program, because if your program is stopped at a line that uses an enum, you can simply inspect that constant and instantly know its value. 
+		On the other hand, because most debuggers cannot print #define values, you would most likely have to search for that value by manually looking it up in a header file.
+	4)enum actually declares a type, and therefore can be type checked.
+
+Difference between syntax vs logical error?
+	Syntax Error
+	These involves validation of syntax of language.
+	compiler prints diagnostic message.
+	Logical Error
+	logical error are caused by an incorrect algorithm or by a statement mistyped in such a way that it doesn’t violet syntax of language.difficult to find.
+
+What is difference between Structure and Unions?
+	(i)    In structure every member has its own memory whereas in union its members share the same member space.
+	(ii)  In structure, it is possible to initialize all the members at the same time which is not possible in case of union.
+	(iii) A structure requires more space than union(for the same type of members).
+	(iv) In union different interpretations of the same memory space are possible which is not so in case of structures.
+	
+	advantages of using Unions?
+	(i) Efficient use of memory as it it does not demand memory space for its all members rather it require memory space for its largest member only.
+	(ii) Same memory space can be interpreted differently for different members of the union.
+	
+Using the #define statement, how would you declare a manifest contact that return the number of seconds in year? Disregard leap years in your answer?
+	#define SECONDS_IN_YEAR (60UL * 60UL * 24UL * 365UL)
+	
+Write the “standard” MIN macro. That is, a macro that takes two arguments and returns the smaller of the two arguments
+
+What is the purpose of the preprocessor directive #error?
+	Preprocessor error is used to throw a error message during compile time. We can check the sanity of the make file and using debug options given below
+
+	#ifndef DEBUG
+	#ifndef RELEASE
+	#error Include DEBUG or RELEASE in the makefile
+	#endif
+	#endif
+
+write a MACRO to set the MSB?
+
+#define cat(x,y) x##y concatenates x to y. But cat(cat(1,2),3) does not expand but gives preprocessor warning. Why?
+	The cat(x, y) expands to x##y. It just pastes x and y. But in case of cat(cat(1,2),3), it expands to cat(1,2)##3 instead of 1##2##3. That is why it is giving preprocessor warning.
+
+Infinite loops often arise in embedded systems. Howe does one code an infinite loop in C?
+	while(1), for(;;)
+
+	loop
+	...
+	goto loop
+
+Compilation How to reduce a final size of executable?
+What does static variable and function mean?
+Can a static variable accessed from outside of the file?
+Macro vs inline; Explain each of them; and which one is better why?
+
+
+What does the keyword const mean? 
+Const vs static vs #define?
+	const char *ptr 		: ptr is a pointer to a char, where you can't change the value of the char (at least not through the pointer(without casting the constness away)).
+	char * const ptr 		: ptr is a constant pointer to a char, where you can change the char, but you can't make the pointer point to a different char.
+	const char *const ptr	: ptr is a constant pointer to a constant char, i.e. you can change neither where the pointer points nor the value of the pointee.
+	
+What is the difference between strings and character arrays?
+	A major difference is: string will have static storage duration, whereasas a character array will not, unless it is explicity specified by using thestatic keyword.
+	Actually, a string is a character array with following properties: 
+	the multibyte character sequence, to which we generally call string,is used to initialize an array of static storage duration. 
+		The size of thisarray is just sufficient to contain these characters plus the terminatingNUL character.
+	it not specified what happens if this array, i.e., string, is modified.
+	Two strings of same value[1] may share same memory area. Forexample, 
+	
+		in the following declarations:
+		char *s1 = “Calvin and Hobbes”;
+		char *s2 = “Calvin and Hobbes”;
+		the strings pointed by s1 and s2 may reside in the same memorylocation. 
+		But, it is not true for the following:
+		char ca1[] = “Calvin and Hobbes”;
+		char ca2[] = “Calvin and Hobbes”;
+		The value of a string is the sequence of the values of the containedcharacters, in order.
+
+Which bit wise operator is suitable for checking whether a particular bit is on or off?
+	The bitwise AND operator. Here is an example:
+	enum {
+		KBit0 = 1,
+		KBit1,
+		…
+		KBit31,
+	};
+	if ( some_int & KBit24 )
+		printf ( “Bit number 24 is ON\n” );
+	else
+		printf ( “Bit number 24 is OFF\n” );
+
+Which bit wise operator is suitable for turning off a particular bit in a number?
+	The bitwise AND operator, again. In the following code snippet, the bit number 24 is reset to zero.
+	some_int = some_int & ~KBit24;
+
+Which bit wise operator is suitable for putting on a particular bit in a number?
+	The bitwise OR operator. In the following code snippet, the bit number 24 is turned ON:
+	some_int = some_int | KBit24;
+
+What is hashing?
+memmove vs memcpy vs memset
+what is free()? how does free know how much memory to de-allocate?
+What is recursion? What actually happens during recursion? does the memory get stored on stack? what gets called and how does the program know from where to call? how does unwinding happen? explain with example?
+
+How code optimization does not happen when it comes to VOLATILE? Explain?
+volatile vs const volatile, Explain?
+What does the keyword volatile mean? Give three different examples of its use.? 
+	(a) Can a parameter be both const and volatile? Explain your answer.
+	(b) Can a pointer be volatile? Explain your answer.
+	(c) What is wrong with the following function?:
+	int square(volatile int *ptr)
+	{
+		return *ptr * *ptr;
+	}
+ANS:
+	A volatile variable is one that can change unexpectedly. Consequently, the compiler can make no assumptions about the value of the variable. In particular,
+	the optimizer must be careful to reload the variable every time it is used instead of holding a copy in a register. Examples of volatile variables are:
+	
+	(a) Hardware registers in peripherals (e.g., status registers)
+	(b) Non-stack variables referenced within an interrupt service routine.
+	(c) Variables shared by multiple tasks in a multi-threaded application.
+
+	The answers are as follows:
+	(a) Yes. An example is a read only status register. It is volatile because it can change unexpectedly. It is const because the program should not attempt to modify it.
+	(b) Yes. Although this is not very common. An example is when an interrupt service routine modifies a pointer to a buffer.
+	(c) This one is wicked. The intent of the code is to return the square of the value pointed to by *ptr. However, since *ptr points to a volatile parameter, the compiler will generate code that looks something like this:
+	int square(volatile int *ptr)
+	{
+		int a,b;
+		a = *ptr;
+		b = *ptr;
+		return a * b;
+	}
+	Since it is possible for the value of *ptr to change unexpectedly, it is possible for a and b to be different. Consequently, this code could return a number that is not a square! The correct way to code this is:
+	long square(volatile int *ptr)
+	{
+		int a;
+		a = *ptr;
+		return a * a;
+	}
+
+	Another use for volatile is signal handlers. If you have code like this:
+	quit = 0;
+	while (!quit)
+	{
+		/* very small loop which is completely visible to the compiler */
+	}
+	The compiler is allowed to notice the loop body does not touch the quit variable and convert the loop to a while (true) loop. Even if the quit variable is set on the signal handler for SIGINT andSIGTERM; 
+		the compiler has no way to know that.
+	However, if the quit variable is declared volatile, the compiler is forced to load it every time, because it can be modified elsewhere. This is exactly what you want in this situation.
+	Courtesy: http://stackoverflow.com/questions/246127/why-is-volatile-needed-in-c
+
+Can include files be nested?
+
+NULL vs wild vs dangling vs generic pointer ? Why NULL pointer is required?
+	
+	NULL pointer:
+	Literal meaning of NULL pointer is a pointer which is pointing to nothing. NULL pointer points the base address of segment.
+	Note: We cannot copy any thing in the NULL pointer.
+	
+	Examples of NULL pointer:
+	1. int *ptr=(char *)0;
+	2. float *ptr=(float *)0;
+	3. char *ptr=(char *)0;
+	4. double *ptr=(double *)0;
+	5. char *ptr=’\0’;
+	6. int *ptr=NULL;
+
+	What is meaning of NULL?
+	NULL is macro constant which has been defined in the heard file stdio.h, alloc.h, mem.h, stddef.h and stdlib.h as
+	#define NULL 0
+
+	The null pointer is used in three ways:
+	1) To stop indirection in a recursive data structure.
+	2) As an error value.
+	3) As a sentinel value.
+		
+	Wild Pointers:
+	Wild pointers are created by omitting necessary initialization prior to first use. Thus, strictly speaking, every pointer in programming languages which do not enforce initialization begins as a wild pointer. 
+	This most often occurs due to jumping over the initialization, not by omitting it. Most compilers are able to warn about this.
+	A pointer in c which has not been initialized is also known as wild pointer.
+	{
+		int* a;
+		/* a is wild pointer, it is not initialized and it may have some garbage value*/
+	}
+
+	correct way is
+	{
+		int* a = NULL;
+	}
+
+	Note: There is difference between the NULL pointer and wild pointer. Null pointer points the base address of segment while wild pointer doesn’t point any specific memory location.
+	
+	Dangling Pointer : how it is different from memory leak?
+	If a pointer is de-allocated or freed and the pointer is not assigned to NULL, then it may still contain that address and accessing the pointer means that we are trying to access that location and it will give an error. 
+	This type of pointer is called dangling pointer.
+	
+	Solution of this problem: Make the variable as static variable.
+
+	Examples of Dangling Pointers
+	int main()
+	{
+		int *p;
+		p = (int *) malloc (sizeof (int));
+		free(p);
+		*p=10;
+	}
+	In the above piece of code we are using *p after we free the memory to it. Such usage is called dangling pointer usage.
+	
+	int main()
+	{
+		int *p = NULL;
+		{
+			int a = 10;
+			p = &a;
+		}
+		/*address of a is out of scope and pointer p is now called the dangling pointer, we should initialize the p to NULL before coming out or initialize the pointer to some known value before using it again*/
+	…
+	}
+	
+	int* fun1()
+	{
+		int a = 10;
+		return(&a); /*in this line we are returning the pointer of variable ‘a’ which is out scope.*/
+	}
+	
+	Dangling pointers are are those that point to memory locations which have already been freed. For example:
+	int *a = malloc(sizeof(int));
+	free(a);
+	// a is now a dangling pointer
+
+	Memory leaks are quite the opposite of dangling pointers. Memory leaks happen when memory locations are not freed, but there is no way to refer to them (i.e., no pointers are pointing to them).
+	int *a = malloc(sizeof(int));
+	a = 0;
+	// now a no longer points to the memory that we just allocated, causing a memory leak
+
+	Unlike higher-level languages with garbage collectors, it is critical to always keep track of allocated memory when programming in C
+
+	Generic pointer:
+	void pointer in c is known as generic pointer. Literal meaning of generic pointer is a pointer which can point type of data.
+	Example:
+	void *ptr;
+	Here ptr is generic pointer.
+
+	1. We cannot dereference generic pointer. 
+		A void pointer can be dereferenced only after explicit casting. e.g 
+		int a = 5;
+		void *b = &a;
+		printf(“%d\n”, *((int*)b));
+
+	2. We can find the size of generic pointer using sizeof operator.
+	3. Generic pointer can hold any type of pointers like char pointer, struct pointer, array of pointer etc without any typecasting.
+	4. Any type of pointer can hold generic pointer without any typecasting.
+	5. Generic pointers are used when we want to return such pointer which is applicable to all types of pointers. 
+	For example return type of malloc function is generic pointer because it can dynamically allocate the memory space to stores 
+	integer, float, structure etc. hence we type cast its return type to appropriate pointer type.
+	
+	some tricks for pointers:
+	*array = *(array +0) = array[0];
+	arr[0] = &arr1;
+	p[i] = *(p+i) : P[0][0][0]=*(p[0][0]+0)=**p[0]=***p
+	p[i][j] == *(*(p+i)+j);
+	*&i = i;
+	-> = (*).
+	Rule: * and & always cancel to each other
+	Note: %s is used to print stream of characters up to null (\0) character.
+
+When does the compiler not implicitly generate the address of the first element of an array?
+	Whenever an array name appears in an expression such as
+		array as an operand of the size of operator
+		array as an operand of & operator
+		array as a string literal initializer for a character array
+	Then the compiler does not implicitly generate the address of the address of the first element of an array.
+
+Why doesn't the following statement work?
+	char str[ ] = "Hello" ;
+	strcat ( str, '!' ) ;
+
+	The string function strcat( ) concatenates strings and not a character. The basic difference between a string and a character is that a string is a collection of characters, 
+	represented by an array of characters whereas a character is a single character. To make the above statement work writes the statement as shown below:
+	strcat ( str, "!" ) ;
+
+What is the benefit of using #define to declare a constant?
+	Using the #define method of declaring a constant enables you to declare a constant in one place and use it throughout your program. This helps make your programs more maintainable, 
+	because you need to maintain only the #define statement and not several instances of individual constants throughout your program.
+	For instance, if your program used the value of pi (approximately 3.14159) several times, you might want to declare a constant for pi as follows:  #define PI 3.14159
+	Using the #define method of declaring a constant is probably the most familiar way of declaring constants to traditional C programmers. Besides being the most common method of declaring constants, 
+	it also takes up the least memory.
+	Constants defined in this manner are simply placed directly into your source code, with no variable space allocated in memory. Unfortunately, this is one reason why most debuggers cannot 
+	inspect constants created using the #define method
+
+What is the purpose of main( ) function ?
+	The function main( ) invokes other functions within it.It is the first function to be called when the program starts execution.
+	· It is the starting function
+	· It returns an int value to the environment that called the program
+	· Recursive call is allowed for main( ) also.
+	· It is a user-defined function
+	· Program execution ends when the closing brace of the function main( ) is reached.
+	· It has two arguments 1)argument count and 2) argument vector (represents strings passed).
+	· Any user-defined name can also be used as parameters for main( ) instead of argc and argv
+
+Why should we assign NULL to the elements (pointer) after freeing them?
+	This is paranoia based on long experience. After a pointer has been freed, you can no longer use the pointed-to data. The pointer is said to dangle; it doesn’t point at anything useful.
+	If you NULL out or zero out a pointer immediately after freeing it, your program can no longer get in trouble by using that pointer. True, you might go indirect on the null pointer instead, 
+	but that’s something your debugger might be able to help you with immediately.
+	Also, there still might be copies of the pointer that refer to the memory that has been deallocated; that’s the nature of C. Zeroing out pointers after freeing them won’t solve all problems.
+
+What is a null pointer assignment error? What are bus errors, memory faults, and core dumps?
+	These are all serious errors, symptoms of a wild pointer or subscript. Null pointer assignment is a message you might get when an MS-DOS program finishes executing. 
+	Some such programs can arrange for a small amount of memory to be available “where the NULL pointer points to (so to speak). If the program tries to write to that area, it will overwrite the data put there by the compiler.
+	When the program is done, code generated by the compiler examines that area. If that data has been changed, the compiler-generated code complains with null pointer assignment. 
+	This message carries only enough information to get you worried. There’s no way to tell, just from a null pointer assignment message, what part of your program is responsible for the error. 
+	Some debuggers, and some compilers, can give you more help in finding the problem.
+	Bus error: core dumped and Memory fault: core dumped are messages you might see from a program running under UNIX. They’re more programmer friendly. Both mean that a pointer or an array subscript was wildly out of bounds.
+	You can get these messages on a read or on a write. They aren’t restricted to null pointer problems. The core dumped part of the message is telling you about a file, called core, 
+	that has just been written in your current directory. This is a dump of everything on the stack and in the heap at the time the program was running. 
+	With the help of a debugger, you can use the core dump to find where the bad pointer was used.  That might not tell you why the pointer was bad, but it’s a step in the right direction. 
+	If you don’t have write permission in the current directory, you won’t get a core file, or the core dumped message
+
+when should unions be used? Why do we need them in Embedded Systems  programming?
+	Unions are particularly useful in Embedded programming or in situations where direct access to the hardware/memory is needed.
+	Here is a trivial example:
+
+	typedef union
+	{
+		struct {
+			unsigned char byte1;
+			unsigned char byte2;
+			unsigned char byte3;
+			unsigned char byte4;
+		} bytes;
+		unsigned int dword;
+	} HW_Register;
+	HW_Register reg;
+
+	Then you can access the reg as follows:
+	reg.dword = 0x12345678;
+	reg.bytes.byte3 = 4;
+
+	Endianism and processor architecture are of course important.
+	Another useful feature is the bit modifier:
+	typedef union
+	{
+		struct {
+			unsigned char b1:1;
+			unsigned char b2:1;
+			unsigned char b3:1;
+			unsigned char b4:1;
+			unsigned char reserved:4;
+		} bits;
+		unsigned char byte;
+	} HW_RegisterB;
+	HW_RegisterB reg;
+
+	With this code you can access directly a single bit in the register/memory address:
+	x = reg.bits.b2;
+	Low level system programming is a reasonable example.
+	unions are used to breakdown hardware registers into the component bits. So, you can access an 8-bit register into the component bits.
+	This structure would allow a control register to be accessed as a control_byte or via the individual bits. It would be important to ensure the bits map on to the correct register bits for a given endianness.
+	typedef union {
+		unsigned char control_byte;
+		struct {
+			unsigned int nibble  : 4;
+			unsigned int nmi     : 1;
+			unsigned int enabled : 1;
+			unsigned int fired   : 1;
+			unsigned int control : 1;
+		}
+	} ControlRegister;
+
+Data Alignment & Structure Padding?
+	Data Alignment: Data alignment means putting the data at a memory offset equal to some multiple of the word size, which increases the system’s performance due to the way the CPU handles memory
+	Data Structure Padding: To align the data, it may be necessary to insert some meaningless bytes between the end of the last data structure and the start of the next, which is data structure padding
+	Here is a structure with members of various types, totaling 8 bytes before compilation:
+	struct MixedData
+	{
+		char Data1;
+		short Data2;
+		int Data3;
+		char Data4;
+	};
+	After compilation the data structure will be supplemented with padding bytes to ensure a proper alignment for each of its members:
+
+	struct MixedData  /* After compilation in 32-bit x86 machine */
+	{
+		char Data1; /* 1 byte */
+		char Padding1[1]; /* 1 byte for the following 'short' to be aligned on a 2 byte boundary assuming that the address where structure begins is an even number */
+		short Data2; /* 2 bytes */
+		int Data3;  /* 4 bytes - largest structure member */
+		char Data4; /* 1 byte */
+		char Padding2[3]; /* 3 bytes to make total size of the structure 12 bytes */
+	};
+
+	The compiled size of the structure is now 12 bytes. It is important to note that the last member is padded with the number of bytes required 
+	so that the total size of the structure should be a multiple of the largest alignment of any structure member (alignment(int) in this case, which = 4 on linux-32bit/gcc)
+	In this case 3 bytes are added to the last member to pad the structure to the size of a 12 bytes (alignment(int) × 3).
+
+	struct FinalPad {
+		float x;
+		char n[1];
+	};
+
+	In this example the total size of the structure sizeof(FinalPad) = 8, not 5 (so that the size is a multiple of 4 (alignment of float)).
+	struct FinalPadShort {	
+		short s;
+		char n[3];                                                                                
+	};
+
+	In this example the total size of the structure sizeof(FinalPadShort) = 6, not 5 (not 8 either) (so that the size is a multiple of 2 (alignment(short) = 2 on linux-32bit/gcc)).
+	It is possible to change the alignment of structures to reduce the memory they require (or to conform to an existing format) by reordering structure members or changing the compiler’s alignment (or “packing”) of structure members.
+	struct MixedData  /* after reordering */
+	{
+		char Data1;
+		char Data4;   /* reordered */
+		short Data2;
+		int Data3;  
+	};
+
+	The compiled size of the structure now matches the pre-compiled size of 8 bytes. Note that Padding1[1] has been replaced (and thus eliminated) by Data4 and Padding2[3] is no longer necessary as the structure is already aligned to the size of a long word.
+	The alternative method of enforcing the MixedData structure to be aligned to a one byte boundary will cause the pre-processor to discard the pre-determined alignment of the structure members and thus no padding bytes would be inserted.
+	While there is no standard way of defining the alignment of structure members, some compilers use #pragma directives to specify packing inside source files. Here is an example:
+
+	#pragma pack(push)  /* push current alignment to stack */
+	#pragma pack(1)     /* set alignment to 1 byte boundary */
+
+	struct MyPackedData
+	{
+		char Data1;
+		long Data2;
+		char Data3;
+	};
+
+	#pragma pack(pop)   /* restore original alignment from stack */
+	This structure would have a compiled size of 6 bytes on a 32-bit system. The above directives are available in compilers from Microsoft, Borland, GNU and many others.
+
+	Another example:
+	struct MyPackedData
+	{
+		char Data1;
+		long Data2 __attribute__((packed));
+		char Data3;
+	};
+
+	Courtesy: http://en.wikipedia.org/wiki/Data_structure_alignment
+	http://www.geeksforgeeks.org/structure-member-alignment-padding-and-data-packing/
+	http://stackoverflow.com/questions/381244/purpose-of-memory-alignment
+	http://stackoverflow.com/questions/6968468/padding-in-structures-in-c
+
+What is the difference between declaring a variable and defining a variable?
+	 Declaring a variable means describing its type to the compiler but notallocating any space for it. Defining a variable means declaring it andalso allocating space to hold the variable.
+	 You can also initialize avariable at the time it is defined.
+	 
+Why is sizeof(‘a’) not 1? what this mean sizeof(a++) ?
+
+write your own sizeof operator?
+	#define   size_of(x)   ((char *)(&x+1) – (char *)&x)
+
+why n++ executes faster than n+1? 
+	The expression n++ requires a single machine instruction such as INR to carry out the increment operation whereas, n+1 requires more instructions to carry out this operation.
+What is the difference between #include "..." and #include <...>?
+		The difference lies in where the preprocessor looks for the file to be included. For the include directive with a double quoted filename, 
+		the preprocessor limits its search for the file to the same directory where the current source file resides. On the other hand, 
+		when the directive uses angle brackets, the preprocessor searches for the file in directories pre-designated by the compiler - usually directories where standard library header files reside.
+		
+What is static memory allocation and dynamic memory allocation?
+	Static memory allocation: The compiler allocates the required memoryspace for a declared variable. By using the address of operator,thereserved address is obtained and this address may be assigned to apointer variable.
+	Since most of the declared variable have staticmemory,this way of assigning pointer value to a pointer variable isknown as static memory allocation. 
+	memory is assigned duringcompilation time.Dynamic memory allocation: It uses functions such as malloc( ) orcalloc( ) to get memory dynamically.
+	If these functions are used to getmemory dynamically and the values returned by these functions areassingned to pointer variables, such assignments are known asdynamic memory allocation.
+	memory is assined during run time.
+
+Is using exit() the same as using return?
+	 No. The exit() function is used to exit your program and return controlto the operating system. The return statement is used to return from afunction and return control to the calling function. 
+	 If you issue a returnfrom the main() function, you are essentially returning control to thecalling function, which is the operating system. In this case, the returnstatement and exit() function are similar.
+
+What is the output of printf("%d") ?
+	When we write printf("%d",x); this means compiler will print the value of x. But as here, there is nothing after %d so compiler will show in output window garbage value.
+	 
+malloc vs calloc vs realloc ?
+Is realloc() uses the same memory location which was used by malloc()?
+Difference between arrays and pointers?
+Is using exit() the same as using return?
+declaring a variable vs defining a variable
+Differentiate between an internal static and external static variable?
+string vs array?
+	Merits:
+	(a) We can easily access each element of array.
+	(b) Not necessity to declare too many variables.
+	(c) Array elements are stored in continuous memory location.
+	Demerits:
+	(a) Wastage of memory space. We cannot change size of array at the run time.
+	(b) It can store only similar type of data
+
+What are advantages and disadvantages of external storage class?
+
+Typecast when to use and when not to use? implicit and explicit typecasting ?
+What does the following code output and why?
+	void foo(void) {
+		unsigned int a = 6;
+		int b = -20;
+		(a +b > 6) ? puts(">6") : puts("<6");
+	}
+
+Switch vs if; which one is better? Why?
+	A switch statement is generally best to use when you have more than two conditional expressions based on a single variable of numeric type.
+
+Differentiate between a for loop and a while loop? What are it uses?
+	For executing a set of statements fixed number of times we use for loop while when the number of
+	iterations to be performed is not known in advance we use while loop.
+
+What are differences between sizeof operator and strlen function?
+	sizeof is keyword of c which can find size of a string constant including null character but strlen is function which has been defined string.h and can find number of characters in a string excluding null character.
+	
+Array vs Linked list?
+	Major differences between arrays and linked lists are: 
+	(i)  In array consecutive elements are stored in consecutive memory locations whereas in linked list it not so. 
+	(ii)  In array address of next element is consecutive and whereas in linked list it is specified in the address part of each node.
+	(iii) Linked List makes better use of memory than arrays.(iv) Insertion or deletion of an element in array is difficult than insertion or deletion in linked list.
+
+Write a code for String reverse, strlen,reverse words in a string, find duplicates in an array etc. ?
+create a custom malloc and free function using linked lists ?
+write a function that determines if a given variable is a power of 2 or not?
+write a function that determines if a given variable is even or odd?
+What is atomic programming/non-locking operation?
+What is concurrency and multithreading?
+
+Little endian vs big endian? Why it is required? Which one is better? How the conversion happens? White a pseudo code for hton() and ntoh()?
+	#include <stdio.h>
+	int main() 
+	{
+		unsigned int i = 1;
+		char *c = (char*)&i;
+		if (*c)    
+			printf("Little endian");
+		else
+			printf("Big endian");
+		getchar();
+		return 0;
+	}
+
+	void main ()
+	{
+		int x = 300;
+		if ((* ((unsigned char *) & x) == 1)&& (*(unsigned char*) & x+1) == 44))
+			printf (“BIG ENDIAN”);
+		else
+			printf (“LITTLE ENDIAN”);
+	}
+
+	void main ()
+	{
+		union xxx
+		{
+			unsigned int x;
+			unsigned char ch[2];
+		};
+		union xxx p = {300};
+		if ((p.ch [0] = = 1) && (p. ch [1] == 44))
+			printf (“BIG ENDIAN”);
+		else
+			printf (“LITTLE ENDIAN”);
+	}
+
+How to reduce function call overhead in ARM based systems?
+	Try to ensure that small functions take four or fewer arguments. These will not usethe stack for argument passing. It will copied into registers.· 
+	If a function needs more than four arguments, try to ensure that it does asignificant amount of work, so that the cost of passing the stacked arguments isoutweighed.
+	Pass pointers to structures instead of passing the structure itself.
+	Put related arguments in a structure, and pass a pointer to the structure tofunctions. This will reduce the number of parameters and increase readability.
+	Minimize the number of long long parameters, as these take two argument words.This also applies to doubles if software floating-point is enabled.
+	Avoid functions with a parameter that is passed partially in a register and partiallyon the stack (split-argument). This is not handled efficiently by the currentcompilers: all register arguments are pushed on the stack.
+	Avoid functions with a variable number of parameters. Varargs functions
+
+How can you make sure that 3 rd bit (Say 8-bits given to you) is set or not?
+
+Count the number of set bits in an integer?
+
+How do you set/reset a particular bit?
+	#define BIT3 (0x1 << 3)
+	static int a;
+	void set_bit3(void) {
+		a |= BIT3;
+	}
+	void clear_bit3(void) {
+		a &= ~BIT3;
+	}
+
+Write a C program to encode bits in a 32-bit number such  that, most significant 16 bits should be reversed but lower 16 bits should be untouched. Then asked to generalize this to any number of bits?
+	reverse the entire 32-bits first and then left shift the resulting number by 16 bits so that the upper 16 bits are now reversed. 
+	In the second phase, with the help of a mask zero out the most significant 16 bits. Now XOR the two number to get the desired encoded number ?
+
+Write a C Program to reverse the words in a sentence?
+Can the sizeof operator be used to tell the size of an array passed to a function?
+What is the difference between array_name and &array_name?
+	One is a pointer to the first element in the array; the other is a pointer to the array as a whole.
+Why can't constant values be used to define an array's initial size?
+	char a[ 512 ];
+	char a[ sizeof( struct cacheObject ) ];
+	char buf[ sizeof( struct cacheObject ) * MAX ];
+	Enumerations are allowed too.
+	
+	int max = 512; /* not a constant expression in C */
+	char buffer[ max ]; /* not valid C */
+	
+What is the difference between a string copy (strcpy) and a memory copy (memcpy)? When should each be used? when we should strncpy()?
+	The strcpy() function is designed to work exclusively with strings. It copies each byte of the source string to the destination string and stops when the terminating null character (\0) has been moved. 
+	On the other hand, the memcpy() function is designed to work with any type of data.
+	Because not all data ends with a null character, you must provide the memcpy() function with the number of bytes you want to copy from the source to the destination.
+	strncpy()= to copy a portion of a string.
+
+How can I convert a number to a string and vice versa?
+	itoa(); atoi();
+	
+set an integer variable at the absolute address 0x67a9 to the value 0xaa55?
+	int *ptr;
+	ptr = (int *)0x67a9;
+	*ptr = 0xaa55;
+
+	A more obfuscated approach is:
+	*(int * const)(0x67a9) = 0xaa55;
+
+What is code optimization?
+
+Typically, this new key word is __interrupt. The following code uses __interrupt to define an interrupt service routine. Comment on the code?
+	__interrupt double compute_area(double radius) {
+		double area = PI * radius * radius;
+		printf(“nArea = %f”, area);
+		return area;
+	}
+
+	This function has so much wrong with it, it’s almost tough to know where to start.
+	(a) Interrupt service routines cannot return a value. If you don’t understand this, then you aren’t hired.
+	(b) ISR’s cannot be passed parameters. See item (a) for your employment prospects if you missed this.
+	(c) On many processors / compilers, floating point operations are not necessarily re-entrant. In some cases one needs to stack additional registers, in other cases,
+		one simply cannot do floating point in an ISR. Furthermore, given that a general rule of thumb is that ISRs should be short and sweet, one wonders about the wisdom of doing floating point math here.
+	(d) In a similar vein to point (c), printf() often has problems with reentrancy and performance.
+
+what are Static and Dynamic Libraries? advantage and disadvantages of both?
+
+What is the difference between static linking and dynamic linking ?
+	In static linking, all the library modules used in the program are placed in the final executable file making it larger in size. This is done by the linker. 
+	If the modules used in the program are modified after linking, then re-compilation is needed. 
+	The advantage of static linking is that the modules are present in an executable file. We don't want to worry about compatibility issues.
+
+	In case of dynamic linking, only the names of the module used are present in the executable file and the actual linking is done at run time when the program and the library modules both are present in the memory.
+	That is why, the executables are smaller in size. Modification of the library modules used does not force re-compilation. But dynamic linking may face compatibility issues with the library modules used.
+
+What is a memory leak? What is a segmentation fault?*
+what is stack  overflow and heap overflow?
+what is a core dump?
+	A core dump is the recorded state of the working memory of a computer program at a specific time, generally when the program has terminated abnormally includes the program counter and stack pointer, 
+	memory management information, and other processor and operating system flags and information a fatal error usually triggers the core dump, often buffer overflows, 
+	where a programmer allocates too little memory for incoming or computed data, or access to null pointers, a common coding error when an unassigned memory reference variable is accessed.
+What is a stack frame, stack pointer & frame pointer ?
+what is a non re­entrant code?
+write a code  to check whether a stack  grows upwards or downwards?
+Tell the role of brk() in malloc / Tell the relation between heap and brk?
+Tell the relation between Malloc and MMAP
+
+What does the following code fragment output and why?
+	char *ptr;
+	if ((ptr = (char *)malloc(0)) == NULL) {
+		puts(“Got a null pointer”);
+	}
+	else {
+		puts(“Got a valid pointer”);
+	}
+	
+	Note: malloc(0) gives a valid pointer but allocate zero bytes.
+	
+RTOS:
+What is priority inversion ? solution : priority inheritance, priority ceiling.
+What is deadlock ? how to deteatc and remove deadlock?
+What is data race ?
+What is Indefinite Postponement / Indefinite blocking or starvation ?
+what are the syncronization technique and which one we should in which scenerio?
+semaphore vs mutex vs spinlock?
+what are the IPC and which one we should in which scenerio?
+    Pipes
+    Named pipes or FIFO 
+    Shared memory
+    Message queue
+    Socket
+	Semaphores
+
+what is callback function? signal vs callback ?
+What happens when recursive functions are declared inline?
+
+Can structures be passed to the functions , structure and array by value?
+thread vs process?
+How do you measure the latency of your system ?
+What are the possible scenarios in which context switching of threads can occur ?
+What will happen if there are more threads requesting for CPU resource such as time ?
+While writing interrupt handlers(ISR), which are points needed to be considered?
+Explain what is interrupt latency? How can we reduce it?
+
+Explain interrupt latency and how can we decrease it?
+	1. Interrupt latency basically refers to the time span an interrupt is generated and it being serviced by an appropriate routine defined, usually the interrupt handler.
+	2. External signals, some condition in the program or by the occurrence of some event, these could be the reasons for generation of an interrupt.
+	3. Interrupts can also be masked so as to ignore them even if an event occurs for which a routine has to be executed.
+	4. Following steps could be followed to reduce the latency
+	- ISRs being simple and short.
+	- Interrupts being serviced immediately
+	- Avoiding those instructions that increase the latency period.
+	- Also by prioritizing interrupts over threads.
+	- Avoiding use of inappropriate APIs.
+
+Can we use semaphore or mutex or spin lock in interrupt context in linux kernel? and why?
+
+What is the function of DMA controller in embedded system?
+	DMA stands for Direct Memory Access controller as the name suggest it does not involve processor to transfer memory between two devices that handles the allocation of the memory 
+	dynamically to the components and allows the data to be transferred between the devices.
+	
+	The interrupt can be used to complete the data transfer between the devices. It is used to give the high quality performance as, the input/output device can perform the operations 
+	that are in parallel with the code that are in execution.
+
+	- Direct memory access is mainly used to overcome the disadvantages of interrupt and progam controlled I/O.
+	- DMA modules usually take the control over from the processor and perform the memory operations and this is mainly because to counteract the mismatch in the processing speeds of I/O units and the procesor. 
+		This is comparatively faster.
+	- It is an important part of any embedded systems,and the reason for their use is that they can be used for bursty data transfers instead of single byte approaches.
+	- It has to wait for the systems resources such as the system bus in case it is already in control of it.
+
+What is preemption ?
+What do you mean by atomic operations ?
+
+What is ISR? Can they be passed any parameter and can they return a value? can we use printf, break point, function call or any blocking or sleep call or floating operation in ISR?
+How CPUs find the ISR and distinguish between the various devices ?
+Is it possible for two devices to share an interrupt request line but have different ISR for those two devices ?
+What is Top half & bottom half of a kernel?
+
+What is difference between binary semaphore and mutex?
+What is the use of file->private_data in a device driver structure ?
+poll vs epoll ?
+Difference between Timer Softirq and Tasklet Softirq ?
+What are tasklets ? How are they activated ? when and How are they initialized ?
+What is task_struct and how are task states maintained ?
+What is rwlock and spinlock ? Briefly explain about both of them ?
+Tell about the Memory Layout and compilation steps of a Process in Linux ?
+How will you trace the system calls made into the kernel of lInux ?
+What is a stack frame, stack pointer & frame pointer ?
+What happens as soon as a packet arrives from the network in Linux ?
+What is Kmalloc and how does it differ from normal malloc ? or Why can’t we use malloc in kernel code ?
+what is a watchdog timer? what is the sinificance of it?
+
+The watchdog timer is a timing device with a predefined time interval. During that interval, some event may occur or else the device generates a time out signal. 
+	It is used to reset to the original state whenever some inappropriate events take place which can result in system malfunction. It is usually operated by counter devices
+	How are variables mapped across to the various memories by the C compiler?
+	
+	- Watchdog timer is basically a timing device that is set for predefined time interval and some event should occur during that time interval else the device generates a time out signal.
+	- One application where it is most widely used is when the mobile phone hangs and no activity takes place, in those cases watchdog timer performs a restart of the system and comes to the rescue of the users.
+	- It is used to reset to the original state whenever some inappropriate events take place such as too many commands being given at the same time or other activities that result in malfunctioning of the GUI. 
+		It i	s usually operated by counter devices.
+	
+Qualcom :
+
+Whats is Stack overflow attack??...then he gave me a scenario where there was a open source code at a server and you have your piece of code at that server.
+You as a client are allowed to invoke a method which takes in a array as a parameter which is not checked for overflow validation. 
+I had to induce a buffer overflow attack and make the method to pass control… 
+
+When does the control passes from user mode to kernel mode in a Linux System? 
+	System calls ,H/w Interrupts and last which I did not mention was Exceptions
+	
+write a shortest string copy function?
+while (*str++ = *dst++) {}i
+
+find sturcture address given an element of the structure
+long discussion on kernel in 3-4 interviews : Paging, segmentation, Priorities, scheduling, Concurrency
+
+How are signals hanled in OS ?
+Page Fault exception - what happens  ?
+implement your own sizeof ?
+
+	return (char *)(&x + 1) - (char *)&x;
+	
+Question: Why does this fail when x is an array? Say int x[]={1, 2, 3, 4, 5};
+Answer: Because x is a pointer to the very first value in the array, which is 1. Hence the sizeof x will return the size of the pointer, which is 4 or 8 bytes depending on the system.
+
+linklist and array, which one is fatser an why ?
+	Array Elements are stored in contiguous memory locations. Hence they will be faster to retrieve.
+	What do you mean by contiguous memory locations? Physical or Virtual ?
+	First, there is no requirement for random access, only iterate one by one.
+
+	In this case, continuous memory does not matter so much.
+	It really depends on the Link List implementation and the size.
+	If it is a normal size data, array will be a little faster.
+	But if it is a really big size, link list may be faster because it does not need allocate the big continuous memory block for data loading.
+
+Can you tell me how to check whether a linked list is circular or not and delte the circulerity?
+
+Compilation How to reduce a final size of executable?
+how you can tell whether system is little or big indian ?
+best synchronization tecqnique ?
+
+for simple counter variables or for bitwise ------->atomic operations are best methods.
+atomic_t count=ATOMIC_INIT(0); or atomic_set(&count,0);
+atomic_read(&count);
+atomic_inc(&count);
+atomic_dec(&count);
+atomic_add(&count,10);
+atomic_sub(&count,10);
+
+spinlocks are used to hold critical section for short time and can use from interrupt context and locks can not sleep,also called busy wait loops.
+fully spinlocks and reader/writer spin locks are available.
+spinlock_t my_spinlock;
+spin_lock_init( &my_spinlock );
+
+spin_lock( &my_spinlock );
+// critical section
+spin_unlock( &my_spinlock );
+
+Spinlock variant with local CPU interrupt disable :
+spin_lock_irqsave( &my_spinlock, flags );
+// critical section
+spin_unlock_irqrestore( &my_spinlock, flags );
+
+if your kernel thread shares data with a bottom half :
+spin_lock_bh( &my_spinlock );
+// critical section
+spin_unlock_bh( &my_spinlock );
+
+if you have more readers than writers for your shared resource :
+Reader/writer spinlock can be used
+rwlock_t my_rwlock;
+rwlock_init( &my_rwlock );
+write_lock( &my_rwlock );
+// critical section -- can read and write
+write_unlock( &my_rwlock );
+
+read_lock( &my_rwlock );
+// critical section -- can read only
+read_unlock( &my_rwlock );
+
+mutexs are used when you hold lock for longer time and if you use from process context.
+DEFINE_MUTEX( my_mutex );
+mutex_lock( &my_mutex );
+mutex_unlock( &my_mutex );
+
+How function poiner are shared between different process ?
+	two processes can not share function pointers.
+	if you want to use functions in two processes make library for that functions and use that library in your processes.
+
+is linux kernel a thread, process or something else?
+how sysctrl work ?
+how a func from one user process can be called in other user process ?	
+
+write a program using two thread . one thread should print odd number and other should even number in sequesnce? how you can make it SMP safe ?
+how to make it SMP safe in user space?
+in kthread context we could have used spin_lock(), but in user space what is the method to do SMP safe when we run pthread?
+
+explain device tree concept ?
+	Device tree is a data structure that describes the hardware and is passed to the kernel at boot time.
+	different boards can be supported without recompiling the kernel only by writing the dtbs.
+	
+differance b/w kill -9 and kill -3 ?
+	kill -3: Terminates with coredump. eg SIGQUIT (QUIT) : Quit : Terminate with core dump; can be trapped
+	kill -9: Forcible termination. eg SIGKILL (KILL) : Kill : Forced termination; cannot be trapped
+differance b/w process and thread ?
+describe the steps to add a new sysctl() or fnctl() ?
+	sysctl is used to modify kernel parameters at runtime. The parameters are listed under /proc/sys/.
+	Procfs is required for sysctl support in Linux. You can use sysctl to both read and write sysctl data.
+	You must login as the root user to use any one of the following command.
+	Method # 1: Setting value via procfs
+		You can use standard echo command to write data to variables:
+		# echo "value" > /proc/sys/location/variable
+	Method # 2: Temporary on the command line
+		Use sysctl command with -w option when you want to change a sysctl setting:
+		sysctl -w variable=value
+	Method # 3: Configuration file /etc/sysctl.conf
+		This is recommended way. First open /etc/sysctl.conf file
+		# vi /etc/sysctl.conf
+	Now add value:
+	variable = value
+	Close and save the changes. Type the following command to load sysctl settings from the file /etc/sysctl.conf file:
+	# sysctl -p
+
+swap two variable without temp variable ?
+	/* swapping using three variables*/ (Takes extra memory space)
+	Int a=5, b=10, c;
+	c=a; a=b; b=c;
+
+	/* using arithmetic operators */
+	a=a+b; b=a-b; a=a-b;
+
+	/* using bit-wise operators */
+	a=a^b; b=b^a; a=a^b;
+	
+	/* one line statement using bit-wise operators */ (most efficient)
+	a^=b^=a^=b;
+	The order of evaluation is from right to left. This is same as in approach (c) but the three statements are compounded into one statement.
+
+	/* one line statement using arithmetic & assignment operators */
+	a=(a+b) - (b=a);
+	In the above axample, parenthesis operator enjoys the highest priority & the order of evaluation is from left to right. Hence (a+b) is evaluated first and replaced with 15. 
+	Then (b=a) is evaluated and the value of a is assigned to b, which is 5. Finally a is replaced with 15-5, i.e. 10. Now the two numbers are swapped.
+
+Suggest an efficient method to count the no. of 1’s in a 32 bit no. Remember without using loop & testing each bit?
+	int count_set_bits (long n)
+	{
+            int count = 0;
+             while (n)
+             {
+				count ++;
+				n & = n-1;
+             }
+            return (count);
+     }
+
+	int count_set_bits (long n)
+	{
+		return (n ? 1+ count_set_bits (n&n-1) : 0);
+	} 
+
+How to swap between first & 2nd byte of an integer in one line statement?
+	int x=0x1234;
+	x = x<<8 | x>>8;
+
+find the middle element in link list ?
+		Maintain two pointers slow and fast.
+		Iterate thru the list by moving slow pointer once and fast pointer twice. When fast pointer will point to null, slow pointer will be pointing to middle element.
+
+count the number of set bits in integer ?
+implemet your own string system call ? 
+find the size of structure without sizeof ?
+differance b/w array and pointer and const strings ?
+
+check whether a number is power of 2 or not ?
+	void main ()
+	{
+		int n;
+		printf (“\n Enter any no:”);
+		scanf (“%d”, & n);
+		if (n & & ((n & n-1) = = 0))
+			printf (“It is power of 2”);
+		else
+			printf (“It is not power of 2”);
+	}
+	Note: The logic says that if a no. is power of 2, then in the binary representation, only one bit of the no. can be ‘1’ & rest are must be ‘0’.
+	
+Swapping integers without using additional space?
+	a= a(xor)b, b= a(xor)b, a=a(xor)b
+	a = a + b; b = a - b; a = a - b;
+	Doesn't work if a and b are 32 bit integer. We might have over flow in a+b. a(xor)b will not have any overflow.
+
+Write a program in C to add two numbers without using any maths operator (+, -, /, *).
+
+	int sum(int x, int y) 
+	{ 
+		if( x == y) 
+			return (x << 1); 
+		else 
+			return (x ^ y); } see complete program at http://www.ssiddique.info/add-two-numbers-without-using.html
+	}
+	
+	c = a – (-b);
+	as a+b is equivalent to a – (-b), binary ‘+’ operator is replaced by one unary ‘-‘ & one binary ‘-‘ operator.
+
+How to print number from 1 to 100 without using conditional operators.
+	void main ()
+	{
+		int  i=0;
+		while (100 – i++)
+		printf (“ %d”, i);
+	}
+
+WAP to print 100 times “Hello” without using loop & goto statement.
+	void main()
+	{
+		show (1, 100);
+	}
+	show (int x, int y)
+	{
+		if (x>=y)
+			return;
+		printf (“\n Hello”);
+		show (x+1, y);
+	}
+	i.e. Recursive function
+
+Why is it usually a bad idea to use gets()? Suggest a workaround?
+	The function gets() reads characters from the stdin and stores them at the provided input buffer. However, gets() will keep reading until it encounters a newline character. 
+	Unless the buffer is large enough, or the length of the line being read is known ahead of time, gets() can potentially overflow the input buffer and start overwriting memory it is not supposed to,
+	wreaking havoc or opening security vulnerabilities.
+
+	One way to work around this issue is to use fgets(). It allows you to put a limit on the maximum number of characters to read:
+	fgets(b, 124, stdin);
+
+
+How can you access global static variables from other files?
+	global static variables have file scope and cant be accessed outside the file. That's the difference between global static and global.
+	we can use a function to access the variable or its pointer.
+How would you obtain n bits from position p in an integer?
+	First left shift 32-p bits followed by 32-n bits right shift.
+	/* getbits: get n bits from position p */ unsigned getbits(unsigned x, int p, int n) { return (x >> (p+1-n)) & ~(~0 >(p+1-n) moves the desired field to the right end of the word. ~0 is all 1 bits; 
+	shifting it left n bit positions with ~0 << n places zeros in the rightmost n bits; complementing that with ~ makes a mask with ones in the rightmost n bits. Directly from K&R.
+What is setup hold time?
+	Setup time is the time the data should be held constant before the arrival of the clock edge.
+	Set Up time is Minimum Amount of time During which Data Signal Should be Stable Before the Clock made a Valid[Low-to-High] Transition. 
+	Hold time is the Minimum Amount of time After the Clock Made a Valid Transition During which Data Signal Should Stable.
+find length of circular linked list given a pointer to some node of linkedlist?
+
+
+c basic :
+Data type :
+	. Primary (primitive, fundamental) data types : char, int, flot, double, void.
+	. Drived data types : array,function, pointer.
+	. user defined : enum, struct, union.
+
+Note : default data type is signed int.
+Note : size of primitive data type in c depends upon the word length of the microprocessor. 
+	In general we can say size of int is word length of microprocessor.
+Note : Why range of signed char is -128 to 127 not -127 to 128?
+Note : How to remember size of data type in c? ans : <limits.h>
+
+variable is container of data.
+Variable Attributes :
+	. Name [identifier]
+	. Value
+	. Address
+
+Name:
+Note: In c any name is called identifier. 
+This name can be variable name, function name, enum constant name, micro constant name, goto label name, 
+any other data type name like structure, union, enum names or typedef name.
+
+Value : 
+Data which any variable keeps is known as value of variable.
+Note : Name of variable always returns value of the variable.
+
+Lvalue = Rvalue
+LValue must be any variable in c it cannot be a constant, function or any other data type of c.
+
+Note :
+LValue cannot be a integer constant, macro contant, const variable, data type and enum const. 
+
+Address:
+Location in a memory where a variable stores its data or value is known as address of variable. 
+To know address of any variable c has provided a special unary operator & which is known as deference operator or address operator. 
+This operator is only used with variables not with the constant.
+
+Note:
+We cannot write: &&a, because:
+&&a=& (&a) =& (address of variable a) =& (a constant number)
+And we cannot use address operator with constant.
+
+Note : it is not possible to have two variable with same name with same visibility. 
+	But it is possible that two variable with same name but different visibility.
+	In this case variable name can access only that variable which is more local. 
+	In c there is not any way to access global variable if any local variable is present of same name.
+
+Important points about address of variables in c:
+
+1. Address of any variable in c is an unsigned integer. 
+It cannot be a negative number. So in printf statement we should use %u instead of %d, to print the address of any variable.
+%d: It is used to print signed decimal number.
+%u: It is used to print unsigned decimal number.
+Since, if the address of any variable will beyond the range of signed short int it will print a cyclic value.
+
+2. A programmer cannot know at which address a variable will store the data. It is decided by compiler or operating system.
+3. Any two variables in c cannot have same physical address.
+4. Address of any variable in c is not integer type so to assign an address to a integral variable we have to type cast the address.
+
+Address arithmetic in c:
+
+1. We can subtract address of any two variables but cannot add, multiply, divide two addresses.
+2. we can add or subtract a integer number with address.
+3. Other operators which can be used with addresses are:
+(a) Negation operator: !
+(b) Size operator: sizeof
+(c) Type casting operator: (Type)
+(e) Deference operator: *
+(f) Logical operator: &&, ||
+
+Modifiers : which modify the meaning the basic data type in c.
+
+	group		modifier
+1. Size modifier	short, long
+2. Signed modifier	signed, unsigned
+3. Constant modifier	const , not const
+4. Volatile modifier	volatole, non volatile
+5. Storage class	auto, register, static, extern
+
+Note :
+1. Default modifier of storage class is auto when we declared the variable inside any function 
+and default modifier of storage class is static when we declared variable outside of all functions. 
+In other word we can say if variable has declared locally then default storage class is auto and if 
+it has declared globally then default storage class of variable is extern.
+
+2. Default storage class of function is extern.
+
+Rules for using modifier in c:
+1. We cannot use two modifiers of same groups in any particular data type of c.
+2. We can write modifier either before the data type or after the data type.
+3. Order of modifier including data type doesn’t affect the meaning of declaration.
+4. There is one exception in rule 3. POINTER, FUNCTION and INTERRUPT modifier must be written after the data type.
+
+const modifier :
+1. You can assign the value to the constant variables only at the time of declaration.
+2. Uninitialized constant variable is not cause of any compilation error. But you cannot assign any value after the declaration.
+Note : If you have declared the uninitialized variable globally then default initial value will be zero in case of integral data type 
+	and null in case of non-integral data type. 
+	If you have declared the uninitialized const variable locally then default initial value will be garbage.
+3. Constant variables executes faster than not constant variables.
+4. You can modify constant variable with the help of pointers.
+
+https://stackoverflow.com/questions/1143262/what-is-the-difference-between-const-int-const-int-const-and-int-const
+
+const char *ptr :
+	ptr is a pointer to a char, where you can't change the value of the char (at least not through the pointer 
+	(without casting the constness away)).
+char * const ptr :
+	ptr is a constant pointer to a char, where you can change the char, but you can't make the pointer point to a different char.
+const char *const ptr:
+	ptr is a constant pointer to a constant char, i.e. you can change neither where the pointer points nor the value of the pointee.
+
+Now the first const can be on either side of the type so:
+
+const int * == int const *
+const int * const == int const * const
+
+If you want to go really crazy you can do things like this:
+
+int ** - pointer to pointer to int
+int ** const - a const pointer to a pointer to an int
+int * const * - a pointer to a const pointer to an int
+int const ** - a pointer to a pointer to a const int
+int * const * const - a const pointer to a const pointer to an int
+
+volatile :
+1. A volatile variable can be changed by the background routine of preprocessor. 
+This background routine may be interrupt signals by microprocessor, threads, real times clocks etc.
+
+2. In simple word we can say a value volatile variable which has stored in the memory can be by any external sources.
+
+3. Whenever compiler encounter any reference of volatile variable is always load the value of variable from memory 
+so that if any external source has modified the value in the memory complier will get its updated value.
+
+4. Working principle of volatile variable is opposite to the register variable in c. 
+Hence volatile variables take more execution time than non-volatile variables.
+
+Question: What is meaning of following declaration in c?
+const volatile float f;
+register volatile char c;
+
+storage class :
+
+Storage class is modifier or qualifier of data types which decides:
+1. In which area of memory a particular variable will be stored?  
+2. What is scope of variable?
+3. What is visibility of variable? 
+
+Visibility :  means accessibility. Up to witch part or area of a program can be access.
+Scope : Meaning of scope is to check either variable is alive or dead. Alive means data of a variable has not destroyed from memory.
+	Up to which part or area of the program a variable is alive, that area or part is known as scope of a variable.
+
+scope types:
+1. Block scope.
+2. Function scope.
+3. File scope.
+3. Program scope.
+
+storage class Types:
+
+storage class		declared	scope 		visibility
+1. auto
+			Globel		
+			local		block		block
+2. register		
+			globel		
+			local		block		block
+3. static
+			globel		program		file
+			local		program		block
+4. extern
+			globel		program		program
+			local		program		block
+
+auto :
+Automatic variables or auto variables are default storage class of local variable. An auto variable cannot be declared globally. (Why?)
+Properties :
+1. Default initial value of auto variable is garbage.
+2. Visibility of auto variable is within the block where it has declared.
+3. Scope of auto variable is within the block where it has declared.
+4. auto variable initialize each time.
+5. An auto variable gets memory at run time.
+
+register :
+All register variable in c stores in CPU not in the memory.
+
+properties :
+1. register int a; We are only requesting not forcing to compiler to store variable a in CPU.
+2. A register variable execute faster than other variables because it is stored in CPU 
+	so during the execution compiler has no extra burden to bring the variable from memory to CPU.
+3. Since a CPU have limited number of register so it is programmer responsibility which variable should declared 
+	as register variable i.e. variable which are using many times should declared as a register variable.
+4. We cannot dereference register variable since it has not any memory address.
+5. Default initial value of register variable is garbage.
+6. Scope and visibility of register variable is block.
+
+static :
+properties :
+1. It is not default storage class of global variables.
+2. Default initial value of static integral type variables are zero otherwise null.
+3. A same static variable can be declared many times but we can initialize at only one time.
+4. We cannot write any assignment statement globally.
+Note: Assigning any value to the variable at the time of declaration is known as initialization 
+	while assigning any value to variable not at the time of declaration is known assignment.
+5. A static variable initializes only one time in whole program.
+6. If we declared static variable locally then its visibility will within a block where it has declared.
+7. If declared a static variable or function globally then its visibility will only the file 
+	in which it has declared not in the other files.
+
+extern :
+properties:
+1. It is default storage class of all global variables as well all functions.
+2. When we use extern modifier with any variables it is only declaration i.e. memory is not allocated for these variable.
+3. If you will not use extern keyword with global variables then compiler will automatically 
+	initialize with default value to extern variable.
+4. Default initial value of extern integral type variable is zero otherwise null.
+5. We cannot initialize extern variable locally i.e. within any block either at the time of declaration or separately. 
+	We can only initialize extern variable globally.
+6. If we declare any variable as extern variable then it searches that variable either it has been initialized or not. 
+	If it has been initialized which may be either extern or static* then it is ok otherwise compiler will show an error.
+7. A particular extern variable can be declared many times but we can initialize at only one time.
+8. We cannot write any assignment statement globally.
+9. If declared an extern variables or function globally then its visibility will whole the program 
+	which may contain one file or many files.
+
+switch case :
+
+switch(expression) {
+
+	case constant-expression  :
+		statement(s);
+      		break; /* optional */
+	
+   	case constant-expression  :
+   	   	statement(s);
+   	   	break; /* optional */
+  
+   	/* you can have any number of case statements */
+   	default : /* Optional */
+   		statement(s);
+}
+
+properties :
+
+1. If we will not use break keyword in each case the program control will come in each case after the case
+	witch satisfy the switch condition.
+2. We can write case statement in any order including the default case. That default case may be first case, 
+	last case or in between the any case in the switch case statement.
+3. Case expression cannot be constant variable, string const.
+4. Case expression can be enum constant, character constant, macro constant.
+5. Case expression must be integral constant expression. If it is not integer then it is automatically type casted into integer value.
+6. duplicate case is not possible.
+7. switch expression must return an integer value. It cannot be float, double or long double
+8. switch case statement program control always move from the case which satisfy the switch condition 
+	and end with either break keyword, terminating} or any null character which will come first.
+9. it is possible a switch case statement without any case but it is meaning less.
+10. We cannot use continue keyword in switch case. It is part loop.
+11. Nesting of switch case is possible in c.
+12. It is possible to write label of goto statement in the case of switch case statement.
+13. We can not declare any variable in any case of switch case statement.
+14.  switch case will not affect the value of variable a.
+	Also sizeof operator doesn't affect the value of the any variable
+15. The expression used in a switch statement must have an integral or enumerated type, or be of a class type 
+	in which the class has a single conversion function to an integral or enumerated type.
+
+
+Loop :
+Looping is the process of repeating of same code until a specific condition doesn’t satisfy.
+
+types :
+
+1. while
+2. do while
+3. for
+
+for (Expression 1; Expression 2; Expression 3) {
+	Loop body
+}
+
+Expression 1:
+It is called initialization expression. Task of this expression is to initialize the looping variables.
+
+Properties of expression 1:
+1. Expression1 can initialize the more than one variable.
+2. Expression1 is optional.
+3. we cannot declare the variable at the expression1.
+
+Expression 2: 
+It is called as conditional expression. Task of expression is to check the condition and if it is false then it terminates the loop.
+
+Properties of expression2:
+1.  Expression2 can have more than one checking condition and if any condition is false loop will terminate.
+2. it is also optional.
+3. It can perform task of expression1 as well as expression3. That is it can initialize the variables as well as increment the variables.
+4. If expression2 is zero means condition is false and any non zero number means condition is true.
+
+Expression 3:
+It is called as instrumentation expression. Task of this expression is to increment the variable. 
+
+Properties:
+1. We can increment more than one variable at the same time in the expression3.
+2. it is also optional.
+
+Loop body:
+Loop body contains the part of code which we have to execute multiple numbers of times.
+
+Properties of loop body:
+1. If loop body contain only one statement then brace is optional.
+2. Loop without body is possible.
+3. Braces of loop body behave as block.
+
+While loop:
+while (Expression) {
+Loop body
+}
+
+Properties of while loop:
+1. Task of the expression is to check the condition. Loop will execute until condition is true otherwise loop will terminate.  
+2. If any expression returns zero then condition will false and if it returns any non- zero number then condition will true.
+3. In while loop condition expression is compulsory.
+4. While loop without any body is possible.
+5. In while loop there can be more than one conditional expression.
+6. If loop body contain only one statement the brace is optional.
+
+do while :
+It is also called as post tested loop. It is used when it is necessary to execute the loop at least one time. Syntax:
+
+do {
+	Loop body
+} while (Expression);
+
+break keyword in c:
+It is keyword of c programming. Task of this keyword is to bring the control from out of the loop in the case of looping.
+Another task of break keyword is to switch the control from one case to another case in case of switch case control statement.
+
+continue:
+It is keyword of c and task of this keyword is to transfer the control of program at the beginning of loop.
+
+goto statement :
+Transfers control to the labeled statement.
+
+Array :
+An array is derived data type in c programming language which can store similar type of data in continuous memory location. 
+Data may be primitive type (int, char, float, double…), address of union, structure, pointer, function or another array.
+
+syntex :
+data type arrayname [ arraysize ] = { elements };
+
+Array is useful when:
+1. We have to store large number of data of similar type. If we have large number of similar kind of variable 
+	then it is very difficult to remember name of all variables and write the program.
+2. We want to store large number of data in continuous memory location. Array always stores data in continuous memory location.
+3. The number of values between braces { } cannot be larger than the number of elements that we declare for the array
+	 between square brackets [ ].
+4. Arrays have 0 as the first index not 1.
+5. If the size of an array is n, to access the last element, (n-1)
+6. Array name is constant pointer and we cannot assign any value in constant data type after declaration.
+eg. 
+char arr[10];
+arr = "world";
+7. Size of any character array cannot be less than the number of characters in any string which it has assigned. 
+	Size of an array can be equal (excluding null character) or greater than but never less than.
+8. Size of any array in c cannot be constantan variable but it can be enum const and macro const.
+9. Member of an array cannot be address of auto variable because array gets memory at load time 
+	while auto variable gets memory at run time.
+10. If we initialize any array at the time of declaration the compiler will treat such array as static variable 
+	and its default value of uninitialized member is zero.
+
+Note: In any expression lower type data is always automatically type casted into the higher data type.
+
+Advantage of using array:
+1. An array provides singe name .So it easy to remember the name of all element of an array.
+2. Array name gives base address of an array .So with the help increment operator we can visit one by one all the element of an array.
+3. Array has many application data structure.
+
+Array of pointers in c:
+Array whose content is address of another variable is known as array pointers.
+
+strings :
+Strings are actually one-dimensional array of characters terminated by a null character '\0'. 
+Thus a null-terminated string contains the characters that comprise the string followed by a null.
+
+intilization of strings :
+
+using array :
+
+char c[] = "abcd";
+     OR,
+char c[50] = "abcd";
+     OR,
+char c[] = {'a', 'b', 'c', 'd', '\0'};
+     OR,
+char c[5] = {'a', 'b', 'c', 'd', '\0'};
+
+using pointer :
+
+char *c = "abcd";
+
+
+structure :
+
+struct [structure tag] {
+
+   member definition;
+   member definition;
+   ...
+   member definition;
+} [one or more structure variables];  
+
+Union :
+
+union [union tag] {
+   member definition;
+   member definition;
+   ...
+   member definition;
+} [one or more union variables];
+
+Bit field :
+
+struct < identifier > {
+	type member_variable_name: size_in_bits;
+};
+
+identifier : the name of the bit field that is being declared. 
+	The name is optional: nameless bitfields introduce the specified number of bits of padding
+size_in_bits : an integral constant expression with a value greater or equal to zero. 
+	When greater than zero, this is the number of bits that this bit field will occupy. 
+	The value zero is only allowed for nameless bitfields and has special meaning: 
+	it specifies that the next bit field in the class definition will begin at an allocation unit's boundary.
+
+eg. 
+struct S {
+ // three-bit unsigned field,
+ // allowed values are 0...7
+ unsigned int b : 3;
+};
+
+enum :
+
+enum identifier <optional> { const1, const2, ..., constN };
+
+enumerator = constant-expression ;
+
+identifier, enumerator 	- 	identifiers that are introduced by this declaration
+constant-expression 	- 	integer constant expression whose value is representable as a value of type int
+
+Here, name of the enumeration is identifier.
+And, const1, const2,...., constN are values of type identfier.
+By default, const1 is 0, const2  is 1 and so on. You can change default values of enum elements during declaration (if necessary).
+
+typedef :
+typedef is a keyword used in C language to assign alternative names to existing types. 
+Its mostly used with user defined data types, when names of data types get slightly complicated.
+
+typedef existing_name alias_name;
+
+eg.
+typedef struct member
+{
+  type member1;
+  type member2;
+  type member3;
+} type_name ;
+
+type_name v1, v2.
+
+
+pointer :
+
+opertor		precedence		associative
+(), []		1			L -> R
+*, identifier	2			R -> L
+data type	3			
+
+(): This operator behaves as bracket operator or function operator.
+[]: This operator behaves as array subscription operator.
+*: This operator behaves as pointer operator not as multiplication operator.
+
+Identifier: It is not an operator but it is name of pointer variable. You will always find the first priority 
+will be assigned to the name of pointer.
+
+Data type: It is also not an operator. Data types also includes modifier (like signed int, long double etc.)
+
+How to read complex pointer :
+
+void (*ptr)( int (*)[2], int (*)[3]);
+ptr is pointer to such function which first parameter is pointer to one dimensional array of size two 
+which content int type data and second parameter is pointer to such function which parameter is void 
+and return type is int data type and return type is void.
+
+int ( * ( * ptr ) [ 5 ] ) ( );
+ptr is pointer to such array of size five which content are pointer to such function 
+which parameter is void and return type is int type data.
+
+double*(*(*ptr)(int))(double **,char c);
+ptr is pointer to function which parameter is int type data and return type is pointer to function 
+which first parameter is pointer to pointer of double data type and second parameter is char type data type 
+and return type is pointer to double data type.
+
+Rule 1: Arithmetic operation with pointer :
+Address + Number= Address
+Address - Number= Address
+
+Address++ = Address
+Address-- = Address
+
+++Address = Address
+--Address = Address
+
+New address = old address + number sizeof(data type) which ponter is pointing.
+New address = old address - number * Size of data type to which pointer is pointing
+
+Rule 2: Difference arithmetic with pointers
+If two pointers are of same type then:
+adr2 - addr1 = ( simple subtraction of two address) / size of data type which pointer points.
+
+Rule 3: Illegal arithmetic with pointers:
+Address + Address=Illegal
+Address * Address=Illegal
+Address / Address=Illegal
+Address % Address=Illegal
+
+Rule 4: Bit wise arithmetic with pointers
+We can perform bit wise operation between two pointers like
+
+Address & Address=Illegal
+Address | Address=Illegal
+Address ^ Address=Illegal
+~Address=Illegal
+
+Rule 5: We can find size of a pointer using sizeof operator.
+
+tricks :
+*array = *(array +0) = array[0];
+arr[0] = &arr1;
+p[i] = *(p+i) : P[0][0][0]=*(p[0][0]+0)=**p[0]=***p
+*(p+i) = p[i]
+*&i = i
+-> = (*).
+Rule: * and & always cancel to each other
+
+Note: %s is used to print stream of characters up to null (\0) character.
+
+Generic pointer:
+void pointer in c is known as generic pointer. Literal meaning of generic pointer is a pointer which can point type of data.
+Example:
+void *ptr;
+Here ptr is generic pointer.
+
+1. We cannot dereference generic pointer.
+2. We can find the size of generic pointer using sizeof operator.
+3. Generic pointer can hold any type of pointers like char pointer, struct pointer, array of pointer etc without any typecasting.
+4. Any type of pointer can hold generic pointer without any typecasting.
+5. Generic pointers are used when we want to return such pointer which is applicable to all types of pointers. 
+	For example return type of malloc function is generic pointer because it can dynamically allocate the memory space to stores 
+	integer, float, structure etc. hence we type cast its return type to appropriate pointer type.
+
+NULL pointer:
+Literal meaning of NULL pointer is a pointer which is pointing to nothing. NULL pointer points the base address of segment.
+
+Examples of NULL pointer:
+1. int *ptr=(char *)0;
+2. float *ptr=(float *)0;
+3. char *ptr=(char *)0;
+4. double *ptr=(double *)0;
+5. char *ptr=’\0’;
+6. int *ptr=NULL;
+
+What is meaning of NULL?
+NULL is macro constant which has been defined in the heard file stdio.h, alloc.h, mem.h, stddef.h and stdlib.h as
+#define NULL 0
+
+We cannot copy any thing in the NULL pointer.
+
+Wild pointer:
+A pointer in c which has not been initialized is known as wild pointer.
+
+There is difference between the NULL pointer and wild pointer. Null pointer points the base address of 
+segment while wild pointer doesn’t point any specific memory location.
+
+Dangling pointer:
+
+If any pointer is pointing the memory address of any variable but after some variable has deleted from that memory location 
+while pointer is still pointing such memory location. Such pointer is known as dangling pointer 
+and this problem is known as dangling pointer problem.
+
+Solution of this problem: Make the variable as static variable.
+
+Note: In some compiler you may get warning message returning address of local variable or temporary.
+
+Function :
+
+Properties :
+1. If function definition has written after the function call then it is necessary to declare the function 
+	before the function call because function call statement has no idea about prototype of calling function.
+
+2.If function definition has written before the function call statement then it is not necessary to write function declaration.
+3.If return type of function is signed int data type then it not necessary to write function declaration 
+	even though function definition has written after the function call.
+4.Function’s declaration doesn’t reserve any memory space.
+5.In declaration statement it is not necessary to write variable name in parameter of function.
+6. C doesn't support function overloading. In c it is not possible to declare two function of same name 
+	but different signatures like number of parameters, data type of parameters, order of parameter etc.
+
+Main function : 
+Properties of main function:
+1. Any c program can have only one main function.
+2. main function is called by operating system.
+3. main is not keyword of c. So any variable name can be main.
+4. Programmer can also call the main function.
+5. Default return type of main function is int and default parameter is void.
+
+Prototype of main function in c:
+int main (int arg_counter, char *arg_vector[], char *env_vector[]);
+1. Argument counter: 
+	First parameter of main function is argument counter. It stores an integer number which is equal to number of parameters 
+	passed including file name from the command prompt.
+2. Argument vector: 
+	Second parameter of main function is argument vector. It is array which is array of string. 
+	This string array contains the actual parameters which have passed from the command prompt.
+3. Environment vector :
+	Third parameter of main function is environment variable. It is also array of string which contains 
+	all the environments variables of the system.
+
+
+
+function declarations : Declaration of function is also known as prototype of a function.
+
+<return type > <function name> ( < parameters >, ...)
+
+Function defination :
+
+<return type > <function name > ( < parameters >, ...) {
+	/* body */
+	statement 1;
+	statment 2;
+	...
+	return [ < expression >];
+}
+
+Parameter of function can be:
+1. Primitive data type.
+2. Derived data type.
+3. User defined data type.
+4. Ellipsis i.e. variable number of parameter.
+5. We can use modifier with data type in return type.
+
+Note : parameter cannot be intilized as parameter in function in c.
+
+How to pass parameters in the function in C :
+
+Pass by value: 
+In this approach we pass copy of actual variables in function as a parameter. 
+Hence any modification on parameters inside the function will not reflect in the actual variable.
+
+Pass by reference: 
+In this approach we pass memory address actual variables in function as a parameter. 
+Hence any modification on parameters inside the function will reflect in the actual variable.
+
+Return type of a function: 
+
+1. Default return type of function is signed int data type.
+2. Function can return only one value at a time.
+3. Storage classes allowed with return type are static, extern, typedef i.e. we cannot use auto and register storage class 
+	with the return type of any function.
+4. Default storage class of return type of a function is extern.
+5. In return type we can use modifier like short, long, signed, unsigned, extern, static, const, volatile etc.
+
+Return type of function can be:
+1. Primitive data type: Primitive data types are: char, int, float, double, void.
+2. Derived data types are: array, function, pointer.
+3. User defined data types are: structure, union, enum.
+
+How to calculate size of a function in c? 
+	Size of function = Size of all local variable which has declared in function + Size of those global variables which 
+	has used in function + Size of all its parameter+ Size of returned value if it is an address.
+
+Recursion function :
+Calling of same function from its function body is known as function recursion.It is alternative of loop.
+Any c program which is possible using loop it must be possible using function recursion.
+
+http://www.cquestions.com/2009/06/function-recursion-in-c-programming.html
+How to write function recursion program in easier way:
+Step1: First of all write same program using while loop and function. (Except main function)
+Step 2: In that function make all local variable static.
+Step 3: Replace while keyword by if.
+Step 4: The increment or decrement of variable which is used for condition checking, replace with function call 
+	and pass the parameter of that incremented or decremented variable.
+
+properties :
+1. It is very slow process.
+2. Nature of function recursion is infinite loop or stack over flow.
+3. It follows LIFO data structure.
+4. We can use break keyword in function recursion.
+5. We can not use goto to move the control from one function to another function.
+
+
+preprocessors :
+There are two operators in c preprocessor:
+1. # : This operator is called stringizing operator which convert any argument in the macro function in the string. 
+	So we can say pound sign # is string maker.
+2. ## : This operator is called token pasting operator. When we use a macro function with various argument 
+	then we can merge the argument with the help of ## operator.
+
+#if directive in c
+There are total six conditional compilation directives. There are:
+(a)#if
+(b)#elif
+(c)#else
+(d)#endif
+(e)ifdef
+(f)ifndef
+
+Syntax 1:
+
+#if <Constant_expression>
+    -------------
+    -------------
+#endif
+
+If constant expression will return 0 then condition will ture if it will return any non zero number condition will true.
+
+Syntax 2:
+
+#if <Constant_expression>
+    -----------------
+    -----------------
+#else
+    -----------------
+    -----------------
+#endif
+
+Note: Consonant expression in #if condition should not include any c programming variable since all 
+	preprocessor directives execute just before the actual c code.
+Note: Constant expression in #if directive cannot be string constant. 
+	It can be character constant which returns its ASCII value to directive.
