@@ -1,10 +1,104 @@
-Operating System Interview Questions :
+What are monolithic and micro kernels and what are the differences between them?
+	Monolithic kernel is a single large processes running entirely in a single address space. 
+	It is a single static binary file. All kernel services exist and execute in kernel address space.
+	Monolithic kernels are UNIX , LINUX.
+	
+	In Microkernels, the kernel is broken down into separate processes, known as servers. 
+	Some of the servers run in kernel space and some run in user-space.Microkernel are QNX , L4 , HURD.
 
-Kernel Synchronization :
-What are the differences between mutex and semaphore?
-What is a race condition and How to avoid a race conditon?
-What are atomic operations?
-What is priority inversion and how to solve that problem?
+
+	Monolithic kernel are faster than microkernel . While The first microkernel Mach is 50% slower than Monolithic 
+		kernel while later version like L4 only 2% or 4% slower than the Monolithic kernel .
+	Monolithic kernel generally are bulky . While Pure monolithic kernel has to be small in size even fit in s into 
+		processor first level cache (first generation microkernel).
+	Monolithic kernel device driver reside in the kernel space . While In the Microkernel device driver reside in the user space.
+	Since the device driver reside in the kernel space it make monolithic kernel less secure than microkernel . (Failure in the 
+		driver may lead to crash) While Microkernels are more secure than the monolithic kernel hence used in some military devices.
+	Monolithic kernels use signals and sockets to ensure IPC while microkernel approach uses message queues . 
+		1 gen of microkernel poorly implemented IPC so were slow on context switches.
+	Adding new feature to a monolithic system means recompiling the whole kernel While You can add new feature or patches 
+		without recompiling.
+
+What is a linux kernel ? is it a process or thread? 
+	Linux Kernel is a passive component of the OS. It does not execute, neither it is a process/thread. It itself has many 
+	subsystem and could be called with system call API/Interrupt that helps in executing the user space process in system space 
+	for more privileged access, either to I/O or any subsystem.
+
+What is a Loadable Kernel Module?
+	Modules are pieces of code that can be loaded and unloaded into the kernel upon demand. They extend the functionality 
+	of the kernel without the need to reboot the system.
+
+insmod vs modeprobe ?
+
+	modprobe: reads the modules from /lib/modules/$(uname -r)/modules.dep.bin (or without the .bin suffix if the other file is not
+	available). From the same file, dependencies are loaded.
+
+	modprobe accepts the name of a .ko file in /lib/modules/$(uname -r) and aliases (modules.alias.bin). 
+	Builtins (modules.alias.bin) are recognized as well, but since these modules are loaded by default, there is not 
+		point in modprobing this kind of modules.
+
+	insmod: on the other hand accepts paths to files. The module does not have to reside in /lib/modules/$(uname -r), but dependencies
+		are not automatically loaded. This is the lower program used by modprobe to load modules.
+
+	rmmod: removes a kernel name based on the name from /proc/modules. This name does not necessarily have to be the same as 
+		the one passed to modprobe.
+	modinfo: accepts a filename, or the filename without .ko suffix in /lib/modules/$(uname -r).
+	depmod : Creates the data base of module dependencies. This is created based on the information present 
+		in /lib/modules/module.dep file.
+	lsmod  : lists the modules already loaded into kernel.
+
+Explain the module loading in Linux.
+	A module can be loaded to Linux Kernel in two ways
+	1. Statically
+	2. Dynamically
+
+	Static loading means that the module is loaded in the memory with the kernel loading itself.
+
+	Dynamic loading means that the module is loaded into the kernel at the run time.
+	The command that is used to achieve it is insmod.
+
+	The user must have the root permission to do so.
+	e.g sudo insmod test.ko 
+
+
+How to Pass Command Line Arguments to a Kernel Module?
+	http://learnlinuxconcepts.blogspot.in/2014/03/how-to-pass-command-line-arguments-to.html	
+	The module_param() macro takes 3 arguments: 
+		arg1 : The name of the variable.
+		arg2 : Its type
+		arg3 : Permissions for the corresponding file in sysfs. 
+	
+	module_param_array(myarr, int, &arr_argc, 0);
+	MODULE_PARM_DESC() macro used for giving the description of variable.
+
+	command: insmod *.ko variable=value
+
+	Use Cases of Module Parameters:
+	When there is a need to change the irq line of the module then its the best way to pass the irq number 
+		as command line argument using module parameter concept.
+	Base address of the register map of a module can be passed at module load time using insmod based on this command line arguments.
+
+Why do we need two bootloaders viz. primary and secondary?
+	When the system starts the BootROM has no idea about the external RAM. It can only access the Internal RAM of the the CPU. 
+	So the BootROM loads the primary bootloader from the boot media (flash memory) into the internal RAM. 
+	The main job of the primary bootloader is to detect the external RAM and load the secondary bootloader into it. 
+	After this, the secondary bootloader starts its execution.
+
+Given a pid, how will you distinguish if it is a process or a thread ? 
+	Do ps -AL | grep pid
+	1st column is parent id and the second column is thread (LWP) id. if both are same then its a process id otherwise thread.
+
+What is the difference between kill-6 and kill -9? 
+	
+	SIGKILL and SIGABRT are two type of signals that are sent to process to terminate it.
+
+	SIGKILL is equivalent of "kill -9" and is used to kill zombie processes, processes that are already dead 
+		and waiting for their parent processes to reap them.
+	SIGABRT is equivalent of "kill -6" and is used to terminate/abort running processes.
+
+	SIGKILL signal cannot be caught or ignored and the receiving process cannot perform any clean-up upon receiving this signal.
+	SIGABRT signal can be caught, but it cannot be blocked.
+
 what is difference between process and thread.
 what is task_struct thread_info?
 difference betwen fork() and vfork()
@@ -12,15 +106,17 @@ what is zombie and orphan process?how parent less process is handles in linux.
 How context switching is handled in linux.
 what is user preemption and kernel preemption
 how system calls are implemented in linux.
+what is callback function? signal vs callback ?
+What happens when recursive functions are declared inline?
+Tell about the Memory Layout and compilation steps of a Process in Linux ?
+What is a stack frame, stack pointer & frame pointer ?
+What happens as soon as a packet arrives from the network in Linux ?
+Interrupts :
 
- 
-Interrupts and interrupt handlers
-what is interrupt and Types of interrupts e.g Software interrupts, Hardware interrupts, Edge Triggering and Level triggering ?
 what is top halves and bottom halves [tasklets , softirq and workqueus].
 what are the considerations needs to taken care while writing interrupt handler.
 what are shared handlers.
 what is interrupt context.
-how to disable and enable interrupts.
 what is ksoftirqd.
 How do you register an interrupt handler on a shared IRQ line?
 What is request_threaded_irq()
@@ -30,7 +126,6 @@ How are nested interrupts handled?
 Explain about the concurrent work queues.
 diff b/w interrupt, signal,isr and callback ?
 What happens if interrupt handler goes to sleep?
-What happens if interrupt handler uses semaphores
 How to protect variable between two interrupt handlers?
 How to protect variable between task and interrupt handler?
 How to debug GPIO interrupt functions?
@@ -43,6 +138,455 @@ How do I write to a __user memory from within the top half of an interrupt handl
 Why can interrupt handler has sleep functionality?
 Are the Interrupt Stack and the Kernel Stack the same stack?
 Why interrupt handler cannot use user stack ?
+What are the possible scenarios in which context switching of threads can occur ?
+What will happen if there are more threads requesting for CPU resource such as time ?
+While writing interrupt handlers(ISR), which are points needed to be considered?
+What is preemption ?
+What do you mean by atomic operations ?
+What is ISR? Can they be passed any parameter and can they return a value? can we use printf, break point, function call or any blocking or sleep call or floating operation in ISR?
+How CPUs find the ISR and distinguish between the various devices ?
+Is it possible for two devices to share an interrupt request line but have different ISR for those two devices ?
+What is difference between binary semaphore and mutex?
+What is the use of file->private_data in a device driver structure ?
+poll vs epoll ?
+Difference between Timer Softirq and Tasklet Softirq ?
+What are tasklets ? How are they activated ? when and How are they initialized ?
+
+Why Kernel Code running in interrupt context cannot sleep? 	
+	This is because the kernel design architecture wants it to be like this. Why so?
+	This is because interrupt context is not considered to be a process.So, it can't sleep.The interrupt code is 
+	doing some work on behalf of process and if slept then it will not only lead to the blocking of interrupt code 
+	but also the process that has called it .
+
+When should one use Polling and when should one use Interrupts?
+
+	Both the mechanisms have their own pluses and minuses.
+	We should use interrupts when we know that our event of interest is-
+		1. Asynchronous
+		2. Important(urgent).
+		3. Less frequent
+	We should use polling when we know that our event of interest is-
+		1. Synchronous
+		2. Not so important
+		3. Frequent(our polling routine should encounter events more than not)
+
+What is the difference between IRQ and FIQ in case of ARM? 
+	ARM treats FIQ(Fast interrupt request) at a higher priority as compared to IRQ(interrupt request). 
+	When an IRQ is executing an FIQ can interrupt it while vice versa is not true.
+
+	ARM uses a dedicated banked out register for FIQ mode ; register numbers R8-R12.
+	http://learnlinuxconcepts.blogspot.in/2014/06/arm-architecture.html
+	So when an FIQ comes these registers are directly swapped with the normal working register and the CPU need not take 
+	the pain of storing these registers in the stack. So it makes it faster.
+
+	One more point worth noting is that  the FIQ is located at the end of exception vector table(0X1c) which means that 
+	the code can run directly from 0X1C and this saves few cycles on entry to the ISR.
+
+Explain interrupt latency and how can we decrease it?
+	1. Interrupt latency basically refers to the time span an interrupt is generated and it being serviced by an appropriate 
+		routine defined, usually the interrupt handler.
+	2. External signals, some condition in the program or by the occurrence of some event, these could be the reasons 
+		for generation of an interrupt.
+	3. Interrupts can also be masked so as to ignore them even if an event occurs for which a routine has to be executed.
+	4. Following steps could be followed to reduce the latency
+	- ISRs being simple and short.
+	- Interrupts being serviced immediately
+	- Avoiding those instructions that increase the latency period.
+	- Also by prioritizing interrupts over threads.
+	- Avoiding use of inappropriate APIs.
+
+what is interrupt and why we should we use it ?
+	1. Interrupts enable hardware to signal to the processor.
+	2. Hardware devices generate interrupts asynchronously (with respect to the processor clock).
+	3. These interrupt values are often called interrupt request (IRQ) lines.
+
+	Types of interrupts :
+	Software interrupts, Hardware interrupts, Edge Triggering and Level triggering ?
+
+How can the processor work with hardware without impacting the machine's overall performance? 
+
+Exceptions and Interrupts ?
+	Interrupts: 
+	asynchronous interrupts generated by hardware.
+	Exceptions: 
+	synchronous interrupts generated by the processor.
+
+what is ISR and interrupt handler ?
+	An interrupt handler or interrupt service routine (ISR) is the function that the kernel runs in response to a specific interrupt:
+	1. Each device that generates interrupts has an associated interrupt handler.
+	2. The interrupt handler for a device is part of the device's driver (the kernel code that manages the device).
+
+Top Halves Versus Bottom Halves ?
+	Top half : 
+	The interrupt handler is the top half. The top half is run immediately upon receipt of the interrupt and performs only the work
+	that is time-critical, such as acknowledging receipt of the interrupt or resetting the hardware.
+	
+	Bottom half: 
+	Work that can be performed later is deferred until the bottom half. The bottom half runs in the future, 
+	at a more convenient time, with all interrupts enabled.
+	1. softirq 
+	2. tasklet
+	3. workqueue
+
+	softirq :
+	1. Softirqs are statically allocated at compile-time. So there are fixed number of softirq and they run in priority order.
+	2. Softirqs have strong CPU affinity, so they are reserved for most of time critical and important bottom half processing on the 			system.
+	3. softirq is guaranteed to run on the CPU it was scheduled on in SMP systems.
+	4. It Runs in interrupt context, so Interrupt context cannot perform certain actions that can result in the kernel putting 
+		the current context to sleep, such as downing a semaphore, copying to or from user-space memory or non-atomically 			allocating memory
+	5. it canâ€™t preempted and canâ€™t scheduled ie: A softirq never preempts another softirq.
+		 The only event that can preempt a softirq is an interrupt handler.
+	6. Atomic execution
+	7. it can run simultaneously on one or more processor, even two of the same type of softirq can run concurrently
+
+	Note : Currently, only two subsystems directly use softirqs: Networking devices and Block devices
+	Additionally, kernel timers and tasklets are built on top of softirqs.
+
+	Note : Softirqs are most often raised from within interrupt handlers. 
+		First the interrupt handler(top half) performs the basic hardware-related work, raises the softirq, and then exits. 
+		After the kernel is done processing interrupts, it checks wither any of the softirqs have been raised or not.
+		Code flow in Linux kernel for interrupt handling is explained below.
+	Tasklet :
+	Tasklets are build on top of softirq. The central idea of tasklet is to provide rich bottom half mechanisum. 
+	Only below points diffres from softirq.
+
+	1. Tasklets have a weaker CPU affinity than softirqs
+	2. Unlike softirqs, tasklets are dynamically allocated.
+	3. A tasklet can run on only one CPU at a time.
+	4. Runs in interrupt contex, Interrupt context cannot perform certain actions that can result in the kernel putting 
+		the current context to sleep, such as downing a semaphore, copying to or from user-space memory or non-atomically 			allocating memory
+	5. Atomic execution
+	6. Two different tasklets can run concurrently on different processors, but two of the same type of tasklet cannot run 
+		simultaneously on same processor.
+	7. Tasklet is strictly serialized wrt itself, but not wrt another tasklets.
+	8. Tasklet runs on same CPU from where is raised
+
+	Workqueue :
+	Workqueues are also like tasklets. They are useful to schedule a task that for future. There is some identical difference between  		two,Runs in kenrel process context. Because work queues run in process context (kernel threads), they are capable of sleeping.
+
+	1. Run in process contact ie. Non atomic execution
+	2. Workqueue runs on same CPU from where is raised
+	3. Higher latency compared to tasklet
+	4. Because work queues run in process context (kernel threads), they are capable of sleeping
+	5. alternative to work queues is kernel threads
+
+	Tasklets Vs SoftIrqs and Why softIRQ if tasklet is there ??
+
+	Tasklets and SoftIrqs are two ways to implement bottom halves ( and definitely not the only two ways).
+	Tasklets are dynamically created and are simpler to use. So while deciding upon which one to use , 
+	go for tasklets unless the work is time critical. Networking and Block devices, whose work is time critical use SoftIrqs.
+
+	SoftIrqs Vs Tasklets Vs WorkQueues ?
+
+	1. Deferred work runs in Interrupt context in case of SoftIrqs and Tasklets while it runs in process context in case of workqueues.
+	2. SoftIrqs(same or different) can run run simulatenously on different processor cores ; 
+		same Tasklets can't run simultaneously on different CPU cores but different Tasklets definitely can; 
+		workqueues can run of different CPU cores simultaneously.
+	3. As SoftIrqs and Tasklets run in interrupt context they can't sleep while workqueues can sleep as they run in the process context.
+	4. Both SoftIrqs and Tasklets can't be preempted or scheduled while Workqueues can be.
+	5. SoftIrqs are not easy to use while Tasklets and WorkQueues are easy to use.
+	6. If the code in question is highly threaded( too many subroutines) for ex. Networking applications 
+		then SoftIrq is the best bet as they are the fastest.
+	7. If the code is not highly threaded then the device driver developer must go for Tasklets as they have the simplest interface.
+	8. If the deferred work has to run in the process context then WorkQueues is the only option.
+	9. So, in general if your bottom halve can sleep then use WorkQueues else use Tasklets.
+	10. When it comes to ease of use WorkQueues are the best then comes tasklets and in the end comes softirqs 
+		as they have to be statically created and require proper thinking before implementing.
+	
+	For example using the network card:
+
+	1. When network cards receive packets from the network, the network cards immediately issue an interrupt. 
+		This optimizes network throughput and latency and avoids timeouts.
+	2. The kernel responds by executing the network card's registered interrupt.
+	3. The interrupt runs, acknowledges the hardware, copies the new networking packets into main memory, 
+		and readies the network card for more packets. These jobs are the important, time-critical, and hardware-specific work.
+		a. The kernel generally needs to quickly copy the networking packet into main memory because the network data buffer 
+			on the networking card is fixed and miniscule in size, particularly compared to main memory. 
+			Delays in copying the packets can result in a buffer overrun, with incoming packets overwhelming 
+			the networking card's buffer and thus packets being dropped.
+        	b. After the networking data is safely in the main memory, the interrupt's job is done, and it can return control 
+			of the system to whatever code was interrupted when the interrupt was generated.
+	4. The rest of the processing and handling of the packets occurs later, in the bottom half
+
+Difference from the process context and interrupt context?
+	process context :
+	it is the mode of operation the kernel is in while it is executing on behalf of a process, 
+	such as executing a system call or running a kernel thread.
+	1. In process context, the current macro points to the associated task.
+	2. Since a process is coupled to the kernel in process context, process context can sleep or otherwise invoke the scheduler.
+
+	Interrupt context : is not associated with a process.
+	1 .The current macro is not relevant, though it points to the interrupted process.
+		Without a backing process, interrupt context cannot sleep and cannot reschedule. 
+	2. Therefore, you cannot call certain functions from interrupt context. If a function sleeps, 
+		you cannot use it from your interrupt handler: this limits the functions that can be called from an interrupt handler
+	3. Interrupt context is time-critical, because the interrupt handler interrupts other code.
+		so As much as possible, work should be pushed out from the interrupt handler and performed in a bottom half, 
+		which runs at a more convenient time.
+
+Stacks of an interrupt handler ?
+	1. interrupt handlers did not receive their own stacks. Instead, they would share the stack of the process that they interrupted.
+	2. The kernel stack is two pages in size:
+		8KB on 32-bit architectures.
+		16KB on 64-bit architectures.
+	3. Because of sharing the stack, interrupt handlers must be exceptionally frugal with what data they allocate there.
+	4. Your interrupt handler should not care what stack setup is in use or what the size of the kernel stack is. 
+		Always use an absolute minimum amount of stack space
+
+Interrupt Control and Disabling and Enabling Interrupts ?
+
+	Controlling the interrupt system provides synchronization.
+
+	1. Disabling interrupts guarantees that an interrupt handler will not preempt the current code.
+	2. Disabling interrupts disables kernel preemption and provides protection against concurrent access from a possible 
+	interrupt handler..
+
+	local_irq_disable();
+	/* interrupts are disabled .. */
+	local_irq_enable();
+
+	prefeared way ?
+	unsigned long flags;
+	local_irq_save(flags); /* interrupts are now disabled */
+	/* ... */
+	local_irq_restore(flags); /* interrupts are restored to their previous state */
+
+	Disabling a Specific Interrupt Line ?
+	void disable_irq(unsigned int irq);
+	void disable_irq_nosync(unsigned int irq);
+	void enable_irq(unsigned int irq);
+	void synchronize_irq(unsigned int irq);
+
+	Function 		Description
+	local_irq_disable() 	Disables local interrupt delivery
+	local_irq_enable() 	Enables local interrupt delivery
+	local_irq_save() 	Saves the current state of local interrupt delivery and then disables it
+	local_irq_restore() 	Restores local interrupt delivery to the given state
+	disable_irq() 		Disables the given interrupt line and ensures no handler on the line is executing before returning
+	disable_irq_nosync() 	Disables the given interrupt line
+	enable_irq() 		Enables the given interrupt line
+	irqs_disabled() 	Returns nonzero if local interrupt delivery is disabled; otherwise returns zero
+	in_interrupt() 		Returns nonzero if in interrupt context and zero if in process context
+	in_irq() 		Returns nonzero if currently executing an interrupt handler and zero otherwis
+
+	Note : The interrupt handler is normally static because it is never called directly from another file.
+
+How to implement your own driver which is dealing with interrupt?
+
+	Initialization
+	--------------
+	Set your gpio pin value: 0 or 1
+	Set your pin type, such as input or output
+	Set your interrupt type, such as trigger on rising edge, low level, high level, ...
+	If these are not set, they will take default values
+	Initialize your interrupt using: request_irq()
+
+
+	Opening Driver
+	--------------
+	When the driver is opened, enable your interrupt
+
+
+	Interrupt Handler
+	-----------------
+	Disable interrupt
+	Clear interrupt
+	Perform the work (best done by scheduling it to be done after exiting interrupt handler)
+	Enable interrupt
+
+
+	Close Driver
+	------------
+	Disable interrupt
+
+
+	Exit
+	----
+	Call free_irq()
+
+
+Synchronization :
+
+What is priority inversion ? 
+	solution : priority inheritance, priority ceiling.
+
+What is data race?
+What is Indefinite Postponement / Indefinite blocking or starvation ?
+Can we use semaphore or mutex or spin lock in interrupt context in linux kernel? and why?
+What is rwlock and spinlock ? Briefly explain about both of them ?
+Which are the synchronization technoques you use 'between processes', 'between processe and interrupt' and 'between interrupts';
+	why and how ?
+Which synchronization mechanism is safe to use in interrupt context and why?
+
+what are causes for kernel concurrency:
+
+	Interrupts:
+		An interrupt can occur asynchronously at almost any time, interrupting the currently executing code.
+	Softirqs and tasklets:
+		The kernel can raise or schedule a softirq or tasklet at almost any time, interrupting the currently executing code.
+	Kernel preemption:
+		Because the kernel is preemptive, one task in the kernel can preempt another.
+	Sleeping and synchronization with user-space:
+		A task in the kernel can sleep and thus invoke the scheduler, resulting in the running of a new process.
+	Symmetrical multiprocessing:
+		Two or more processors can execute kernel code at exactly the same time.
+
+	Kernel developers need to understand and prepare for these causes of concurrency:
+
+	1. It is a major bug if an interrupt occurs in the middle of code that is manipulating a resource 
+		and the interrupt handler can access the same resource.
+	2. Similarly, it is a bug if kernel code is preemptive while it is accessing a shared resource.
+	3. Likewise, it is a bug if code in the kernel sleeps while in the middle of a critical section.
+	4. Finally, two processors should never simultaneously access the same piece of data.
+
+
+	knowing What to Protect:
+	1.Obviously, any data that is local to one particular thread of execution does not need protection, 
+		because only that thread can access the data. For example, local automatic variables 
+		(and dynamically allocated data structures whose address is stored only on the stack) do not need any sort of locking 
+		because they exist solely on the stack of the executing thread.
+	2. Likewise, data that is accessed by only a specific task does not require locking 
+		(because a process can execute on only one processor at a time)
+	
+	Ask yourself these questions whenever you write kernel code:
+
+	1. Is the data global? Can a thread of execution other than the current one access it?
+	2. Is the data shared between process context and interrupt context? Is it shared between two different interrupt handlers?
+	3. If a process is preempted while accessing this data, can the newly scheduled process access the same data?
+	4. Can the current process sleep (block) on anything? If it does, in what state does that leave any shared data?
+	5. What prevents the data from being freed out from under me?
+	6. What happens if this function is called again on another processor?
+	7. Given the proceeding points, how am I going to ensure that my code is safe from concurrency?
+
+	Note : all global and shared data in the kernel requires some form of the synchronization methods
+
+What is deadlock ? how to deteatc and remove deadlock?
+	A deadlock is a condition involving one or more threads of execution and one or more resources, 
+	such that each thread waits for one of the resources, but all the resources are already held. 
+	The threads all wait for each other, but they never make any progress toward releasing the resources that they already hold. 
+	Therefore, none of the threads can continue, which results in a deadlock.
+
+	Note : The simplest example of a deadlock is the self-deadlock.
+	solution : recursive lock.
+
+What is the function of DMA controller in embedded system?
+	DMA stands for Direct Memory Access controller as the name suggest it does not involve processor to transfer memory between 
+	two devices that handles the allocation of the memory dynamically to the components and allows the data to be transferred 
+	between the devices.
+	
+	The interrupt can be used to complete the data transfer between the devices. It is used to give the high quality performance 
+	as, the input/output device can perform the operations that are in parallel with the code that are in execution.
+
+	- Direct memory access is mainly used to overcome the disadvantages of interrupt and progam controlled I/O.
+	- DMA modules usually take the control over from the processor and perform the memory operations and this is mainly because 
+		to counteract the mismatch in the processing speeds of I/O units and the procesor. This is comparatively faster.
+	- It is an important part of any embedded systems,and the reason for their use is that they can be used for bursty data 
+		transfers instead of single byte approaches.
+	- It has to wait for the systems resources such as the system bus in case it is already in control of it.
+
+What are the Synchronization techniques used in Linux Kernel? 
+
+	For simple counter variables or for bitwise ------->atomic operations are best methods. 
+	atomic_t count=ATOMIC_INIT(0); or atomic_set(&count,0);
+	atomic_read(&count);
+	atomic_inc(&count);
+	atomic_dec(&count);
+	atomic_add(&count,10);
+	atomic_sub(&count,10); 
+
+	Spinlocks are used to hold critical section for short time and can use from interrupt context and locks can not sleep,
+	also called busy wait loops.
+	fully spinlocks and reader/writer spin locks are available.
+	spinlock_t my_spinlock;
+	spin_lock_init( &my_spinlock );
+	spin_lock( &my_spinlock );
+	// critical section
+	spin_unlock( &my_spinlock );
+	
+	Spinlock variant with local CPU interrupt disable
+	spin_lock_irqsave( &my_spinlock, flags );
+	// critical section
+	spin_unlock_irqrestore( &my_spinlock, flags );
+	
+	if your kernel thread shares data with a bottom half,
+	spin_lock_bh( &my_spinlock );
+	// critical section
+	spin_unlock_bh( &my_spinlock );
+
+	If we have more readers than writers for our shared resource
+	Reader/writer spinlock can be used 
+	rwlock_t my_rwlock;
+	rwlock_init( &my_rwlock );
+	write_lock( &my_rwlock );
+	// critical section -- can read and write
+	write_unlock( &my_rwlock );
+
+	read_lock( &my_rwlock );
+	// critical section -- can read only
+	read_unlock( &my_rwlock ); 
+
+
+	Mutexs are used when we hold lock for longer time and if we use from process context.
+	DEFINE_MUTEX( my_mutex );
+	mutex_lock( &my_mutex );
+	mutex_unlock( &my_mutex );
+
+What are the differences between mutex and semaphore?
+	Strictly speaking, mutex is a locking mechanism whereas semaphore is a signaling mechanism.
+	Mutex is the lock to a toilet and semaphore is the number of identical keys to a shared resource.
+	Imagine a buffer being split up into 4 parts and then the semaphore count can become 4, i.e there are now 4 instance to the same
+	resource. Mind it , it is not the same resource. A semaphore with a value of 0 is similar to mutex but is has a difference, 
+	in mutex ,the thread within the same process can unlock the mutex whereas in semaphore an external thread can also free 
+	the semaphore by giving wakeup signal.
+
+what is a watchdog timer? what is the sinificance of it?
+	Watchdog timer is basically a timing device that is set for predefined time interval and some event should occur during 
+		that time interval else the device generates a time out signal.
+	One application where it is most widely used is when the mobile phone hangs and no activity takes place, in those cases 
+		watchdog timer performs a restart of the system and comes to the rescue of the users.
+	It is used to reset to the original state whenever some inappropriate events take place such as too many commands being 
+		given at the same time or other activities that result in malfunctioning of the GUI. 
+	It is usually operated by counter devices.
+
+What is a kernel Panic and oops?
+	Kernel Panic:	
+	It is an action taken by linux kernel when it experiences a situation from where it can't recover safely.
+	In many cases the system may keep on running but due to security risk by fearing security breach the kernel reboots 
+	or instructs to be rebooted manually.
+	
+	It can be caused due to various reasons-
+	1. Hardware failure
+	2. Software bus in the OS.
+	3. During booting the kernel panic can happen due to one of the reasons-
+		a.Kernel not correctly configured, compiled or installed.
+		b.Incompatibility of OS, hardware failure including RAM.
+		c.Missing device driver
+		d.Kernel unable to locate root file system
+		e.After booting if init process dies.
+	
+	OOPS:
+	it is a deviation from correct behaviour of Linux kernel which produces certain error log.
+	Kernel Panic is one type of OOPS. Kernel Panic doesnt allow system to continue operation while other form of OOPS 
+	ALLOW WITH COMPROMISED RELIABILITY.
+	When the kernel detects a problem, it prints an oops message and kills any offending process.
+
+What is bus error? what are the common causes of bus errors? 
+	The first thing that needs to be addressed is: What is a bus? A bus is a communication unit that allows the CPU to interact 
+	with peripherals, there are different type of buses such as PCI, I2C, MDIO, Memory Buses, etc. Normally each bus would have 
+	its own protocol for transmitting data across devices, for example in the case of PCI we can have timeout errors or windows 
+	errors (data is directed to unknown addresses/devices). In memory, bus errors would refer to alignment but other errors 
+	could be attributed to physical HW problems such as faulty connections. Other type of bus errors could be single 
+	and multiple bit errors, this could be addressed by using ECC memory.
+
+
+What is a device tree in Linux? 
+	Device tree is a data structure that describes the hardware , their layout, their parameters and other details 
+	and is passed to the kernel at boot time
+
+How function pointers are shared across different processes? using which IPCs? 
+	Two processes can not share function pointers. If we want to use functions in two processes we will have to make library 
+	for those functions and we use that library in our processes.
+
 What is a user thread and a kernel thread?
 Number of kernel threads = cores?
 Maximum number of threads per process in Linux?
@@ -51,12 +595,8 @@ Maximum number of threads per process in Linux?
 	Linux implements max number of threads per process indirectly!!
 	number of threads = total virtual memory / (stack size*1024*1024)
 	ulimit -s
-Which are the synchronization technoques you use 'between processes', 'between processe and interrupt' and 'between interrupts'; why and how ?
-what is race condition and deadlock and hung task.
-What are the differences between spinlock and mutex?
-what is atomic operations.
+
 what is preemption disabling and what is the use of this.
-Which synchronization mechanism is safe to use in interrupt context and why?
 Explain about the implementation of spinlock in case of ARM architecture.
 Explain about the implementation of mutex in case of ARM architecture.
 Explain about the notifier chains.
@@ -78,8 +618,118 @@ How software timers are implemented?
 
 how memory is managed in linux.what are different memory zones in linux.
 what us kmalloc and what are action modifier we can pass while using kmalloc.
+
 What are the differences between malloc,zmalloc, vmalloc and kmalloc? Which is preferred to use in device drivers?
-What is virtual memory and what are the advanatages of using virtual memory?
+	http://learnlinuxconcepts.blogspot.in/2014/02/linux-memory-management.html
+	
+	void * kmalloc(size_t size , int flags); 	kfree();
+	void * vmalloc(unsigned long size); 		vfree();
+
+	The kmalloc() function guarantees that the pages are physically contiguous (and virtually contiguous).it cannot be swapped.
+
+	kmalloc can fail if a contiguous physical block that you want can't be found.
+	
+	What are the advantages of having a contiguous block of memory? 
+	Specifically, why would I need to have a contiguous physical block of memory in a system call? 
+	Is there any reason I couldn't just use vmalloc?
+
+	GFP_ATOMIC : the allocation is high-priority and does not sleep.
+	This is the flag to use in interrupt handlers, bottom halves and other situations where you cannot sleep like emergency pool.
+
+	GFP_KERNEL: This is a normal allocation and might block. This is the flag to use in process context code when it is safe to sleep.
+	
+	GFP_DMA: for allocation of memory space capable of undergoing Direct Memory Access.
+	allocate memory in DMA zone. device drivers that need DMA-able memory use this flag.
+
+	kmalloc is the preferred way, as long as you don't need very big areas. 
+	The trouble is, if you want to do DMA from/to some hardware device, you'll need to use kmalloc, and you'll probably need 
+	bigger chunk. The solution is to allocate memory as soon as possible, before memory gets fragmented.
+	
+	the maxium of space that can be allocated by kmalloc depends on the architecture.
+	kmalloc in recent kernel can allocate maximum 4mb contigious memory. to allocate more than 4mb we have to use CMA.
+	The defintion of kmalloc is usually found in <slab.h> header file.
+
+	The vmalloc() function works in a similar fashion to kmalloc(), except it allocates memory that is only virtually contiguous 
+	and not necessarily physically contiguous.
+	
+	vmalloc is often slower than kmalloc, because it may have to remap the buffer space into a virtually contiguous range. 
+	kmalloc never remaps, though if not called with GFP_ATOMIC kmalloc can block.
+	
+	vmalloc allocations can sleep and hence should not be used in an interrupt context unlike kmalloc.
+	vmalloc would allocate memory from HIGH zone or normal zone.
+
+	kzalloc zeroes the memory before returning a pointer. kmalloc() + memset().
+
+	devm_kzalloc() is resource-managed kzalloc(). The memory allocated with resource-managed functions is associated with the device.
+	When the device is detached from the system or the driver for the device is unloaded, that memory is freed automatically. 
+	It is possible to free the memory with devm_kfree() if it's no longer needed.
+
+which flag to use for kmalloc?
+
+	Situation				Solution
+	Process context, can sleep		Use GFP_KERNEL
+	Process context, cannot sleep		Use GFP_ATOMIC, or perform your allocations with GFP_KERNEL 
+						at an earlier or later point when you can sleep
+	Interrupt handler			Use GFP_ATOMIC
+	Softirq					Use GFP_ATOMIC
+	Tasklet					Use GFP_ATOMIC
+	Need DMA-able memory, can sleep		Use (GFP_DMA | GFP_KERNEL)
+	Need DMA-able memory, cannot sleep	Use (GFP_DMA | GFP_ATOMIC), or perform your allocation at an earlier point when you can 						sleep 
+
+Reading Physical Mapped Memory using /dev/mem ?
+	/dev/mem
+	Provides access to the computer's physical memory.
+
+	/dev/kmem
+	Provides access to the virtual address  space  of  the operating  system  kernel,  excluding  memory  that is
+	associated with an I/O device.
+
+	/dev/allkmem
+	Provides access to the virtual address  space  of  the operating  system  kernel,  including  memory  that is
+	associated with an I/O device.
+
+what is Contiguous Memory Allocator (or CMA) ?
+how kernel manage to allocate memory when running interrupts? will it able to allocate?
+why copy_from_user() and copy_to_user() used ? why copy_to_user() user even though kernel could  write at any user space?
+
+How to detect kernel memory leak?
+	https://psankar.blogspot.in/2010/11/detecting-memory-leaks-in-kernel.html
+
+how container_of() works? write your own MACRO?
+
+how to convert virtual addrees to physical address and vice versa ?
+	Documentation/{IO-mapping.txt,DMA-mapping.txt,DMA-API.txt}.
+	#include <asm/io.h>
+	phys_addr = virt_to_phys(virt_addr);
+	virt_addr = phys_to_virt(phys_addr);
+	bus_addr  =  virt_to_bus(virt_addr);
+	virt_addr = bus_to_virt(bus_addr);
+
+what is virtual memory and what are the advanatages of using virtual memory?
+
+	Physical addresses
+		addresses used between the processor and the systemâ€™s memory
+	(Kernel) logical addresses
+		normal address space of the kernel
+		almost 1-1 mapping to physical memory
+		on most architectures logical associated physical addresses
+		differ only by an offset
+	(Kernel) virtual addresses
+		also mapping from kernel space address to physical address
+		not necessarily 1-to-1 mapping
+		able to allocate physical memory that has no logical address
+
+What is memory hotplugging in Linux kernel?
+	Memory hotplugging is adding or removing sections of memory from the Linux kernel. All the memory in the system is represented 
+	as /sys/devices/system/memory/memory*  and their state can be checked by "cat /sys/devices/system/memory/memoryX/state" . 
+	To add new memory adddresses, use "echo phys_mem_address > /sys/devices/system/memory/probe"  . 
+	This will add new node (memoryY) under /sys/devices/system/memory . To make this memory available, 
+	issue 'echo "online" > /sys/devices/system/memory/memoryY/state" and to disable this memory, 
+	use 'echo "offline" > /sys/devices/system/memory/memoryY/state' .
+
+What is the difference between kthread_create, kthread_run, kthread_create_on_cpu and kthread_create_on_node?
+
+Shrinking memory will result reassignment of virtual addresses mapped to the memory offlined to new locations and will involve memory copies.
 What's paging and swapping?
 Is it better to enable swapping in embedded systems? and why?
 What is the page size in Linux kernel in case of 32-bit ARM architecture?
@@ -98,6 +748,30 @@ What is device driver and what is the need of it.
 what are different kind of devices.
 Explain about the Linux Device Model (LDM)? how mudules are loaded in linux.
 How to make a module as loadable module? How to make a module as in-built module?
+
+What are the Possible Task States ? 
+
+	TASK_RUNNING
+	(R) The process is able to run and contributes to the system load. The scheduler decides which processes really receive CPU time.
+
+	TASK_UNINTERRUPTIBLE 
+	(D) The process waits for some event. It will not be considered by the scheduler. The process cannot do anything while it 
+	is waiting (it cannot even be killed). This is usually used by device drivers while the process is waiting for some hardware
+	to respond. Such a process contributes to the system load even though it will not receive CPU time; some other part of 
+	the system is considered to be working on behalf of the process.
+
+	TASK_INTERRUPTIBLE
+	(S) The process waits for some event as in TASK_UNINTERUPTIBLE but it can be woken up by a signal. This should be used when 
+	the action can be interrupted without side effects. A process in this state is considered asleep and does not contribute to
+	the system load.
+ 
+	TASK_STOPPED
+	(T) The process is stopped by a signal (Ctrl-Z)
+ 
+	TASK_ZOMBIE
+	(Z) The process has exited but there are still some data structures around that could not yet be freed.The zombie will 
+	usually be freed when the parent calls wait4() to get the exit status.
+
 difference between insmod and modprobe.
 how parameters are shared between driver modules.
 what are IOCTLS.
@@ -130,6 +804,18 @@ What is mknod and it's usage ?
 In how many ways we can allocate device number ?
 How can we allocate device number statically and dynamically and how to free device number?
 Explain about about ksets, kobjects and ktypes. How are they related?
+
+
+mmap() and munmap() ?
+	
+Compare I2C and SPI protocols?
+	SPI protocol requires more hardware(IÂ²C needs 2 lines and thatâ€™s it, while SPI formally defines at least 4  Signals).
+	SPI procol is faster than I2C, it works in full duplex mode, can transmit upto 10Mbps whereas I2C is limited to 1Mbps 
+		in normal mode and 3.4Mbps in fast mode.
+	SPI can have only one master whereas I2C supports more than one masters.
+	In SPI there is no limitation to the number of bits transmitted in one frame(I2c 8bits).
+	SPI is non standard whereas I2C is standard protocol.
+
 
 What is the difference between early init and late init?
 What is process kernel stack and process user stack? What is the size of each and how are they allocated?
@@ -233,19 +919,16 @@ How to ensure that init function of a partiuclar driver was called before our dr
 What's a segementation fault and what are the scenarios in which segmentation fault is triggered?
 How are the command line arguments passed to Linux kernel by the u-boot (bootloader)?
 
-What is the need of volatile constant in embedded systems?
-What is difference  between inline function and macro?
-Why can't we go for sleep while handling interrupt?
 How nested interrupts are handled in ARM?
 What are the benefits using FIQ?
-What is reset vector
+What is reset vector?
 What is the significance of spinlock on uniprocessor system?
-Difference between Monolithic kernel, Micro kernel and Hybrid kernel ?
-What is priority inversion ?
-What are the solutions for priority inversion ?
+What is priority inversion ? solutions for priority inversion ?
 What is priority inheritance ?
 What is priority ceiling ?
 What is deadlock ?
+what is starvation?
+what is race condition?
 
 What is the use of the method of temporarily masking / disabling interrupts ? When is it used ? What should be taken care while doing this method ?
 Since, disabling/masking of interrupts can be done whent the critical section is ONLY SHORT,What method can be used if the critical section is longer than few source lines or if it involves few lengthy loopings ?
@@ -599,15 +1282,15 @@ Explain about container_of() and offsetof() implementations.
 How to implement bit-wise operations without using bit-wise operators?
 
 Check if a number is multiple of 9 using bitwise operators
-Count strings with consecutive 1’s
+Count strings with consecutive 1\92s
 Gray to Binary and Binary to Gray conversion
 Find the maximum subset XOR of a given set
-Given a set, find XOR of the XOR’s of all subsets.
+Given a set, find XOR of the XOR\92s of all subsets.
 Sum of Bitwise And of all pairs in a given array
 Find Next Sparse Number
 Find the maximum subarray XOR in a given array
 Find XOR of two number without using XOR operator
-Write a program to add one to a given number. You are not allowed to use operators like ‘+’, ‘-‘, ‘*’, ‘/’, ‘++’, ‘–‘ ?
+Write a program to add one to a given number. You are not allowed to use operators like \91+\92, \91-\91, \91*\92, \91/\92, \91++\92, \91\96\91 ?
 Multiply two integers without using multiplication, division and bitwise operators, and no loops
 Check if a number is a power of another number
 Check perfect square using addition/subtraction
@@ -728,7 +1411,7 @@ return 0;
 void main() {
 int z = 12;
 printf("%d",printf("Mr.123\\"));
-printf(”%d”,printf(”%d%d%d”,z,z,z));
+printf(\94%d\94,printf(\94%d%d%d\94,z,z,z));
 }
 
 6. You can't 'shift' an array - True/False
@@ -998,7 +1681,7 @@ Preprocessor
 
 #define SECONDS_PER_YEAR (60UL * 60UL * 24UL * 365UL)
 
-I’m looking for several things here:
+I\92m looking for several things here:
 
 (a)    Basic knowledge of the #define syntax (i.e. no semi-colon at the end, the need to parenthesize etc.).
 
@@ -1007,12 +1690,12 @@ I’m looking for several things here:
 (c)    An understanding that the pre-processor will evaluate constant expressions for you. Thus, it is clearer, and penalty free to spell out how you are calculating the number of seconds in a year, 
 rather than actually doing the calculation yourself.
 
-(d)    A realization that the expression will overflow an integer argument on a 16 bit machine – hence the need for the L, telling the compiler to treat the expression as a Long.
+(d)    A realization that the expression will overflow an integer argument on a 16 bit machine \96 hence the need for the L, telling the compiler to treat the expression as a Long.
 
-(e)    As a bonus, if you modified the expression with a UL (indicating unsigned long), then you are off to a great start because you are showing that you are mindful of the perils of signed and unsigned types –
+(e)    As a bonus, if you modified the expression with a UL (indicating unsigned long), then you are off to a great start because you are showing that you are mindful of the perils of signed and unsigned types \96
  and remember, first impressions count!
 
-2. Write the ‘standard’ MIN macro. That is, a macro that takes two arguments and returns the smaller of the two arguments.
+2. Write the \91standard\92 MIN macro. That is, a macro that takes two arguments and returns the smaller of the two arguments.
 
 #define MIN(A,B)       ((A) <=  (B) ? (A) : (B))
 
@@ -1032,8 +1715,8 @@ least = MIN(*p++, b);
 
 3. What is the purpose of the preprocessor directive #error?
 
-Either you know the answer to this, or you don’t. If you don’t, then see reference 1. This question is very useful for differentiating between normal folks and the nerds. 
-It’s only the nerds that actually read the appendices of C textbooks that find out about such things.  Of course, if you aren’t looking for a nerd, the candidate better hope she doesn’t know the answer.
+Either you know the answer to this, or you don\92t. If you don\92t, then see reference 1. This question is very useful for differentiating between normal folks and the nerds. 
+It\92s only the nerds that actually read the appendices of C textbooks that find out about such things.  Of course, if you aren\92t looking for a nerd, the candidate better hope she doesn\92t know the answer.
 Infinite Loops
 
 4. Infinite loops often arise in embedded systems. How does one code an infinite loop in C?
@@ -1044,7 +1727,7 @@ while(1)
 
 {
 
-…
+\85
 
 }
 
@@ -1054,19 +1737,19 @@ for(;;)
 
 {
 
-…
+\85
 
 }
 
-Personally, I dislike this construct because the syntax doesn’t exactly spell out what is going on.  Thus, if a candidate gives this as a solution, 
-I’ll use it as an opportunity to explore their rationale for doing so.  If their answer is basically – ‘I was taught to do it this way and I have never thought about it since’ – 
-then it tells me something (bad) about them. Conversely, if they state that it’s the K&R preferred method and the only way to get an infinite loop passed Lint, then they score bonus points.
+Personally, I dislike this construct because the syntax doesn\92t exactly spell out what is going on.  Thus, if a candidate gives this as a solution, 
+I\92ll use it as an opportunity to explore their rationale for doing so.  If their answer is basically \96 \91I was taught to do it this way and I have never thought about it since\92 \96 
+then it tells me something (bad) about them. Conversely, if they state that it\92s the K&R preferred method and the only way to get an infinite loop passed Lint, then they score bonus points.
 
 A third solution is to use a goto:
 
 Loop:
 
-…
+\85
 
 goto Loop;
 
@@ -1109,10 +1792,10 @@ The answers are:
 
 (h)    int (*a[10])(int); // An array of 10 pointers to functions that take an integer argument and return an integer
 
-People often claim that a couple of these are the sorts of thing that one looks up in textbooks – and I agree. While writing this article, 
+People often claim that a couple of these are the sorts of thing that one looks up in textbooks \96 and I agree. While writing this article, 
 I consulted textbooks to ensure the syntax was correct. However, I expect to be asked this question (or something close to it) when in an interview situation. Consequently,
- I make sure I know the answers – at least for the few hours of the interview.  Candidates that don’t know the answers (or at least most of them) are simply unprepared for the interview. 
- If they can’t be prepared for the interview, what will they be prepared for?
+ I make sure I know the answers \96 at least for the few hours of the interview.  Candidates that don\92t know the answers (or at least most of them) are simply unprepared for the interview. 
+ If they can\92t be prepared for the interview, what will they be prepared for?
 Static
 
 6. What are the uses of the keyword static?
@@ -1132,11 +1815,11 @@ Const
 
 7. What does the keyword const mean?
 
-As soon as the interviewee says ‘const means constant’, I know I’m dealing with an amateur. Dan Saks has exhaustively covered const in the last year,
- such that every reader of ESP should be extremely familiar with what const can and cannot do for you. If you haven’t been reading that column, suffice it to say that const means “read-only”. 
- Although this answer doesn’t really do the subject justice, I’d accept it as a correct answer. (If you want the detailed answer, then read Saks’ columns – carefully!).
+As soon as the interviewee says \91const means constant\92, I know I\92m dealing with an amateur. Dan Saks has exhaustively covered const in the last year,
+ such that every reader of ESP should be extremely familiar with what const can and cannot do for you. If you haven\92t been reading that column, suffice it to say that const means \93read-only\94. 
+ Although this answer doesn\92t really do the subject justice, I\92d accept it as a correct answer. (If you want the detailed answer, then read Saks\92 columns \96 carefully!).
 
-If the candidate gets the answer correct, then I’ll ask him these supplemental questions:
+If the candidate gets the answer correct, then I\92ll ask him these supplemental questions:
 
 What do the following incomplete[2] declarations mean?
 
@@ -1150,17 +1833,17 @@ int * const a;
 
 int const * a const;
 
-The first two mean the same thing, namely a is a const (read-only) integer.  The third means a is a pointer to a const integer (i.e., the integer isn’t modifiable, but the pointer is).
+The first two mean the same thing, namely a is a const (read-only) integer.  The third means a is a pointer to a const integer (i.e., the integer isn\92t modifiable, but the pointer is).
  The fourth declares a to be a const pointer to an integer (i.e., the integer pointed to by a is modifiable, but the pointer is not). The final declaration declares a to be a const pointer to a const integer 
  (i.e., neither the integer pointed to by a, nor the pointer itself may be modified).
 
-If the candidate correctly answers these questions, I’ll be impressed.
+If the candidate correctly answers these questions, I\92ll be impressed.
 
 Incidentally, one might wonder why I put so much emphasis on const, since it is very easy to write a correctly functioning program without ever using it.  There are several reasons:
 
 (a)    The use of const conveys some very useful information to someone reading your code. In effect, declaring a parameter const tells the user about its intended usage.  
-If you spend a lot of time cleaning up the mess left by other people, then you’ll quickly learn to appreciate this extra piece of information. (Of course, programmers that use const,
- rarely leave a mess for others to clean up…)
+If you spend a lot of time cleaning up the mess left by other people, then you\92ll quickly learn to appreciate this extra piece of information. (Of course, programmers that use const,
+ rarely leave a mess for others to clean up\85)
 
 (b)    const has the potential for generating tighter code by giving the optimizer some additional information.
 
@@ -1179,10 +1862,10 @@ In particular, the optimizer must be careful to reload the variable every time i
 
 (c)    Variables shared by multiple tasks in a multi-threaded application.
 
-If a candidate does not know the answer to this question, they aren’t hired.  I consider this the most fundamental question that distinguishes between a ‘C programmer’ and an ‘embedded systems programmer’. 
+If a candidate does not know the answer to this question, they aren\92t hired.  I consider this the most fundamental question that distinguishes between a \91C programmer\92 and an \91embedded systems programmer\92. 
  Embedded folks deal with hardware, interrupts, RTOSes, and the like. All of these require volatile variables. Failure to understand the concept of volatile will lead to disaster.
 
-On the (dubious) assumption that the interviewee gets this question correct, I like to probe a little deeper, to see if they really understand the full significance of volatile. In particular, I’ll ask them the following:
+On the (dubious) assumption that the interviewee gets this question correct, I like to probe a little deeper, to see if they really understand the full significance of volatile. In particular, I\92ll ask them the following:
 
 (a) Can a parameter be both const and volatile? Explain your answer.
 
@@ -1244,7 +1927,7 @@ These are the three basic responses to this question:
 
 (b) Use bit fields.  Bit fields are right up there with trigraphs as the most brain-dead portion of C.  Bit fields are inherently non-portable across compilers, and as such guarantee that your code is not reusable.  
 I recently had the misfortune to look at a driver written by Infineon for one of their more complex communications chip. 
- It used bit fields, and was completely useless because my compiler implemented the bit fields the other way around. The moral – never let a non-embedded person anywhere near a real piece of hardware![3]
+ It used bit fields, and was completely useless because my compiler implemented the bit fields the other way around. The moral \96 never let a non-embedded person anywhere near a real piece of hardware![3]
 
 (c) Use #defines and bit masks.  This is a highly portable method, and is the one that should be used.  My optimal solution to this problem would be:
 
@@ -1265,14 +1948,14 @@ a &= ~BIT3;
 }
 
 Some people prefer to define a mask, together with manifest constants for the set & clear values.  This is also acceptable.  
-The important elements that I’m looking for are the use of manifest constants, together with the |= and &= ~ constructs.
+The important elements that I\92m looking for are the use of manifest constants, together with the |= and &= ~ constructs.
 Accessing fixed memory locations
 
 10. Embedded systems are often characterized by requiring the programmer to access a specific memory location. 
 On a certain project it is required to set an integer variable at the absolute address 0x67a9 to the value 0xaa55. The compiler is a pure ANSI compiler. Write code to accomplish this task.
 
 This problem tests whether you know that it is legal to typecast an integer to a pointer in order to access an absolute location.  
-The exact syntax varies depending upon one’s style. However, I would typically be looking for something like this:
+The exact syntax varies depending upon one\92s style. However, I would typically be looking for something like this:
 
 int *ptr;
 
@@ -1296,22 +1979,22 @@ __interrupt double compute_area(double radius) {
 
 double area = PI * radius * radius;
 
-printf(“\nArea = %f”, area);
+printf(\93\nArea = %f\94, area);
 
 return area;
 
 }
 
-This function has so much wrong with it, it’s almost tough to know where to start.
+This function has so much wrong with it, it\92s almost tough to know where to start.
 
-(a)    Interrupt service routines cannot return a value. If you don’t understand this, then you aren’t hired.
+(a)    Interrupt service routines cannot return a value. If you don\92t understand this, then you aren\92t hired.
 
-(b)    ISR’s cannot be passed parameters. See item (a) for your employment prospects if you missed this.
+(b)    ISR\92s cannot be passed parameters. See item (a) for your employment prospects if you missed this.
 
 (c)    On many processors / compilers, floating point operations are not necessarily re-entrant. In some cases one needs to stack additional registers, in other cases, one simply cannot do floating point in an ISR.
  Furthermore, given that a general rule of thumb is that ISRs should be short and sweet, one wonders about the wisdom of doing floating point math here.
 
-(d)    In a similar vein to point (c), printf() often has problems with reentrancy and performance.  If you missed points (c) & (d) then I wouldn’t be too hard on you.
+(d)    In a similar vein to point (c), printf() often has problems with reentrancy and performance.  If you missed points (c) & (d) then I wouldn\92t be too hard on you.
   Needless to say, if you got these two points, then your employment prospects are looking better and better.
 Code Examples
 
@@ -1325,20 +2008,20 @@ unsigned int a = 6;
 
 int b = -20;
 
-(a+b > 6) ? puts(“> 6”) : puts(“<= 6”);
+(a+b > 6) ? puts(\93> 6\94) : puts(\93<= 6\94);
 
 }
 
-This question tests whether you understand the integer promotion rules in C – an area that I find is very poorly understood by many developers. 
- Anyway, the answer is that this outputs “> 6”.  The reason for this is that expressions involving signed and unsigned types have all operands promoted to unsigned types. 
- Thus –20 becomes a very large positive integer and the expression evaluates to greater than 6. This is a very important point in embedded systems where unsigned data types 
+This question tests whether you understand the integer promotion rules in C \96 an area that I find is very poorly understood by many developers. 
+ Anyway, the answer is that this outputs \93> 6\94.  The reason for this is that expressions involving signed and unsigned types have all operands promoted to unsigned types. 
+ Thus \9620 becomes a very large positive integer and the expression evaluates to greater than 6. This is a very important point in embedded systems where unsigned data types 
  should be used frequently (see reference 2).  If you get this one wrong, then you are perilously close to not being hired.
 
 13. Comment on the following code fragment?
 
 unsigned int zero = 0;
 
-unsigned int compzero = 0xFFFF;       /*1’s complement of zero */
+unsigned int compzero = 0xFFFF;       /*1\92s complement of zero */
 
 On machines where an int is not 16 bits, this will be incorrect. It should be coded:
 
@@ -1347,8 +2030,8 @@ unsigned int compzero = ~0;
 This question really gets to whether the candidate understands the importance of word length on a computer.  In my experience, 
 good embedded programmers are critically aware of the underlying hardware and its limitations, whereas computer programmers tend to dismiss the hardware as a necessary annoyance.
 
-By this stage, candidates are either completely demoralized – or they are on a roll and having a good time.  If it is obvious that the candidate isn’t very good, then the test is terminated at this point. 
-However, if the candidate is doing well, then I throw in these supplemental questions.  These questions are hard, and I expect that only the very best candidates will do well on them. In posing these questions, I’m looking more at the way the candidate tackles the problems, rather than the answers. Anyway, have fun…
+By this stage, candidates are either completely demoralized \96 or they are on a roll and having a good time.  If it is obvious that the candidate isn\92t very good, then the test is terminated at this point. 
+However, if the candidate is doing well, then I throw in these supplemental questions.  These questions are hard, and I expect that only the very best candidates will do well on them. In posing these questions, I\92m looking more at the way the candidate tackles the problems, rather than the answers. Anyway, have fun\85
 
 Dynamic memory allocation.
 
@@ -1364,18 +2047,18 @@ char *ptr;
 
 if ((ptr = (char *)malloc(0)) == NULL) {
 
-puts(“Got a null pointer”);
+puts(\93Got a null pointer\94);
 
 }
 
 else {
 
-puts(“Got a valid pointer”);
+puts(\93Got a valid pointer\94);
 
 }
 
 This is a fun question.  I stumbled across this only recently, when a colleague of mine inadvertently passed a value of 0 to malloc, and got back a valid pointer! 
-After doing some digging, I discovered that the result of malloc(0) is implementation defined, so that the correct answer is ‘it depends’. 
+After doing some digging, I discovered that the result of malloc(0) is implementation defined, so that the correct answer is \91it depends\92. 
 I use this to start a discussion on what the interviewee thinks is the correct thing for malloc to do.  Getting the right answer here is nowhere near as important 
 as the way you approach the problem and the rationale for your decision.
 Typedef
@@ -1388,7 +2071,7 @@ typedef  struct s * tPS;
 
 The intent in both cases is to define dPS and tPS to be pointers to structure s.  Which method (if any) is preferred and why?
 
-This is a very subtle question, and anyone that gets it right (for the right reason) is to be congratulated or condemned (“get a life” springs to mind). The answer is the typedef is preferred. Consider the declarations:
+This is a very subtle question, and anyone that gets it right (for the right reason) is to be congratulated or condemned (\93get a life\94 springs to mind). The answer is the typedef is preferred. Consider the declarations:
 
 dPS p1,p2;
 
@@ -1408,14 +2091,14 @@ int a = 5, b = 7, c;
 c = a+++b; 
 
 This question is intended to be a lighthearted end to the quiz, as, believe it or not, this is perfectly legal syntax. 
- The question is how does the compiler treat it? Those poor compiler writers actually debated this issue, and came up with the “maximum munch” rule,
+ The question is how does the compiler treat it? Those poor compiler writers actually debated this issue, and came up with the \93maximum munch\94 rule,
  which stipulates that the compiler should bite off as big a (legal) chunk as it can.  Hence, this code is treated as:
 
 c = a++ + b;
 
 Thus, after this code is executed, a = 6, b = 7 & c = 12;
 
-If you knew the answer, or guessed correctly – then well done.  If you didn’t know the answer then I would not consider this to be a problem.  
+If you knew the answer, or guessed correctly \96 then well done.  If you didn\92t know the answer then I would not consider this to be a problem.  
 I find the biggest benefit of this question is that it is very good for stimulating questions on coding styles, the value of code reviews and the benefits of using lint.
 
 Well folks, there you have it.  That was my version of the C test.  I hope you had as much fun doing it as I had writing it.  
@@ -1425,7 +2108,7 @@ If you think the test is a good test, then by all means use it in your recruitme
 The storage class determines the part of memory where storage is allocated for an object (particularly variables and functions) and how long the storage allocation continues to exist. In C program, there are four storage classes: automatic, register, external and static.
 
          Auto
-            They are declared at the start of a program’s block such as in the curly braces ( { } ).  Memory is allocated automatically upon entry to a block and freed automatically upon exit from the block.
+            They are declared at the start of a program\92s block such as in the curly braces ( { } ).  Memory is allocated automatically upon entry to a block and freed automatically upon exit from the block.
             Automatic variables may be specified upon declaration to be of storage class auto.  However, it is not required to use the keyword auto because by default, storage class within a block is auto.
         Register
         Automatic variables are allocated in the main memory of the processor; accessing these memory location for computation will take long time.
@@ -1465,7 +2148,7 @@ int const * a const;
 
 The first two mean the same thing, namely a is a const (read-only) integer.
 
-The third means a is a pointer to a const integer (that is, the integer isn’t modifiable, but the pointer is).
+The third means a is a pointer to a const integer (that is, the integer isn\92t modifiable, but the pointer is).
 
 The fourth declares a to be a const pointer to an integer (that is, the integer pointed to by a is modifiable,but the pointer is not).
 
@@ -1480,7 +2163,7 @@ Yes. An example is a read-only status register. It is volatile because it can ch
 
    Yes, although this is not very common. An example is when an interrupt service routine modifies a pointer to a buffer
 
-7. What’s wrong with the following function?
+7. What\92s wrong with the following function?
 
 int square(volatile int *ptr)
 {
@@ -1499,7 +2182,7 @@ return a * b;
 }
 
 }
-Because it’s possible for the value of *ptr to change unexpectedly, it is possible for a and b to be different. Consequently, this code could return a number that is not a square! The correct way to code this is:
+Because it\92s possible for the value of *ptr to change unexpectedly, it is possible for a and b to be different. Consequently, this code could return a number that is not a square! The correct way to code this is:
 
 long square(volatile int *ptr)
 {
@@ -1550,13 +2233,13 @@ int a = 10;
 p = &a;
 }
 /*address of a is out of scope and pointer p is now called the dangling pointer, we should initialize the p to NULL before coming out or initialize the pointer to some known value before using it again*/
-…
+\85
 }
 
 int* fun1()
 {
 int a = 10;
-return(&a); /*in this line we are returning the pointer of variable ‘a’ which is out scope.*/
+return(&a); /*in this line we are returning the pointer of variable \91a\92 which is out scope.*/
 }
 
 Wild Pointers:
@@ -1638,8 +2321,8 @@ typedef union {
     }
 } ControlRegister;
 
-11. Why is sizeof(‘a’) not 1?
-Perhaps surprisingly, character constants in C are of type int, so sizeof(‘a’) is sizeof(int) (though it’s different in C++).
+11. Why is sizeof(\91a\92) not 1?
+Perhaps surprisingly, character constants in C are of type int, so sizeof(\91a\92) is sizeof(int) (though it\92s different in C++).
 Result:
 In Turbo C output is: 2
 In Turbo C++ output is: 1
@@ -1665,7 +2348,7 @@ However, if the quit variable is declared volatile, the compiler is forced to lo
 Courtesy: http://stackoverflow.com/questions/246127/why-is-volatile-needed-in-c
 14. Data Alignment & Structure Padding
 
-Data Alignment: Data alignment means putting the data at a memory offset equal to some multiple of the word size, which increases the system’s performance due to the way the CPU handles memory
+Data Alignment: Data alignment means putting the data at a memory offset equal to some multiple of the word size, which increases the system\92s performance due to the way the CPU handles memory
 
 Data Structure Padding: To align the data, it may be necessary to insert some meaningless bytes between the end of the last data structure and the start of the next, which is data structure padding
 
@@ -1694,7 +2377,7 @@ assuming that the address where structure begins is an even number */
 
 The compiled size of the structure is now 12 bytes. It is important to note that the last member is padded with the number of bytes required so that the total size of the structure should be a multiple of the largest alignment of any structure member (alignment(int) in this case, which = 4 on linux-32bit/gcc)
 
-In this case 3 bytes are added to the last member to pad the structure to the size of a 12 bytes (alignment(int) × 3).
+In this case 3 bytes are added to the last member to pad the structure to the size of a 12 bytes (alignment(int) \D7 3).
 
 struct FinalPad {
   float x;
@@ -1710,7 +2393,7 @@ struct FinalPadShort {
 
 In this example the total size of the structure sizeof(FinalPadShort) = 6, not 5 (not 8 either) (so that the size is a multiple of 2 (alignment(short) = 2 on linux-32bit/gcc)).
 
-It is possible to change the alignment of structures to reduce the memory they require (or to conform to an existing format) by reordering structure members or changing the compiler’s alignment (or “packing”) of structure members.
+It is possible to change the alignment of structures to reduce the memory they require (or to conform to an existing format) by reordering structure members or changing the compiler\92s alignment (or \93packing\94) of structure members.
 
 struct MixedData  /* after reordering */
 {
@@ -1763,9 +2446,9 @@ http://stackoverflow.com/questions/6968468/padding-in-structures-in-c
 2.  How to find give no is 2 power of n?
 
 if ( ( no & ( no-1 ) ) == 0 )
-printf( “Given number is 2 Power of N\n” );
+printf( \93Given number is 2 Power of N\n\94 );
 else
-printf( “Given number is not 2 Power of N\n” );
+printf( \93Given number is not 2 Power of N\n\94 );
 
 3. Swap two numbers without using third variable.
    A = B / A       (now, A will have value val b/ val a and B will have value val b)
@@ -1774,14 +2457,14 @@ printf( “Given number is not 2 Power of N\n” );
 Above method overflow should be take care
  
    A = A + B;
-   B = A – B;
-   A = A – B;
+   B = A \96 B;
+   A = A \96 B;
  
    A = A ^ B;
    B = A ^ B;
    A = A ^ B;
 
-4. Program to Reverse Bits – 16 bits
+4. Program to Reverse Bits \96 16 bits
 int main( void )
 {
         int a= 0xFF00, i, rev=0;
@@ -1792,8 +2475,8 @@ int main( void )
                        rev |= ( 0x8000 >> i );
                }
         }
-        printf( “Input is 0x%04x\n”, a );
-        printf( “Reverse Bit Is 0x%04x\n”, rev );
+        printf( \93Input is 0x%04x\n\94, a );
+        printf( \93Reverse Bit Is 0x%04x\n\94, rev );
         return 0;
 }
  
@@ -1821,11 +2504,11 @@ unsigned int n = 1;
 char *p;
 p = (char*)&n;
 if (*p == 1)
-printf(“Little Endian\n”);
-else if (*(p + sizeof(int) – 1) == 1)
-printf(“Big Endian\n”);
+printf(\93Little Endian\n\94);
+else if (*(p + sizeof(int) \96 1) == 1)
+printf(\93Big Endian\n\94);
 else
-printf(“Surprise output!!!!\n”);
+printf(\93Surprise output!!!!\n\94);
 return 0;
 }
 
@@ -1836,8 +2519,8 @@ int main( void )
   a = ( a>>4 ) | ( a<<4 );
   b = ( ( b & 0xAA ) >> 1 ) | ( ( b & 0x55 ) << 1 );
   clrscr();
-  printf( “After Nibble Swap %d\n”, a );
-  printf( “Bit swapping %d\n”, b );
+  printf( \93After Nibble Swap %d\n\94, a );
+  printf( \93Bit swapping %d\n\94, b );
   getch();
   return 0;
 }
@@ -1855,11 +2538,11 @@ int count = 0;
 while( a )
 {
 ++count;
-a = a & ( a – 1 );
+a = a & ( a \96 1 );
 }
 
 clrscr();
-printf( “Count is %d\n”, count );
+printf( \93Count is %d\n\94, count );
 getch();
 }
 
@@ -1930,11 +2613,11 @@ static char print_nibble (int nibble)
 {
 if (nibble <= 9)
 {
-return ( (char)nibble + ‘0’);
+return ( (char)nibble + \910\92);
 }
 else
 {
-return ( (char)nibble + ‘A’ – 10);
+return ( (char)nibble + \91A\92 \96 10);
 }
 }
 
@@ -1949,7 +2632,7 @@ strng[i] = print_nibble( (hex >> (28-(4*i)) ) & 0x0000000FU);
 }
 strng[8] = 0x00;
 
-printf(“%s \n”,strng);
+printf(\93%s \n\94,strng);
 }
 16.Byte Swap program
 
@@ -2000,16 +2683,16 @@ void rmdup(int *array, int length)
 
 Process:
 
-    An executing instance of a program is called a process. Some operating systems use the term ‘task‘ to refer to a program that is being executed.
+    An executing instance of a program is called a process. Some operating systems use the term \91task\91 to refer to a program that is being executed.
     A process is always stored in the main memory also termed as the primary memory or random access memory.Therefore, a process is termed as an active entity. It disappears if the machine is rebooted.
     Several process may be associated with a same program.
     On a multiprocessor system, multiple processes can be executed in parallel.On a uni-processor system, though true parallelism is not achieved, a process scheduling algorithm is applied and the processor is scheduled to execute each process one at a time yielding an illusion of concurrency.
-    Example: Executing multiple instances of the ‘Calculator’ program. Each of the instances are termed as a process.
+    Example: Executing multiple instances of the \91Calculator\92 program. Each of the instances are termed as a process.
 
 Thread:
 
-    A thread is a subset of the process.It is termed as a ‘lightweight process’, since it is similar to a real process but executes within the context of a process and shares the same resources allotted to the process by the kernel
-    Usually, a process has only one thread of control – one set of machine instructions executing at a time.
+    A thread is a subset of the process.It is termed as a \91lightweight process\92, since it is similar to a real process but executes within the context of a process and shares the same resources allotted to the process by the kernel
+    Usually, a process has only one thread of control \96 one set of machine instructions executing at a time.
     A process may also be made up of multiple threads of execution that execute instructions concurrently.
     Multiple threads of control can exploit the true parallelism possible on multiprocessor systems.
     On a uni-processor system, a thread scheduling algorithm is applied and the processor is scheduled to run each thread one at a time.
@@ -2026,18 +2709,18 @@ The major difference between threads and processes is:
     Threads can exercise considerable control over threads of the same process; processes can only exercise control over child processes.
     Changes to the main thread (cancellation, priority change, etc.) may affect the behavior of the other threads of the process; changes to the parent process does not affect child processes.
 
-2. Why can’t we use malloc in kernel code ?
+2. Why can\92t we use malloc in kernel code ?
 
-You can’t use libraries in the kernel. None whatsoever.
+You can\92t use libraries in the kernel. None whatsoever.
 
-This means that ANY function you’re calling in the kernel needs to be defined in the kernel. Linux does not define a malloc, hence you can’t  use it.There is a memory allocator and a family of memory allocation functions. Read the kernel docs on the memory allocator for more information.
+This means that ANY function you\92re calling in the kernel needs to be defined in the kernel. Linux does not define a malloc, hence you can\92t  use it.There is a memory allocator and a family of memory allocation functions. Read the kernel docs on the memory allocator for more information.
 
 Incidentally, there are a few functions the kernel defines which are in the standard C library as well; this is for convenience.
 3. What is the major difference between kmalloc and vmalloc?
 
 kmalloc allocates physically contiguous memory, memory which pages are laid consecutively in physical RAM. vmalloc allocates memory which is contiguous in kernel virtual memory space (that means pages allocated that way are not contiguous in RAM, but the kernel sees them as one block).
 
-kmalloc is the preffered way, as long as you don’t need very big areas. The trouble is, if you want to do DMA from/to some hardware device, you’ll need to use kmalloc, and you’ll probably need bigger chunk. The solution is to allocate memory as soon as possible, before memory gets fragmented.
+kmalloc is the preffered way, as long as you don\92t need very big areas. The trouble is, if you want to do DMA from/to some hardware device, you\92ll need to use kmalloc, and you\92ll probably need bigger chunk. The solution is to allocate memory as soon as possible, before memory gets fragmented.
 
 Main reason for kmalloc being used more than vmalloc in kernel is performance. when big memory chunks are allocated using vmalloc, kernel has to map the physically non-contiguous chunks (pages) into a single contiguous virtual memory region. Since the memory is virtually contiguous and physically non-contiguous, several virtual-to-physical address mappings will have to be added to the page table. And in the worst case, there will be (size of buffer/page size)number of mappings added to the page table.
 
@@ -2050,30 +2733,30 @@ vmalloc is often slower than kmalloc, because it may have to remap the buffer sp
 kmalloc is limited in the size of buffer it can provide: 128 KBytes. If you need a really big buffer, you have to use vmalloc or some other mechanism like reserving high memory at boot.
  4. What is mmap?
 
-In computing, mmap is a POSIX-compliant Unix system call that maps files or devices into memory. It is a method of memory-mapped file I/O. It naturally implements demand paging, because initially file contents are not entirely read from disk and do not use physical RAM at all. The actual reads from disk are performed in “lazy” manner, after a specific location is accessed. After the memory is not to be used, it is important to munmap the pointers to it.
-5. In the linux kernel, what does the probe() method, that the driver provides, do? How different is it from the driver’s init function, i.e. why can’t the probe() functions actions be performed in the driver’s init function ?
+In computing, mmap is a POSIX-compliant Unix system call that maps files or devices into memory. It is a method of memory-mapped file I/O. It naturally implements demand paging, because initially file contents are not entirely read from disk and do not use physical RAM at all. The actual reads from disk are performed in \93lazy\94 manner, after a specific location is accessed. After the memory is not to be used, it is important to munmap the pointers to it.
+5. In the linux kernel, what does the probe() method, that the driver provides, do? How different is it from the driver\92s init function, i.e. why can\92t the probe() functions actions be performed in the driver\92s init function ?
 
 Different device types can have probe() functions. For example, PCI and USB devices both have probe() functions.
 
-Shorter answer, assuming PCI: The driver’s init function calls pci_register_driver() which gives the kernel a list of devices it is able to service, along with a pointer to the probe() function. The kernel then calls the driver’s probe() function once for each device.
+Shorter answer, assuming PCI: The driver\92s init function calls pci_register_driver() which gives the kernel a list of devices it is able to service, along with a pointer to the probe() function. The kernel then calls the driver\92s probe() function once for each device.
 
 This probe function starts the per-device initialization: initializing hardware, allocating resources, and registering the device with the kernel as a block or network device or whatever it is.That makes it easier for device drivers, because they never need to search for devices or worry about finding a device that was hot-plugged. The kernel handles that part and notifies the right driver when it has a device for you to handle.
 6. What is the difference beteween kernel modules and kernel drivers
 
 A kernel module is a bit of compiled code that can be inserted into the kernel at run-time, such as with insmod or modprobe.
 
-            A driver is a bit of code that runs in the kernel to talk to some hardware device. It “drives” the hardware. Most every bit of hardware in your computer has an associated driver[*]. A large part of a running kernel is driver code; the rest of the code provides generic services like memory management, IPC, scheduling, etc.
+            A driver is a bit of code that runs in the kernel to talk to some hardware device. It \93drives\94 the hardware. Most every bit of hardware in your computer has an associated driver[*]. A large part of a running kernel is driver code; the rest of the code provides generic services like memory management, IPC, scheduling, etc.
 
 A driver may be built statically into the kernel file on disk. (The one in /boot, loaded into RAM at boot time by the boot loader early in the boot process.) A driver may also be built as a kernel module so that it can be dynamically loaded later. (And then maybe unloaded.)
 
 Standard practice is to build drivers as kernel modules where possible, rather than link them statically to the kernel, since that gives more flexibility. There are good reasons not to, however:
 
-    Sometimes a given driver is absolutely necessary to help the system boot up. That doesn’t happen as often as you might imagine, due to the initrd feature.
+    Sometimes a given driver is absolutely necessary to help the system boot up. That doesn\92t happen as often as you might imagine, due to the initrd feature.
     Statically built drivers may be exactly what you want in a system that is statically scoped, such as an embedded system. That is to say, if you know in advance exactly which drivers will always be needed and that this will never change, you have a good reason not to bother with dynamic kernel modules.
 
 Not all kernel modules are drivers. For example, a relatively recent feature in the Linux kernel is that you can load a different process scheduler.
 
-[*] One exception to this broad statement is the CPU chip, which has no “driver” per se. Your computer may also contain hardware for which you have no driver.
+[*] One exception to this broad statement is the CPU chip, which has no \93driver\94 per se. Your computer may also contain hardware for which you have no driver.
 
 Courtesy: http://unix.stackexchange.com/questions/47208/what-is-the-difference-between-kernel-drivers-and-kernel-modules
 
@@ -2081,7 +2764,7 @@ Courtesy: http://unix.stackexchange.com/questions/47208/what-is-the-difference-b
 
 When you use regular locks (mutexes, critical sections etc), operating system puts your thread in the WAIT state and preempts it by scheduling other threads on the same core. This has a performance penalty if the wait time is really short, because your thread now has to wait for a preemption to receive CPU time again.
 
-Spin locks don’t cause preemption but wait in a loop (“spin”) till the other core releases the lock. This prevents the thread from losing it’s quantum and continue as soon as the lock gets released. The simple mechanism of spinlocks allow a kernel to utilize it in almost any state.
+Spin locks don\92t cause preemption but wait in a loop (\93spin\94) till the other core releases the lock. This prevents the thread from losing it\92s quantum and continue as soon as the lock gets released. The simple mechanism of spinlocks allow a kernel to utilize it in almost any state.
 
 Courtesy: http://stackoverflow.com/questions/1957398/what-exactly-are-spin-locks
 
@@ -2154,7 +2837,7 @@ static local variable has scope in that function in which it is declared means i
 
 5. Can we declare static variable in header file?
 Ans:
-You can’t declare a static variable without defining it as well (this is because the storage class modifiers static and extern are mutuallyexclusive). A static variable can be defined in a header file, but this would cause each source file that included the header file to have its own private copy of the variable, which is probably not what was intended.
+You can\92t declare a static variable without defining it as well (this is because the storage class modifiers static and extern are mutuallyexclusive). A static variable can be defined in a header file, but this would cause each source file that included the header file to have its own private copy of the variable, which is probably not what was intended.
 
 6. Can we declare main() function as static?
 Ans:
@@ -2248,7 +2931,7 @@ Null pointer is special reserved value of a pointer. A pointer of any type has s
 
 4. What is void Pointer?
 Ans:
-Void pointer or generic pointer is a special type of pointer that can be pointed at objects of any data type. A void pointer is declared like a normal pointer, using the void keyword as the pointer’s type.
+Void pointer or generic pointer is a special type of pointer that can be pointed at objects of any data type. A void pointer is declared like a normal pointer, using the void keyword as the pointer\92s type.
 
 Pointers defined using specific data type cannot hold the address of the some other type of variable i.e., it is incorrect in C++ to assign the address of an integer variable to a pointer of type float.
 
@@ -2743,7 +3426,7 @@ unsigned int swapBits(unsigned int x)
     // Get all even bits of x
     unsigned int even_bits = x & 0xAAAAAAAA;
     // Get all odd bits of x
-    unsigned int odd_bits  = x & 0×55555555;
+    unsigned int odd_bits  = x & 0\D755555555;
     even_bits >>= 1;  // Right shift even bits
     odd_bits <<= 1;   // Left shift odd bits
     return (even_bits | odd_bits); // Combine even and odd bits
@@ -3061,23 +3744,23 @@ accidentally modifying its instructions.
 Initialized data segment, usually called simply the Data Segment. A data segment is a portion of virtual address space of a program, which contains the global variables and static variables that are initialized by the programmer.
 Note that, data segment is not read-only, since the values of the variables can be altered at run time.
 This segment can be further classified into initialized read-only area and initialized read-write area.
-For instance the global string defined by char s[] = “hello world” in C and a C statement like int debug=1 outside the main (i.e. global) would be stored in initialized read-write area. And a global C statement like const char* string = “hello world” makes the string literal “hello world” to be stored in initialized read-only area and the character pointer variable string in initialized read-write area.
+For instance the global string defined by char s[] = \93hello world\94 in C and a C statement like int debug=1 outside the main (i.e. global) would be stored in initialized read-write area. And a global C statement like const char* string = \93hello world\94 makes the string literal \93hello world\94 to be stored in initialized read-only area and the character pointer variable string in initialized read-write area.
 Ex: static int i = 10 will be stored in data segment and global int i = 10 will also be stored in data segment
 
 3. Uninitialized Data Segment:
-Uninitialized data segment, often called the “bss” segment, named after an ancient assembler operator that stood for “block started by symbol.” Data in this segment is initialized by the kernel to arithmetic 0 before the program starts executing
+Uninitialized data segment, often called the \93bss\94 segment, named after an ancient assembler operator that stood for \93block started by symbol.\94 Data in this segment is initialized by the kernel to arithmetic 0 before the program starts executing
 uninitialized data starts at the end of the data segment and contains all global variables and static variables that are initialized to zero or do not have explicit initialization in source code.
 For instance a variable declared static int i; would be contained in the BSS segment.
 For instance a global variable declared int j; would be contained in the BSS segment.
 
 4. Stack:
 The stack area traditionally adjoined the heap area and grew the opposite direction; when the stack pointer met the heap pointer, free memory was exhausted. (With modern large address spaces and virtual memory techniques they may be placed almost anywhere, but they still typically grow opposite directions.)
-The stack area contains the program stack, a LIFO structure, typically located in the higher parts of memory. On the standard PC x86 computer architecture it grows toward address zero; on some other architectures it grows the opposite direction. A “stack pointer” register tracks the top of the stack; it is adjusted each time a value is “pushed” onto the stack. The set of values pushed for one function call is termed a “stack frame”; A stack frame consists at minimum of a return address.
-Stack, where automatic variables are stored, along with information that is saved each time a function is called. Each time a function is called, the address of where to return to and certain information about the caller’s environment, such as some of the machine registers, are saved on the stack. The newly called function then allocates room on the stack for its automatic and temporary variables. This is how recursive functions in C can work. Each time a recursive function calls itself, a new stack frame is used, so one set of variables doesn’t interfere with the variables from another instance of the function.
+The stack area contains the program stack, a LIFO structure, typically located in the higher parts of memory. On the standard PC x86 computer architecture it grows toward address zero; on some other architectures it grows the opposite direction. A \93stack pointer\94 register tracks the top of the stack; it is adjusted each time a value is \93pushed\94 onto the stack. The set of values pushed for one function call is termed a \93stack frame\94; A stack frame consists at minimum of a return address.
+Stack, where automatic variables are stored, along with information that is saved each time a function is called. Each time a function is called, the address of where to return to and certain information about the caller\92s environment, such as some of the machine registers, are saved on the stack. The newly called function then allocates room on the stack for its automatic and temporary variables. This is how recursive functions in C can work. Each time a recursive function calls itself, a new stack frame is used, so one set of variables doesn\92t interfere with the variables from another instance of the function.
 
 5. Heap:
 Heap is the segment where dynamic memory allocation usually takes place.
-The heap area begins at the end of the BSS segment and grows to larger addresses from there.The Heap area is managed by malloc, realloc, and free, which may use the brk and sbrk system calls to adjust its size (note that the use of brk/sbrk and a single “heap area” is not required to fulfill the contract of malloc/realloc/free; they may also be implemented using mmap to reserve potentially non-contiguous regions of virtual memory into the process’ virtual address space). The Heap area is shared by all shared libraries and dynamically loaded modules in a process.
+The heap area begins at the end of the BSS segment and grows to larger addresses from there.The Heap area is managed by malloc, realloc, and free, which may use the brk and sbrk system calls to adjust its size (note that the use of brk/sbrk and a single \93heap area\94 is not required to fulfill the contract of malloc/realloc/free; they may also be implemented using mmap to reserve potentially non-contiguous regions of virtual memory into the process\92 virtual address space). The Heap area is shared by all shared libraries and dynamically loaded modules in a process.
 Examples.
 The size(1) command reports the sizes (in bytes) of the text, data, and bss segments. ( for more details please refer man page of size(1) )
 1. Check the following simple C program
@@ -3164,8 +3847,8 @@ char arr[7]="Network";
 printf("%s",arr);
 }
 Explanation:
-Size of a character array should one greater than total number of characters in any string which it stores. In c every string has one terminating null character. This represents end of the string.So in the string “Network” , there are 8 characters and they are ‘N’,’e’,’t’,’w’,’o’,’r’,’k’ and ‘\0’. Size of array arr is seven. So array arr will store only first sevent characters and it will note store null character.
-As we know %s in prinf statement prints stream of characters until it doesn’t get first null character. Since array arr has not stored any null character so it will print garbage value.
+Size of a character array should one greater than total number of characters in any string which it stores. In c every string has one terminating null character. This represents end of the string.So in the string \93Network\94 , there are 8 characters and they are \91N\92,\92e\92,\92t\92,\92w\92,\92o\92,\92r\92,\92k\92 and \91\0\92. Size of array arr is seven. So array arr will store only first sevent characters and it will note store null character.
+As we know %s in prinf statement prints stream of characters until it doesn\92t get first null character. Since array arr has not stored any null character so it will print garbage value.
 
 
 
@@ -3224,10 +3907,10 @@ void main(){
 Explanation:
 In the expression of size of an array can have micro constant.
 var +~0 = 3 + ~0 = 3 + (-1)  = 2
-Let’s assume string “clarke” and “kallis” has stored at memory address 100 and 500 respectively as shown in the following figure:
-For string “clarke”:
-For string “kallis”:
-In this program cricket is array of character’s pointer of size 2. So array cricket will keep the memory address of first character of both strings i.e. content of array cricket is:
+Let\92s assume string \93clarke\94 and \93kallis\94 has stored at memory address 100 and 500 respectively as shown in the following figure:
+For string \93clarke\94:
+For string \93kallis\94:
+In this program cricket is array of character\92s pointer of size 2. So array cricket will keep the memory address of first character of both strings i.e. content of array cricket is:
 cricket[2] = {100,500}
 ptr is character pointer which is pointing to the fist element of array cricket. So, ptr = 100
 Now consider on *++ptr
@@ -3261,7 +3944,7 @@ void main(){
 Explanation:
 -3[ptr]=-*(3+ptr)=-*(ptr+3)
 =-ptr[3]
-=-103  //ASCII value of character ‘e’ is 103
+=-103  //ASCII value of character \91e\92 is 103
 
 9.What will be output when you will execute following c code?
 #include
@@ -3398,19 +4081,19 @@ Explanation:
 In union all member variables share common memory space.
 So union member variable, array xarray will look like:
 {
-{‘A’,’B’},
-{‘C’,’D’}
+{\91A\92,\92B\92},
+{\91C\92,\92D\92}
 }
 And union member variable, array yarray will look like:
 {
-{‘A’,’B’,’C’,’D’}
+{\91A\92,\92B\92,\92C\92,\92D\92}
 }
 x.xarr[x.yarr[2]-67][x.yarr[3]-67]
-= x.xarr[‘C’-67][‘D’-67]
+= x.xarr[\91C\92-67][\91D\92-67]
 = x.xarr[67-67][68-67]
-//ASCII value of ‘C’ is 67 and ‘D’ is 68.
+//ASCII value of \91C\92 is 67 and \91D\92 is 68.
 x.xarr[0][1]
-=’B’
+=\92B\92
 
 15.What will be output when you will execute following c code?
 #include
@@ -3460,11 +4143,11 @@ void main(){
 }
 Explanation:
 Dhoni[0]=2
-Dhoni[1]=’b’ =98  //ASCII value of character ‘b’ is 98.
+Dhoni[1]=\92b\92 =98  //ASCII value of character \91b\92 is 98.
 Dhoni[2]=  0x3  =  3  //0x represents hexadecimal number. Decimal value of hexadecimal 3 is also 3.
 Dhoni[3]=01001 = 513 //Number begins with 0 represents octal number.
-Dhoni[4]  = ‘\x1d’ = 29 //’\x1d’ is hexadecimal character constant.
-Dhoni[5] = ‘\111’ = 73 //’\111’ is octal character constant.
+Dhoni[4]  = \91\x1d\92 = 29 //\92\x1d\92 is hexadecimal character constant.
+Dhoni[5] = \91\111\92 = 73 //\92\111\92 is octal character constant.
 Dhoni[6] =rat = 1  //rat is enum constant
 Dhoni[7] = WWW = -1  //WWW is macro constant.
 
@@ -3514,7 +4197,7 @@ void main(){
 }
 Explanation:
 A character array keeps the each element of an assigned array but a character pointer always keeps the memory address of first element. 
-As we know %s in prints the characters of stream until it doesn’t any null character (‘\0’).  So first and second printf function will print same thing in the above program.  
+As we know %s in prints the characters of stream until it doesn\92t any null character (\91\0\92).  So first and second printf function will print same thing in the above program.  
 But size of array is total numbers of its elements i.e. 16 byte (including ending null character). While size of any type of pointer is 2 byte (near pointer).
 	
 The information about platform drivers is one on LWN. What we can learn from this page:
@@ -4155,7 +4838,7 @@ ans:here we have to describe about the company presently we are working and shou
 Ans:-the code that could run on a particular platform is called machine dependent where as if a code is able to run on any platform then the code is said to be machine independent code.
 
 3. why we use volatile?
-Ans:-In computer programming, particularly in the C, C++, and C# programming languages, a variable or object declared with the volatile keyword usually has special properties related to optimization and/or threading. Generally speaking, the volatile keyword is intended to prevent the (pseudo)compiler from applying any optimizations on the code that assume values of variables cannot change “on their own.”
+Ans:-In computer programming, particularly in the C, C++, and C# programming languages, a variable or object declared with the volatile keyword usually has special properties related to optimization and/or threading. Generally speaking, the volatile keyword is intended to prevent the (pseudo)compiler from applying any optimizations on the code that assume values of variables cannot change \93on their own.\94
 
 4. what is Static variable?
 Ans:-In computer programming, a static variable is a variable that has been allocated statically whose lifetime or extent extends across the entire run of the program. This is in contrast to the more ephemeral atomic variables (local variables are generally automatic), whose storage is allocated and deallocated on the call stack; and in contrast to objects whose storage is dynamically allocated in heap memory.
@@ -4212,7 +4895,7 @@ what is qualifiers?
 	Qualifiers defines the property of the variable. Two qualifiers are const and volatile. 
 
 Can static variables be declared in a header file?
-	you can’t declare a static variable without defining it as well (this isbecause the storage class modifiers static and extern are mutuallyexclusive). 
+	you can\92t declare a static variable without defining it as well (this isbecause the storage class modifiers static and extern are mutuallyexclusive). 
 	A static variable can be defined in a header file, but thiswould cause each source file that included the header file to have its  own private copy of the variable, which is probably not what wasintended.
 	
 Can a static variable accessed from outside of the file?
@@ -4326,7 +5009,7 @@ Difference between syntax vs logical error?
 	These involves validation of syntax of language.
 	compiler prints diagnostic message.
 	Logical Error
-	logical error are caused by an incorrect algorithm or by a statement mistyped in such a way that it doesn’t violet syntax of language.difficult to find.
+	logical error are caused by an incorrect algorithm or by a statement mistyped in such a way that it doesn\92t violet syntax of language.difficult to find.
 
 What is difference between Structure and Unions?
 	(i)    In structure every member has its own memory whereas in union its members share the same member space.
@@ -4341,7 +5024,7 @@ What is difference between Structure and Unions?
 Using the #define statement, how would you declare a manifest contact that return the number of seconds in year? Disregard leap years in your answer?
 	#define SECONDS_IN_YEAR (60UL * 60UL * 24UL * 365UL)
 	
-Write the “standard” MIN macro. That is, a macro that takes two arguments and returns the smaller of the two arguments
+Write the \93standard\94 MIN macro. That is, a macro that takes two arguments and returns the smaller of the two arguments
 
 What is the purpose of the preprocessor directive #error?
 	Preprocessor error is used to throw a error message during compile time. We can check the sanity of the make file and using debug options given below
@@ -4385,12 +5068,12 @@ What is the difference between strings and character arrays?
 	Two strings of same value[1] may share same memory area. Forexample, 
 	
 		in the following declarations:
-		char *s1 = “Calvin and Hobbes”;
-		char *s2 = “Calvin and Hobbes”;
+		char *s1 = \93Calvin and Hobbes\94;
+		char *s2 = \93Calvin and Hobbes\94;
 		the strings pointed by s1 and s2 may reside in the same memorylocation. 
 		But, it is not true for the following:
-		char ca1[] = “Calvin and Hobbes”;
-		char ca2[] = “Calvin and Hobbes”;
+		char ca1[] = \93Calvin and Hobbes\94;
+		char ca2[] = \93Calvin and Hobbes\94;
 		The value of a string is the sequence of the values of the containedcharacters, in order.
 
 Which bit wise operator is suitable for checking whether a particular bit is on or off?
@@ -4398,13 +5081,13 @@ Which bit wise operator is suitable for checking whether a particular bit is on 
 	enum {
 		KBit0 = 1,
 		KBit1,
-		…
+		\85
 		KBit31,
 	};
 	if ( some_int & KBit24 )
-		printf ( “Bit number 24 is ON\n” );
+		printf ( \93Bit number 24 is ON\n\94 );
 	else
-		printf ( “Bit number 24 is OFF\n” );
+		printf ( \93Bit number 24 is OFF\n\94 );
 
 Which bit wise operator is suitable for turning off a particular bit in a number?
 	The bitwise AND operator, again. In the following code snippet, the bit number 24 is reset to zero.
@@ -4480,7 +5163,7 @@ NULL vs wild vs dangling vs generic pointer ? Why NULL pointer is required?
 	2. float *ptr=(float *)0;
 	3. char *ptr=(char *)0;
 	4. double *ptr=(double *)0;
-	5. char *ptr=’\0’;
+	5. char *ptr=\92\0\92;
 	6. int *ptr=NULL;
 
 	What is meaning of NULL?
@@ -4506,7 +5189,7 @@ NULL vs wild vs dangling vs generic pointer ? Why NULL pointer is required?
 		int* a = NULL;
 	}
 
-	Note: There is difference between the NULL pointer and wild pointer. Null pointer points the base address of segment while wild pointer doesn’t point any specific memory location.
+	Note: There is difference between the NULL pointer and wild pointer. Null pointer points the base address of segment while wild pointer doesn\92t point any specific memory location.
 	
 	Dangling Pointer : how it is different from memory leak?
 	If a pointer is de-allocated or freed and the pointer is not assigned to NULL, then it may still contain that address and accessing the pointer means that we are trying to access that location and it will give an error. 
@@ -4532,13 +5215,13 @@ NULL vs wild vs dangling vs generic pointer ? Why NULL pointer is required?
 			p = &a;
 		}
 		/*address of a is out of scope and pointer p is now called the dangling pointer, we should initialize the p to NULL before coming out or initialize the pointer to some known value before using it again*/
-	…
+	\85
 	}
 	
 	int* fun1()
 	{
 		int a = 10;
-		return(&a); /*in this line we are returning the pointer of variable ‘a’ which is out scope.*/
+		return(&a); /*in this line we are returning the pointer of variable \91a\92 which is out scope.*/
 	}
 	
 	Dangling pointers are are those that point to memory locations which have already been freed. For example:
@@ -4563,7 +5246,7 @@ NULL vs wild vs dangling vs generic pointer ? Why NULL pointer is required?
 		A void pointer can be dereferenced only after explicit casting. e.g 
 		int a = 5;
 		void *b = &a;
-		printf(“%d\n”, *((int*)b));
+		printf(\93%d\n\94, *((int*)b));
 
 	2. We can find the size of generic pointer using sizeof operator.
 	3. Generic pointer can hold any type of pointers like char pointer, struct pointer, array of pointer etc without any typecasting.
@@ -4608,31 +5291,31 @@ What is the benefit of using #define to declare a constant?
 
 What is the purpose of main( ) function ?
 	The function main( ) invokes other functions within it.It is the first function to be called when the program starts execution.
-	· It is the starting function
-	· It returns an int value to the environment that called the program
-	· Recursive call is allowed for main( ) also.
-	· It is a user-defined function
-	· Program execution ends when the closing brace of the function main( ) is reached.
-	· It has two arguments 1)argument count and 2) argument vector (represents strings passed).
-	· Any user-defined name can also be used as parameters for main( ) instead of argc and argv
+	\B7 It is the starting function
+	\B7 It returns an int value to the environment that called the program
+	\B7 Recursive call is allowed for main( ) also.
+	\B7 It is a user-defined function
+	\B7 Program execution ends when the closing brace of the function main( ) is reached.
+	\B7 It has two arguments 1)argument count and 2) argument vector (represents strings passed).
+	\B7 Any user-defined name can also be used as parameters for main( ) instead of argc and argv
 
 Why should we assign NULL to the elements (pointer) after freeing them?
-	This is paranoia based on long experience. After a pointer has been freed, you can no longer use the pointed-to data. The pointer is said to dangle; it doesn’t point at anything useful.
+	This is paranoia based on long experience. After a pointer has been freed, you can no longer use the pointed-to data. The pointer is said to dangle; it doesn\92t point at anything useful.
 	If you NULL out or zero out a pointer immediately after freeing it, your program can no longer get in trouble by using that pointer. True, you might go indirect on the null pointer instead, 
-	but that’s something your debugger might be able to help you with immediately.
-	Also, there still might be copies of the pointer that refer to the memory that has been deallocated; that’s the nature of C. Zeroing out pointers after freeing them won’t solve all problems.
+	but that\92s something your debugger might be able to help you with immediately.
+	Also, there still might be copies of the pointer that refer to the memory that has been deallocated; that\92s the nature of C. Zeroing out pointers after freeing them won\92t solve all problems.
 
 What is a null pointer assignment error? What are bus errors, memory faults, and core dumps?
 	These are all serious errors, symptoms of a wild pointer or subscript. Null pointer assignment is a message you might get when an MS-DOS program finishes executing. 
-	Some such programs can arrange for a small amount of memory to be available “where the NULL pointer points to (so to speak). If the program tries to write to that area, it will overwrite the data put there by the compiler.
+	Some such programs can arrange for a small amount of memory to be available \93where the NULL pointer points to (so to speak). If the program tries to write to that area, it will overwrite the data put there by the compiler.
 	When the program is done, code generated by the compiler examines that area. If that data has been changed, the compiler-generated code complains with null pointer assignment. 
-	This message carries only enough information to get you worried. There’s no way to tell, just from a null pointer assignment message, what part of your program is responsible for the error. 
+	This message carries only enough information to get you worried. There\92s no way to tell, just from a null pointer assignment message, what part of your program is responsible for the error. 
 	Some debuggers, and some compilers, can give you more help in finding the problem.
-	Bus error: core dumped and Memory fault: core dumped are messages you might see from a program running under UNIX. They’re more programmer friendly. Both mean that a pointer or an array subscript was wildly out of bounds.
-	You can get these messages on a read or on a write. They aren’t restricted to null pointer problems. The core dumped part of the message is telling you about a file, called core, 
+	Bus error: core dumped and Memory fault: core dumped are messages you might see from a program running under UNIX. They\92re more programmer friendly. Both mean that a pointer or an array subscript was wildly out of bounds.
+	You can get these messages on a read or on a write. They aren\92t restricted to null pointer problems. The core dumped part of the message is telling you about a file, called core, 
 	that has just been written in your current directory. This is a dump of everything on the stack and in the heap at the time the program was running. 
-	With the help of a debugger, you can use the core dump to find where the bad pointer was used.  That might not tell you why the pointer was bad, but it’s a step in the right direction. 
-	If you don’t have write permission in the current directory, you won’t get a core file, or the core dumped message
+	With the help of a debugger, you can use the core dump to find where the bad pointer was used.  That might not tell you why the pointer was bad, but it\92s a step in the right direction. 
+	If you don\92t have write permission in the current directory, you won\92t get a core file, or the core dumped message
 
 when should unions be used? Why do we need them in Embedded Systems  programming?
 	Unions are particularly useful in Embedded programming or in situations where direct access to the hardware/memory is needed.
@@ -4686,7 +5369,7 @@ when should unions be used? Why do we need them in Embedded Systems  programming
 	} ControlRegister;
 
 Data Alignment & Structure Padding?
-	Data Alignment: Data alignment means putting the data at a memory offset equal to some multiple of the word size, which increases the system’s performance due to the way the CPU handles memory
+	Data Alignment: Data alignment means putting the data at a memory offset equal to some multiple of the word size, which increases the system\92s performance due to the way the CPU handles memory
 	Data Structure Padding: To align the data, it may be necessary to insert some meaningless bytes between the end of the last data structure and the start of the next, which is data structure padding
 	Here is a structure with members of various types, totaling 8 bytes before compilation:
 	struct MixedData
@@ -4710,7 +5393,7 @@ Data Alignment & Structure Padding?
 
 	The compiled size of the structure is now 12 bytes. It is important to note that the last member is padded with the number of bytes required 
 	so that the total size of the structure should be a multiple of the largest alignment of any structure member (alignment(int) in this case, which = 4 on linux-32bit/gcc)
-	In this case 3 bytes are added to the last member to pad the structure to the size of a 12 bytes (alignment(int) × 3).
+	In this case 3 bytes are added to the last member to pad the structure to the size of a 12 bytes (alignment(int) \D7 3).
 
 	struct FinalPad {
 		float x;
@@ -4724,7 +5407,7 @@ Data Alignment & Structure Padding?
 	};
 
 	In this example the total size of the structure sizeof(FinalPadShort) = 6, not 5 (not 8 either) (so that the size is a multiple of 2 (alignment(short) = 2 on linux-32bit/gcc)).
-	It is possible to change the alignment of structures to reduce the memory they require (or to conform to an existing format) by reordering structure members or changing the compiler’s alignment (or “packing”) of structure members.
+	It is possible to change the alignment of structures to reduce the memory they require (or to conform to an existing format) by reordering structure members or changing the compiler\92s alignment (or \93packing\94) of structure members.
 	struct MixedData  /* after reordering */
 	{
 		char Data1;
@@ -4767,10 +5450,10 @@ What is the difference between declaring a variable and defining a variable?
 	 Declaring a variable means describing its type to the compiler but notallocating any space for it. Defining a variable means declaring it andalso allocating space to hold the variable.
 	 You can also initialize avariable at the time it is defined.
 	 
-Why is sizeof(‘a’) not 1? what this mean sizeof(a++) ?
+Why is sizeof(\91a\92) not 1? what this mean sizeof(a++) ?
 
 write your own sizeof operator?
-	#define   size_of(x)   ((char *)(&x+1) – (char *)&x)
+	#define   size_of(x)   ((char *)(&x+1) \96 (char *)&x)
 
 why n++ executes faster than n+1? 
 	The expression n++ requires a single machine instruction such as INR to carry out the increment operation whereas, n+1 requires more instructions to carry out this operation.
@@ -4859,9 +5542,9 @@ Little endian vs big endian? Why it is required? Which one is better? How the co
 	{
 		int x = 300;
 		if ((* ((unsigned char *) & x) == 1)&& (*(unsigned char*) & x+1) == 44))
-			printf (“BIG ENDIAN”);
+			printf (\93BIG ENDIAN\94);
 		else
-			printf (“LITTLE ENDIAN”);
+			printf (\93LITTLE ENDIAN\94);
 	}
 
 	void main ()
@@ -4873,13 +5556,13 @@ Little endian vs big endian? Why it is required? Which one is better? How the co
 		};
 		union xxx p = {300};
 		if ((p.ch [0] = = 1) && (p. ch [1] == 44))
-			printf (“BIG ENDIAN”);
+			printf (\93BIG ENDIAN\94);
 		else
-			printf (“LITTLE ENDIAN”);
+			printf (\93LITTLE ENDIAN\94);
 	}
 
 How to reduce function call overhead in ARM based systems?
-	Try to ensure that small functions take four or fewer arguments. These will not usethe stack for argument passing. It will copied into registers.· 
+	Try to ensure that small functions take four or fewer arguments. These will not usethe stack for argument passing. It will copied into registers.\B7 
 	If a function needs more than four arguments, try to ensure that it does asignificant amount of work, so that the cost of passing the stacked arguments isoutweighed.
 	Pass pointers to structures instead of passing the structure itself.
 	Put related arguments in a structure, and pass a pointer to the structure tofunctions. This will reduce the number of parameters and increase readability.
@@ -4940,13 +5623,13 @@ What is code optimization?
 Typically, this new key word is __interrupt. The following code uses __interrupt to define an interrupt service routine. Comment on the code?
 	__interrupt double compute_area(double radius) {
 		double area = PI * radius * radius;
-		printf(“nArea = %f”, area);
+		printf(\93nArea = %f\94, area);
 		return area;
 	}
 
-	This function has so much wrong with it, it’s almost tough to know where to start.
-	(a) Interrupt service routines cannot return a value. If you don’t understand this, then you aren’t hired.
-	(b) ISR’s cannot be passed parameters. See item (a) for your employment prospects if you missed this.
+	This function has so much wrong with it, it\92s almost tough to know where to start.
+	(a) Interrupt service routines cannot return a value. If you don\92t understand this, then you aren\92t hired.
+	(b) ISR\92s cannot be passed parameters. See item (a) for your employment prospects if you missed this.
 	(c) On many processors / compilers, floating point operations are not necessarily re-entrant. In some cases one needs to stack additional registers, in other cases,
 		one simply cannot do floating point in an ISR. Furthermore, given that a general rule of thumb is that ISRs should be short and sweet, one wonders about the wisdom of doing floating point math here.
 	(d) In a similar vein to point (c), printf() often has problems with reentrancy and performance.
@@ -4968,7 +5651,7 @@ what is a core dump?
 	memory management information, and other processor and operating system flags and information a fatal error usually triggers the core dump, often buffer overflows, 
 	where a programmer allocates too little memory for incoming or computed data, or access to null pointers, a common coding error when an unassigned memory reference variable is accessed.
 What is a stack frame, stack pointer & frame pointer ?
-what is a non re­entrant code?
+what is a non re\ADentrant code?
 write a code  to check whether a stack  grows upwards or downwards?
 Tell the role of brk() in malloc / Tell the relation between heap and brk?
 Tell the relation between Malloc and MMAP
@@ -4976,102 +5659,20 @@ Tell the relation between Malloc and MMAP
 What does the following code fragment output and why?
 	char *ptr;
 	if ((ptr = (char *)malloc(0)) == NULL) {
-		puts(“Got a null pointer”);
+		puts(\93Got a null pointer\94);
 	}
 	else {
-		puts(“Got a valid pointer”);
+		puts(\93Got a valid pointer\94);
 	}
 	
 	Note: malloc(0) gives a valid pointer but allocate zero bytes.
 	
-RTOS:
-What is priority inversion ? solution : priority inheritance, priority ceiling.
-What is deadlock ? how to deteatc and remove deadlock?
-What is data race ?
-What is Indefinite Postponement / Indefinite blocking or starvation ?
-what are the syncronization technique and which one we should in which scenerio?
-semaphore vs mutex vs spinlock?
-what are the IPC and which one we should in which scenerio?
-    Pipes
-    Named pipes or FIFO 
-    Shared memory
-    Message queue
-    Socket
-	Semaphores
-
-what is callback function? signal vs callback ?
-What happens when recursive functions are declared inline?
-
-Can structures be passed to the functions , structure and array by value?
-thread vs process?
-How do you measure the latency of your system ?
-What are the possible scenarios in which context switching of threads can occur ?
-What will happen if there are more threads requesting for CPU resource such as time ?
-While writing interrupt handlers(ISR), which are points needed to be considered?
-Explain what is interrupt latency? How can we reduce it?
-
-Explain interrupt latency and how can we decrease it?
-	1. Interrupt latency basically refers to the time span an interrupt is generated and it being serviced by an appropriate routine defined, usually the interrupt handler.
-	2. External signals, some condition in the program or by the occurrence of some event, these could be the reasons for generation of an interrupt.
-	3. Interrupts can also be masked so as to ignore them even if an event occurs for which a routine has to be executed.
-	4. Following steps could be followed to reduce the latency
-	- ISRs being simple and short.
-	- Interrupts being serviced immediately
-	- Avoiding those instructions that increase the latency period.
-	- Also by prioritizing interrupts over threads.
-	- Avoiding use of inappropriate APIs.
-
-Can we use semaphore or mutex or spin lock in interrupt context in linux kernel? and why?
-
-What is the function of DMA controller in embedded system?
-	DMA stands for Direct Memory Access controller as the name suggest it does not involve processor to transfer memory between two devices that handles the allocation of the memory 
-	dynamically to the components and allows the data to be transferred between the devices.
-	
-	The interrupt can be used to complete the data transfer between the devices. It is used to give the high quality performance as, the input/output device can perform the operations 
-	that are in parallel with the code that are in execution.
-
-	- Direct memory access is mainly used to overcome the disadvantages of interrupt and progam controlled I/O.
-	- DMA modules usually take the control over from the processor and perform the memory operations and this is mainly because to counteract the mismatch in the processing speeds of I/O units and the procesor. 
-		This is comparatively faster.
-	- It is an important part of any embedded systems,and the reason for their use is that they can be used for bursty data transfers instead of single byte approaches.
-	- It has to wait for the systems resources such as the system bus in case it is already in control of it.
-
-What is preemption ?
-What do you mean by atomic operations ?
-
-What is ISR? Can they be passed any parameter and can they return a value? can we use printf, break point, function call or any blocking or sleep call or floating operation in ISR?
-How CPUs find the ISR and distinguish between the various devices ?
-Is it possible for two devices to share an interrupt request line but have different ISR for those two devices ?
-What is Top half & bottom half of a kernel?
-
-What is difference between binary semaphore and mutex?
-What is the use of file->private_data in a device driver structure ?
-poll vs epoll ?
-Difference between Timer Softirq and Tasklet Softirq ?
-What are tasklets ? How are they activated ? when and How are they initialized ?
-What is task_struct and how are task states maintained ?
-What is rwlock and spinlock ? Briefly explain about both of them ?
-Tell about the Memory Layout and compilation steps of a Process in Linux ?
-How will you trace the system calls made into the kernel of lInux ?
-What is a stack frame, stack pointer & frame pointer ?
-What happens as soon as a packet arrives from the network in Linux ?
-What is Kmalloc and how does it differ from normal malloc ? or Why can’t we use malloc in kernel code ?
-what is a watchdog timer? what is the sinificance of it?
-
-The watchdog timer is a timing device with a predefined time interval. During that interval, some event may occur or else the device generates a time out signal. 
-	It is used to reset to the original state whenever some inappropriate events take place which can result in system malfunction. It is usually operated by counter devices
-	How are variables mapped across to the various memories by the C compiler?
-	
-	- Watchdog timer is basically a timing device that is set for predefined time interval and some event should occur during that time interval else the device generates a time out signal.
-	- One application where it is most widely used is when the mobile phone hangs and no activity takes place, in those cases watchdog timer performs a restart of the system and comes to the rescue of the users.
-	- It is used to reset to the original state whenever some inappropriate events take place such as too many commands being given at the same time or other activities that result in malfunctioning of the GUI. 
-		It i	s usually operated by counter devices.
 	
 Qualcom :
 
 Whats is Stack overflow attack??...then he gave me a scenario where there was a open source code at a server and you have your piece of code at that server.
 You as a client are allowed to invoke a method which takes in a array as a parameter which is not checked for overflow validation. 
-I had to induce a buffer overflow attack and make the method to pass control… 
+I had to induce a buffer overflow attack and make the method to pass control\85 
 
 When does the control passes from user mode to kernel mode in a Linux System? 
 	System calls ,H/w Interrupts and last which I did not mention was Exceptions
@@ -5081,6 +5682,12 @@ while (*str++ = *dst++) {}i
 
 find sturcture address given an element of the structure
 long discussion on kernel in 3-4 interviews : Paging, segmentation, Priorities, scheduling, Concurrency
+
+
+Where are macros stored in the memory? 
+	Macros aren't stored anywhere separately. They get replaced by the code even before compilation.
+	The compiler is unaware of the presence of any macro. If the code that replaces macro is large then the program size 
+	will increase considerably due to repetition.
 
 How are signals hanled in OS ?
 Page Fault exception - what happens  ?
@@ -5209,7 +5816,7 @@ swap two variable without temp variable ?
 	In the above axample, parenthesis operator enjoys the highest priority & the order of evaluation is from left to right. Hence (a+b) is evaluated first and replaced with 15. 
 	Then (b=a) is evaluated and the value of a is assigned to b, which is 5. Finally a is replaced with 15-5, i.e. 10. Now the two numbers are swapped.
 
-Suggest an efficient method to count the no. of 1’s in a 32 bit no. Remember without using loop & testing each bit?
+Suggest an efficient method to count the no. of 1\92s in a 32 bit no. Remember without using loop & testing each bit?
 	int count_set_bits (long n)
 	{
             int count = 0;
@@ -5243,14 +5850,14 @@ check whether a number is power of 2 or not ?
 	void main ()
 	{
 		int n;
-		printf (“\n Enter any no:”);
-		scanf (“%d”, & n);
+		printf (\93\n Enter any no:\94);
+		scanf (\93%d\94, & n);
 		if (n & & ((n & n-1) = = 0))
-			printf (“It is power of 2”);
+			printf (\93It is power of 2\94);
 		else
-			printf (“It is not power of 2”);
+			printf (\93It is not power of 2\94);
 	}
-	Note: The logic says that if a no. is power of 2, then in the binary representation, only one bit of the no. can be ‘1’ & rest are must be ‘0’.
+	Note: The logic says that if a no. is power of 2, then in the binary representation, only one bit of the no. can be \911\92 & rest are must be \910\92.
 	
 Swapping integers without using additional space?
 	a= a(xor)b, b= a(xor)b, a=a(xor)b
@@ -5267,18 +5874,18 @@ Write a program in C to add two numbers without using any maths operator (+, -, 
 			return (x ^ y); } see complete program at http://www.ssiddique.info/add-two-numbers-without-using.html
 	}
 	
-	c = a – (-b);
-	as a+b is equivalent to a – (-b), binary ‘+’ operator is replaced by one unary ‘-‘ & one binary ‘-‘ operator.
+	c = a \96 (-b);
+	as a+b is equivalent to a \96 (-b), binary \91+\92 operator is replaced by one unary \91-\91 & one binary \91-\91 operator.
 
 How to print number from 1 to 100 without using conditional operators.
 	void main ()
 	{
 		int  i=0;
-		while (100 – i++)
-		printf (“ %d”, i);
+		while (100 \96 i++)
+		printf (\93 %d\94, i);
 	}
 
-WAP to print 100 times “Hello” without using loop & goto statement.
+WAP to print 100 times \93Hello\94 without using loop & goto statement.
 	void main()
 	{
 		show (1, 100);
@@ -5287,7 +5894,7 @@ WAP to print 100 times “Hello” without using loop & goto statement.
 	{
 		if (x>=y)
 			return;
-		printf (“\n Hello”);
+		printf (\93\n Hello\94);
 		show (x+1, y);
 	}
 	i.e. Recursive function
@@ -5406,7 +6013,7 @@ it has declared globally then default storage class of variable is extern.
 Rules for using modifier in c:
 1. We cannot use two modifiers of same groups in any particular data type of c.
 2. We can write modifier either before the data type or after the data type.
-3. Order of modifier including data type doesn’t affect the meaning of declaration.
+3. Order of modifier including data type doesn\92t affect the meaning of declaration.
 4. There is one exception in rule 3. POINTER, FUNCTION and INTERRUPT modifier must be written after the data type.
 
 const modifier :
@@ -5583,7 +6190,7 @@ properties :
 
 
 Loop :
-Looping is the process of repeating of same code until a specific condition doesn’t satisfy.
+Looping is the process of repeating of same code until a specific condition doesn\92t satisfy.
 
 types :
 
@@ -5659,7 +6266,7 @@ Transfers control to the labeled statement.
 
 Array :
 An array is derived data type in c programming language which can store similar type of data in continuous memory location. 
-Data may be primitive type (int, char, float, double…), address of union, structure, pointer, function or another array.
+Data may be primitive type (int, char, float, double\85), address of union, structure, pointer, function or another array.
 
 syntex :
 data type arrayname [ arraysize ] = { elements };
@@ -5882,7 +6489,7 @@ Examples of NULL pointer:
 2. float *ptr=(float *)0;
 3. char *ptr=(char *)0;
 4. double *ptr=(double *)0;
-5. char *ptr=’\0’;
+5. char *ptr=\92\0\92;
 6. int *ptr=NULL;
 
 What is meaning of NULL?
@@ -5895,7 +6502,7 @@ Wild pointer:
 A pointer in c which has not been initialized is known as wild pointer.
 
 There is difference between the NULL pointer and wild pointer. Null pointer points the base address of 
-segment while wild pointer doesn’t point any specific memory location.
+segment while wild pointer doesn\92t point any specific memory location.
 
 Dangling pointer:
 
@@ -5916,7 +6523,7 @@ Properties :
 2.If function definition has written before the function call statement then it is not necessary to write function declaration.
 3.If return type of function is signed int data type then it not necessary to write function declaration 
 	even though function definition has written after the function call.
-4.Function’s declaration doesn’t reserve any memory space.
+4.Function\92s declaration doesn\92t reserve any memory space.
 5.In declaration statement it is not necessary to write variable name in parameter of function.
 6. C doesn't support function overloading. In c it is not possible to declare two function of same name 
 	but different signatures like number of parameters, data type of parameters, order of parameter etc.
