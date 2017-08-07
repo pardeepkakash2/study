@@ -36,9 +36,12 @@ What are monolithic and micro kernels and what are the differences between them?
 
 Normal OS vs RTOS ? What is the difference between hard real-time and soft real-time OS? What type of scheduling is there in RTOS?
 	RTOS: http://careerride.com/embedded-systems-interview-questions.aspx
-	In an operating system, there is a module called the scheduler, which schedules different tasks and determines when a process will execute on the processor. This way, the multi-tasking is achieved. 
-	The scheduler in a Real Time Operating System (RTOS) is designed to provide a predictable execution pattern. In an embedded system, a certain event must be entertained in strictly defined time.
-	To meet real time requirements, the behaviour of the scheduler must be predictable. This type of OS which have a scheduler with predictable execution pattern is called Real Time OS(RTOS). The features of an RTOS are
+	In an operating system, there is a module called the scheduler, which schedules different tasks and determines when a process 
+		will execute on the processor. This way, the multi-tasking is achieved. 
+	The scheduler in a Real Time Operating System (RTOS) is designed to provide a predictable execution pattern. In an embedded 
+		system, a certain event must be entertained in strictly defined time.
+	To meet real time requirements, the behaviour of the scheduler must be predictable. This type of OS which have a scheduler 
+		with predictable execution pattern is called Real Time OS(RTOS). The features of an RTOS are
 
     Context switching latency should be short.
     Interrupt latency should be short.
@@ -50,8 +53,10 @@ Normal OS vs RTOS ? What is the difference between hard real-time and soft real-
 	Documentation providing for the minimum, average, and maximum number of clock cycles required by each system call.
 	Overall it should be very reliable.
 
-	A Hard real-time system strictly adheres to the deadline associated with the task. If the system fails to meet the deadline, even once, the system is considered to have failed. 
-	In case of a soft real-time system, missing a deadline is acceptable. In this type of system, a critical real-time task gets priority over other tasks and retains that priority until it completes
+	A Hard real-time system strictly adheres to the deadline associated with the task. If the system fails to meet the deadline, 
+		even once, the system is considered to have failed. 
+	In case of a soft real-time system, missing a deadline is acceptable. In this type of system, a critical real-time task 
+		gets priority over other tasks and retains that priority until it completes
 	
 	RTOS uses pre-emptive scheduling
 	
@@ -64,38 +69,39 @@ What is a Loadable Kernel Module?
 	Modules are pieces of code that can be loaded and unloaded into the kernel upon demand. They extend the functionality 
 	of the kernel without the need to reboot the system.
 
-What are the differences between High Level Device Driver and Low Level Device Driver?
-What is the difference between hardware abstraction layer and a device driver?
-What is the difference between device driver and device controllers?
-What is the difference between user-space and kernel-space device drivers in Linux?
-How do I design user-space device drivers in Linux?
-How to design device driver for your own interfacing device ?
-
 What is difference between the Process and the thread ?
 Process:
-    An executing instance of a program is called a process. Some operating systems use the term task to refer to a program that is being executed.
-    A process is always stored in the main memory also termed as the primary memory or random access memory.Therefore, a process is termed as an active entity. It disappears if the machine is rebooted.
+    An executing instance of a program is called a process. Some operating systems use the term task to refer to a program 
+	that is being executed.
+    A process is always stored in the main memory also termed as the primary memory or random access memory.Therefore, a process is 
+	termed as an active entity. It disappears if the machine is rebooted.
     Several process may be associated with a same program.
-    On a multiprocessor system, multiple processes can be executed in parallel.On a uni-processor system, though true parallelism is not achieved, a process scheduling algorithm is applied and the processor is scheduled to execute each process one at a time yielding an illusion of concurrency.
+    On a multiprocessor system, multiple processes can be executed in parallel.On a uni-processor system, though true parallelism is 
+	not achieved, a process scheduling algorithm is applied and the processor is scheduled to execute each process one at a 
+	time yielding an illusion of concurrency.
     Example: Executing multiple instances of the Calculator program. Each of the instances are termed as a process.
 
 Thread:
-    A thread is a subset of the process.It is termed as a lightweight process, since it is similar to a real process but executes within the context of a process and shares the same resources allotted to the process by the kernel
+    A thread is a subset of the process.It is termed as a lightweight process, since it is similar to a real process but executes 
+	within the context of a process and shares the same resources allotted to the process by the kernel
     Usually, a process has only one thread of control one set of machine instructions executing at a time.
     A process may also be made up of multiple threads of execution that execute instructions concurrently.
     Multiple threads of control can exploit the true parallelism possible on multiprocessor systems.
     On a uni-processor system, a thread scheduling algorithm is applied and the processor is scheduled to run each thread one at a time.
     All the threads running within a process share the same address space, file descriptor, stack and other process related attributes.
-    Since the threads of a process share the same memory, synchronizing the access to the shared data withing the process gains unprecedented importance.
+    Since the threads of a process share the same memory, synchronizing the access to the shared data withing the process 
+	gains unprecedented importance.
 
 The major difference between threads and processes is:
     Threads share the address space of the process that created it; processes have their own address space.
     Threads have direct access to the data segment of its process; processes have their own copy of the data segment of the parent process.
-    Threads can directly communicate with other threads of its process; processes must use interprocess communication to communicate with sibling processes.
+    Threads can directly communicate with other threads of its process; processes must use interprocess communication to communicate 
+	with sibling processes.
     Threads have almost no overhead; processes have considerable overhead.
     New threads are easily created; new processes require duplication of the parent process.
     Threads can exercise considerable control over threads of the same process; processes can only exercise control over child processes.
-    Changes to the main thread (cancellation, priority change, etc.) may affect the behavior of the other threads of the process; changes to the parent process does not affect child processes.
+    Changes to the main thread (cancellation, priority change, etc.) may affect the behavior of the other threads of the process; 
+	changes to the parent process does not affect child processes.
 
 What is a user thread and a kernel thread?
 Number of kernel threads = cores?
@@ -195,9 +201,146 @@ Memory-mapped I/O (MMIO) and port mapped I/O ?
 		Of course there is only one real device, so there is no particular advantage in doing this, except to simplify the decoder. The decoding itself may be programmable, allowing the system to 
 		reconfigure its own memory map as required. This is commonly done.
 
-How to decrease the time of booting processes
-What is the functionality of PROBE function
+How to decrease the time of booting processes?
+
+However, could you point me out where the kernel actually detects the device? Is it keep polling with the driver's name which was given
+	at compile time? Or Is there other mechanism to detect the device? Basically, how the
+	kernel detects those devices, which calls "probe"?
+
+	Platform devices represent devices that are usually integrated into a given chip and therefore are always there. 
+	The platform-specific initialization code statically initializes such arrays of platform devices and then registers them in 
+	a row using platform_register. Therefore there is no need for sophisticated probing. Instead, the string contained 
+	in platform_device.name is compared platform_driver.driver.name and a match is assumed if they are equal.
+
+	Other buses have more sophisticated detection/probing methods. For more information about platform devices, including the places
+	where these functions are called, see drivers/base/platform.c. Read Documentation/driver-model/platform.txt.
+
+Why is the probe method needed in Linux device drivers in addition to init?
+	The driver's init function calls pci_register_driver() which gives the kernel a list of devices it is able to service, along with 
+	a pointer to the probe() function. The kernel then calls the driver's probe() function once for each device.
+
+	This probe function starts the per-device initialization: initializing hardware, allocating resources, and registering the 
+	device with the kernel as a block or network device or whatever it is.
+
+	That makes it easier for device drivers, because they never need to search for devices or worry about finding a device that was 
+	hot-plugged. The kernel handles that part and notifies the right driver when it has a device for you to handle.
+
+	For a "platform" device the probe function is invoked when a platform device is registered and it's device name matches with the 
+	compatible string or name specified on the device driver and device tree.
+	https://www.kernel.org/doc/Documentation/i2c/writing-clients.
+
+	1. The starting trigger function for the driver -> probe() callback is the module_init() macro called while loading the driver; 
+		the macro is defined in `include/linux/module.h`.
+	2. module_init(my_driver_init) has the callback to my_driver_init() function. my_driver_init() function should have a call 
+		to platform_driver_register(my_driver).
+	3. platform_driver_register(my_driver) assigns my_driver -> probe() handle to generic drv -> probe() and calls the 
+		driver_register(my_driver) function.
+	4. driver_register(my_driver) function adds my_driver to the platform bus and calls driver_attach() function.
+    	5. In the same way, even the platform_device needs to attach to the platform bus.
+	6. Finally, only if the driver_match_device() returns success based on the .name & .id_table of the driver matches in the platform
+	devices list that comes either from ACPI/DTS, then the driver_probe_device() gets called that has the drv -> probe() callback.
+
+
 How to detect whether a device is not detected?
+
+frequesntly used comman function ?
+	Take any kernel modules and identify all the symbols within, extracting only the API that is NOT declared inside the 
+	kernel modules: nm xxx.ko | grep “ U “, where “U” indicate that the function is not declared in the kernel module, thus belong 
+	to the generic class of external kernel API function.
+
+	nm *.ko | grep “ U “ | sort | uniq -c | sort -n (number on the left indicate the frequency count).
+
+what are the common encountered issues while devplopment of device driver ?
+	https://www.quora.com/Linux-Kernel-What-are-the-commonly-encountered-issues-in-development-of-Device-Drivers
+	There are quite a lot of issues that can pop up especially in device driver development, few of the prominent ones are:
+	Timing /Device Initialization issues
+	Driver Lock up/Synchronization issues
+	Interrupt/GPIO handling
+	Performance Issues
+	Memory issues
+
+	Timing /Device Initialization issues:
+	Most of the peripheral devices have specific timing requirement on various operations such as power on/off, IO, initialization etc.
+
+	This shows timing constraints on power sequence for this IC, w.r.t the display data, interfacing bus line status, power lines 
+	and so, if these constraints are not met from the corresponding driver, it may result in quite a few problem; for instance
+
+    	the IC may send invalid data to the LVDS connected display hence making it show some garbage screen - momentarily
+    	Or the power consumption by IC may go for a toss
+    	or even the IC power on/off may not happen properly causing it to enter an indeterminate state and so on
+
+	Similar timing constraint will be there on I/O Operations as well.
+	Another key factor would be initialization sequence or commands, of a particular device - certain commands should be sent to the 
+	IC to initialize its operational modes(for e.g: in case of displays, its refresh rates, resolution etc.)So the driver developer
+	need to ensure that these timing & initialization sequences are also met .
+
+	Driver Lockup:
+
+    	Most of the driver are makes use of threads or workqueue - which would be initiated to process some requests from userspace 
+	or events/interrupts from peripheral.
+   	For synchronization between each thread/work-queue some primitives such as mutex would be used.
+    	With poor implementation , of synchronization primitives or corner cases, this would result in lock up between threads and 
+	worst cases complete stall of the process or even panic(if watchdog or any debug system is being used)
+    	So while driver implementation put in effort for identifying such pain points for careful design ensuring proper synchronization
+	(Consider points on performance issues as well) .
+
+	Interrupt/GPIO handling:
+
+    	Most of external peripherals (to an SoC or processor) will have an interrupt line connected - via a GPIO interface
+    	The behaviour of this line would differ across peripherals. For e.g.:
+        Trigger - Level or edge triggered
+        Edge - rising or falling edge
+    	If the GPIO interupt controller is configured with wrong interrupt detection logic, it would result in either no interrupt being
+	detected or spurious interrupts to be triggered.
+   	Another similar problem would be wrong configuration for a pin e.g.
+    		configuring as an input while the intended function was to be output
+       		configuring alternate function for the pin when it is expected to be a GPIO
+
+	Performance issues:
+
+	performance issues in driver can be addressed with proper design decisions i.e. when to use polling an interrupt modes of 
+	operation on devices
+
+	Some devices will have limited buffers (or FIFO) registers to hold data in I/O operations, so in order to properly handle 
+	I/O requests from userspace we need to carefully design data structures and associated processing in kernel drivers. For e.g:
+
+    	In case of GPU interface driver in kernel, the driver will play some role in process context management as well as per 
+	process command queue management
+    	This may also have associated buffer queue handling, prioritization and synchronization as well.
+    	So the driver need to be designed & implemented considering all the necessary points.
+    	If not done properly, the application through put (in case of GPU - FPS ) will be affected.
+
+	Memory Issues:
+	excessive usage of kernel memory APIs for granular allocation will result in fragmentation
+    	In case the hardware has any IOMMU for address translation in a peripheral device - take care of memory mapping and unmapping 
+		via provided API set - otherwise will result in page fault for memory operations by the designated peripheral
+    	When buffers are shared between userspace or kernel (such as overlays or frame buffer), proper
+        Synchronization of buffer access between kernel & userspace
+        Allocation API usage
+        IOMMU or related api usage
+        Caching parameters
+
+	There are even more issues, like:
+
+    	Peripheral lock up - firmware malfunction
+    	Bus hang up (if a peripheral is holding a shared bus in case of malfunction) or arbitration issue - which might have 
+	resulted because of improper request or sequence from driver
+    	Improper LDO or power supply configuration in terms of - voltage level or related parameters
+    	IO memory mapping
+
+	handling hardware errors: If your device is interrupt driven, then there are chances of excessive spurious interrupts when 
+	device starts misbehaving. Interrupt handler should be written in such a way that spurious interrupts are either ignored or 
+	blocked(if possible). Otherwise system will spend all its time processing interrupts.
+
+	Memory : If you are expecting lots of operations with each operation requiring some memory to hold data structures, 
+	use slab allocator instead f kmalloc all the time. Using kmalloc excessively for different size requests will fragment 
+	kernel address space. Using slab will reduce external fragmentation to minimum.
+
+	Performance: Choose interrupt v/s polling wisely. If your device has DMA capabilities, it is better to switch to polling 
+	and look for all completed requests at once rather than getting interrupt for each completed request.
+
+what are some common traps and pitfalls in development of Linux based device drivers?
+How is a data sheet important, while developing Linux Device Driver, and how is it used?
 
 What is generic system call that is used to transfer data from user space to kernel space?
 	ioctl is used along with put_user and get_user to transfer the data from user space to kernel space.
@@ -898,11 +1041,89 @@ Reading Physical Mapped Memory using /dev/mem ?
 what is Contiguous Memory Allocator (or CMA) ?
 how kernel manage to allocate memory when running interrupts? will it able to allocate?
 why copy_from_user() and copy_to_user() used ? why copy_to_user() user even though kernel could  write at any user space?
+	
+	copy_to_user is a function defined in the Linux kernel to copy data from kernel-space to user-space. It is defined 
+	in <asm/uaccess.h>. The exact definition depends on the architecture, but it essentially looks like this:
+
+	#include <asm/uaccess.h>
+        int copy_to_user(void *dst, const void *src, unsigned int size);
+
+	On success, copy_to_user copies the size bytes pointed at by src, which must exist in kernel-space, to dst, which must exist 
+	in user-space. copy_to_user returns the number of bytes not copied, which means on success it returns zero.
+
+	
+	Why can't you just call, say, memcpy?
+	Two reasons. One, the kernel is capable of writing to any memory. User process's can't. copy_to_user needs to check dst to 
+	ensure it is accessible and writable by the current process. Two, depending on the architecture, you can't simply copy data 
+	from kernel to user-space. You might need to do some special setup first, invalidate certain caches, or use special operations.
+
+	Let's look at what copy_to_user does on everyone's favorite architecture, x86. First, copy_to_user checks that dst is writable 
+	by calling access_ok on dst with a type of VERIFY_WRITE. If access_ok returns nonzero, then copy_to_user proceeds to copy. 
+	Next, on x86 processors up to and including 486, the destination pages must be pinned in memory, as the page tables could 
+	change at anytime. On x86 revisions after 486, the WP bit is honored from ring zero and this is not necessary. Finally,
+	copy_to_user, via __copy_to_user_ll, copies the memory using what is simply an optimized version of memcpy.
+
+	Finally, let's look at an example. This is the gethostname system call as defined in Linux kernel 3.6:
+	int gethostname(char *name, int len)
+        {
+            int i, errno;
+            struct new_utsname *u;
+            if (len < 0)
+                    return -EINVAL;
+            down_read(&uts_sem);
+            u = utsname();
+            i = 1 + strlen(u->nodename);
+            if (i > len)
+                    i = len;
+            errno = 0;
+            if (copy_to_user(name, u->nodename, i))
+                    errno = -EFAULT;
+            up_read(&uts_sem);
+            return errno;
+        }
+	
+	The system call is rather simple: It acquires a read semaphore, grabs a pointer to the utsname structure, which contains various
+	system information, and then copies the hostname from that structure into the user's provided name buffer. On error it returns
+	EFAULT, signifying a problem writing to the user's memory. On success it returns zero.
+
+Why we need copy_from_user() as the kernel can access all the memory?  If we see the copy_from_user() implementation , again we are 
+	copying data to the kernel memory using memcpy (). Doesn't it an extra overhead?
+
+What is a way to mmap kernel memory area to user space?
+	https://www.ibm.com/developerworks/library/l-user-space-apps/
 
 How to detect kernel memory leak?
 	https://psankar.blogspot.in/2010/11/detecting-memory-leaks-in-kernel.html
 
 how container_of() works? write your own MACRO?
+
+how to add your own systemcall in kernel ?
+	https://www.ibm.com/developerworks/library/l-system-calls/index.html
+
+how to create proc entry and debugfs in linux kernel ?
+	https://www.ibm.com/developerworks/linux/library/l-proc/index.html
+	https://lwn.net/Articles/115405/?cm_mc_uid=83865307126915008343575&cm_mc_sid_50200000=1502132303
+
+what is Device Tree in Linux ? what is the Advantages and Disadvantages of Device Tree?
+How do the brk and mmap system calls work in the Linux kernel?
+How does the code after calling schedule() gets executed in Linux Kernel?
+
+How does Uboot pass device tree information to Linux kernel?
+
+    void TheKernel(char *cmdline, void* dtb);
+
+	The kernel is passed the command line, and a pointer to the device tree binary, and then the function gets called, 
+	simple as that.
+
+	From user point of view, these are the steps for booting:
+
+	1- set the variable $cmdline to the desired kernel command line
+	2- use fatload or similar command to read the kernel from the sdcard and put it to some address at the memory, 
+		let's say at the address 20000000.
+	3- use fatload again to read the device tree binary (dtb) to another memory address, like 21000000. (The numbers are all made up)
+	4- use the bootm (boot from memory) command to start the boot
+
+	    bootm 20000000 21000000.
 
 how to convert virtual addrees to physical address and vice versa ?
 	Documentation/{IO-mapping.txt,DMA-mapping.txt,DMA-API.txt}.
@@ -1176,6 +1397,58 @@ What is Indefinite Postponement / Indefinite blocking or starvation ?
 How Many Processes or Threads Are Enough for an application ?
 
 Networking:
+Track a packet as it goes through the kernel (linux)?
+	mkdir /debug
+	mount -t debugfs nodev /debug
+	mount -t debugfs nodev /sys/kernel/debug
+	echo '*' >/debug/tracing/set_ftrace_filter
+	echo function_graph >/debug/tracing/current_tracer
+	echo 1 >/debug/tracing/tracing_on
+	sleep 20
+	echo 0 >/debug/tracing/tracing_on
+	cat /debug/tracing/trace > /tmp/tracing.out$$
+
+What is the difference between TCP and UDP protocol?
+
+    TCP is a connection oriented protocol and contain the information of sender as well as receiver.
+    Eg: HTTP.FTP, Telnet
+    TCP is slower than UDP due to its error checking mechanism
+
+    UDP protocols are connection less packets have no information to where they are going. These type of ports are generally used 
+	for broadcasting. 
+    For eg: DNS, DHCP
+    UDP are faster
+
+What is the use of /etc/hosts file?
+	To map any hostname to its relevant IP.
+
+What is the command to check all the open ports of your machine?
+	nmap localhost.
+
+What is a 3 way handshake protocol? Give an example of it?
+	SYN - system 1 sends SYN signal to remote system
+	SYN-ACK - remote sysstem receives the syn signal and sends ack signal
+	ACK - system again receives ack signal from remote system and connection is established
+
+	E.g: When you ping to a machine you are sending a SYN signal which is ACK by the remote machine then it sends a SYN ACK signal 
+	back to the host machine. Then the host machine receives SYN ACK and sends the ACK signal back to confirm the same.
+
+Explain range of TCP/IP classes?
+	CLASS A = 1 to 126
+	CLASS B = 128 to 191
+	CLASS C = 192 to 223
+	CLASS D = 224 to 239 (Multicasting)
+	CLASS E = 240 to 255 (Research)
+
+Explain in short about all 7 layers of OSI?
+	Application layer = user interface and application
+	Presentation layer  = Data conversion and transformation
+	session layer  = keep data of diff. application seperately
+	transport layer  = end to end connectivity using port numbers.
+	network layer = logical addressing like IP address.
+	Data link layer = Physical addressing like MAC address.
+	Physical layer  = Physical transmission of data using 0's and 1's.
+
 What is the use of Ethernet ?
 	Ethernet is a link layer protocol in TCP/IP stack and the most widely used LAN technology that provides a framework for data transmission to other devices on the same network segment.
 How is the destination MAC address obtained ?
