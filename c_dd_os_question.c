@@ -240,10 +240,7 @@ Why is the probe method needed in Linux device drivers in addition to init?
 	6. Finally, only if the driver_match_device() returns success based on the .name & .id_table of the driver matches in the platform
 	devices list that comes either from ACPI/DTS, then the driver_probe_device() gets called that has the drv -> probe() callback.
 
-
-How to detect whether a device is not detected?
-
-frequesntly used comman function ?
+how to know frequesntly used comman function ?
 	Take any kernel modules and identify all the symbols within, extracting only the API that is NOT declared inside the 
 	kernel modules: nm xxx.ko | grep “ U “, where “U” indicate that the function is not declared in the kernel module, thus belong 
 	to the generic class of external kernel API function.
@@ -342,9 +339,104 @@ what are the common encountered issues while devplopment of device driver ?
 what are some common traps and pitfalls in development of Linux based device drivers?
 How is a data sheet important, while developing Linux Device Driver, and how is it used?
 
-What is generic system call that is used to transfer data from user space to kernel space?
-	ioctl is used along with put_user and get_user to transfer the data from user space to kernel space.
+What are the generic system call that is used to transfer data from user space to kernel space and vice versa?
+	http://wiki.tldp.org/kernel_user_space_howto
 
+	File system based communication:
+	Procfs, Sysfs, Configfs, Debugfs, Sysctl, Character Devices.
+ 
+	socket based communication:
+	netlink socket, TCP/IP, UDP
+	http://amsekharkernel.blogspot.in/2012/01/what-are-ways-of-communication-bw-user.html
+
+	Procfs:
+	procfs.c:        legacy procfs API
+	Seq_file: 	API		https://lwn.net/Articles/22355/
+					https://kernelnewbies.org/Documents/SeqFileHowTo
+	sysfs:
+	Sysfs was designed to represent the whole device model as seen from the Linux kernel. It contains information about devices,
+	drivers and buses and their interconnections.
+
+	sys/block/ all known block devices such as hda/ ram/ sda/
+	sys/bus/ all registered buses. Each directory below bus/ holds by default two subdirectories:
+		o device/ for all devices attached to that bus o driver/ for all drivers assigned with that bus. 
+	sys/class/ for each device type there is a subdirectory: for example /printer or /sound
+	sys/device/ all devices known by the kernel, organised by the bus they are connected to
+	sys/firmware/ files in this directory handle the firmware of some hardware devices
+	sys/fs/ files to control a file system, currently used by FUSE, a user space file system implementation
+	sys/kernel/ holds directories (mount points) for other filesystems such as debugfs, securityfs.
+	sys/module/ each kernel module loaded is represented with a directory.
+	sys/power/ files to handle the power state of some hardware 
+
+	debugfs:
+	Debugfs is a simple to use RAM based file system especially designed for debugging purposes. Developers are encouraged to use
+	debugfs instead of procfs in order to obtain some debugging information from their kernel code. Debugfs is quite flexible: it
+	provides the possibility to set or get a single value with the help of just one line of code but the developer is also allowed 
+	to write its own read/write functions, and he can use the seq_file interface.
+	
+	mount -t debugfs none /sys/kernel/debug
+	debugfs.c       kernel module that implements the "one line" API for a variable of type u8 as well as the API 
+		with which you can specify your own read and write functions.
+	Sysctl:
+	The sysctl infrastructure is designed to configure kernel parameters at run time. The sysctl interface is heavily used by the 
+	Linux networking subsystem. It can be used to configure some core kernel parameters; represented as files in /proc/sys/.
+	In order to change the values permanently they have to be written to the file /etc/sysctl.conf.
+
+	sysctl.c        sysctl example module: write an integer to /proc/sys/net/test/value1 and value2 respectively
+
+	Socket Based Mechanisms:
+	AF_INET: designed for network communication, but UDP sockets can also be used for the communication between a kernel module 
+		and the user space. The use of UDP sockets for node local communication involves a lot of overhead. 
+	AF_NETLINK (netlink sockets): They are especially designed for the communication between the kernel space and the user space. 
+	There are different netlink socket types currently implemented in the kernel, all of which deal with a specific subset of 
+	the networking part of the Linux kernel.
+
+	Ioctl:	ioctl is used along with put_user and get_user to transfer the data from user space to kernel space.
+	ioctl.c  kernel module that uses ioctl in combination with a character device.The ioctl allows to send a message of up to 200 bytes.
+	ioctl_user.c    user space program that uses ioctl to send a message to the kernel
+
+	Kernel System Calls:
+	System calls are used when a user space program wants to use some data or some service provided by the Linux kernel.	
+
+	Sending Signals from the Kernel to the User Space:
+	since only the kernel can send a signal to the user space, but not vice versa.
+
+	signal_kernel.c kernel module that sends a signal to a user space process. The kernel needs to know the PID of the user space
+		process. Therefore the user space process writes its PID in the debugfs file signalconfpid.
+	signal_user.c   user space program that receives the signal.
+
+	Upcall:
+	The upcall functionality of the Linux kernel allows a kernel module to invoke a function in user space. It is possible to start a
+	program in user space, and give it some command line arguments, as well as setting environment variables. 
+
+	usermodehelper.c        kernel module that starts a process
+	callee.c        user space program that will be executed on behalf of the kernel
+
+	Mmap:	
+	Memory mapping is the only way to transfer data between user and kernel spaces that does not involve explicit copying, and is 
+	the fastest way to handle large amounts of data. 
+
+	/dev/mem is a character device file that is an image of the main memory of the computer. It may be used.
+	Byte addresses in mem are interpreted as physical memory addresses.
+
+
+	mmap_simple_kernel.c    kernel module that provides the mmap system call based on debugfs.
+	mmap_user.c     user space program that will share a memory area with the kernel module
+
+	Kernel Module:
+	charcater driver
+
+	kernel API :	https://www.ibm.com/developerworks/library/l-kernel-memory-access/index.html
+	access_ok	Checks the validity of the user space memory pointer
+	get_user	Gets a simple variable from user space
+	put_user	Puts a simple variable to user space
+	clear_user	Clears, or zeros, a block in user space
+	copy_to_user	Copies a block of data from the kernel to user space
+	copy_from_user	Copies a block of data from user space to the kernel
+	strnlen_user	Gets the size of a string buffer in user space
+	strncpy_from_user	Copies a string from user space into the kernel
+
+	
 what does the probe() method, that the driver provides, do? How different is it from the driver init function, 
 i.e. why cant the probe() functions actions be performed in the driver init function ?
 
@@ -422,9 +514,56 @@ When does the control passes from user mode to kernel mode in a Linux System?
 	System calls ,H/w Interrupts and last which I did not mention was Exceptions
 	
 device tree:
+https://saurabhsengarblog.wordpress.com/2015/11/28/device-tree-tutorial-arm/
 explain device tree concept ?
 	Device tree is a data structure that describes the hardware and is passed to the kernel at boot time.
 	different boards can be supported without recompiling the kernel only by writing the dtbs.
+
+	The linux kernel requires the entire description of the hardware, like which board it is booting(machine type), which 
+	all devices it is using there addresses(device/bus addresses), there interrupts numbers(irq), mfp pins configuration
+	(pin muxing/gpios)  also some board level information like memory size, kernel command line etc etc …
+
+	Before device tree, all these information use to be set in a huge cluster of board files. And, Information like command line,
+	memory size etc use to be passed by bootloaders as part of ATAGS through register R2(ARM). Machine type use to be set separately 
+	in register R1(ARM).
+	At this time each kernel compilation use to be for only one specific chip an a specific board.
+
+	So there was a long pending wish to compile the kernel for all ARM processors, and let the kernel somehow detect its hardware 
+	and apply the right drivers as needed just like your PC.
+	But how? On a PC, the initial registers are hardcoded, and the rest of the information is supplied by the BIOS. 
+	But ARM processors don’t have a BIOS.
+	The solution chosen was device tree, also referred to as Open Firmware (abbreviated OF) or Flattened Device Tree (FDT). 
+	This is essentially a data structure in byte code format which contains information that is helpful to the kernel when booting up.
+
+	The bootloader now loads two binaries: the kernel image and the DTB.
+	DTB is the device tree blob. The bootloader passes the DTB address through R2 instead of ATAGS and R1 register is not required now.
+
+	For a one line bookish definition “A device tree is a tree data structure with nodes that describe the physical devices in a system”
+
+	Currently device tree is supported by ARM, x86, Microblaze, PowerPC, and Sparc architectures.
+
+	Device Tree Compilation:
+	Device tree compiler and its source code  located at scripts/dtc/.
+	On ARM all device tree source are located at /arch/arm/boot/dts/.
+	The Device Tree Blob(.dtb) is produced by the compiler, and it is the binary that gets loaded by the bootloader and parsed 
+	by the kernel at boot time.
+	scripts/dtc/dtc -I dts -O dtb -o /path/my_tree.dtb /arch/arm/boot/dts/my_tree.dts
+	
+	For creating the dts from dtb:
+	scripts/dtc/dtc -I dtb -O dts -o /path/my_tree.dts /path/my_tree.dtb
+
+	dts api:
+	of_address_to_resource: Reads the memory address of device defined by res property
+	irq_of_parse_and_map: Attach the interrupt handler, provided by the properties interrupt and interrupt-parent
+	of_find_property(np, propname, NULL): To find if property named in argument2 is present or not.
+	of_property_read_bool: To read a bool property named in argument 2, as it is a bool property it just like searching 
+		if that property present or not. Returns true or false
+
+	of_get_property: For reading any property named in argument 2
+	of_property_read_u32: To read a 32 bit property, populate into 3rd argument. Doesn’t set anything to 3rd argument in case of error.
+	of_property_read_string: To read string property
+	of_match_device: Sanity check for device that device is matching with the node, highly optional, I don’t see much use of it.
+
 
 interrupt:
 how the synchronisation works in single processor system(spinlock_irq_save)?
@@ -1397,6 +1536,8 @@ What is Indefinite Postponement / Indefinite blocking or starvation ?
 How Many Processes or Threads Are Enough for an application ?
 
 Networking:
+http://amsekharkernel.blogspot.in/2014/08/what-is-skb-in-linux-kernel-what-are.html
+
 Track a packet as it goes through the kernel (linux)?
 	mkdir /debug
 	mount -t debugfs nodev /debug
