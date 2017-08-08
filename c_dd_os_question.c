@@ -4486,3 +4486,529 @@ Note: Consonant expression in #if condition should not include any c programming
 	preprocessor directives execute just before the actual c code.
 Note: Constant expression in #if directive cannot be string constant. 
 	It can be character constant which returns its ASCII value to directive.
+
+socket:
+http://amsekharkernel.blogspot.in/2012/01/what-are-ways-of-communication-bw-user.html
+https://www.coverfire.com/articles/queueing-in-the-linux-network-stack/
+https://www.kernel.org/doc/Documentation/networking/packet_mmap.txt
+
+Application							HTTP, FTP, DNS etc.
+
+Transport							TCP, UDP etc.
+
+Network/Internet					For TCP/IP this is the Internet Protocol (IP).
+
+Physical/ Data Link/				
+Network Access						Ethernet, Token ring, etc. 802.11 Wi-Fi, FDDI, physical media, and encoding techniques, T1, E1 etc.
+
+socket buffer : tx, rx, error. TCP Small Queues
+
+	The default and maximum amount for the receive socket memory:
+	$ cat /proc/sys/net/core/rmem_default
+	$ cat /proc/sys/net/core/rmem_max
+
+	The default and maximum amount for the send socket memory:
+	$ cat /proc/sys/net/core/wmem_default
+	$ cat /proc/sys/net/core/wmem_max
+
+	set minimum size, initial size, and maximum size[net.core.wmem_max] in bytes:
+	# echo 'net.ipv4.tcp_rmem= 10240 87380 12582912' >> /etc/sysctl.conf
+	# echo 'net.ipv4.tcp_wmem= 10240 87380 12582912' >> /etc/sysctl.con
+
+	Set maximum number of packets, queued on the INPUT side, when the interface receives packets faster than kernel can process them.
+	# echo 'net.core.netdev_max_backlog = 5000' >> /etc/sysctl.conf
+	
+	/proc/sys/net/ipv4/tcp_limit_output_bytes.
+	
+	Kernel Parameters for Core Networking :
+	change The queue length per core [netdev_max_backlog]. 
+		
+		# echo 8333 > /proc/sys/net/core/netdev_max_backlog
+		# ip link set enp0s2 qlen 8333
+
+		reload the changes:
+		# sysctl -p
+		
+		Use tcpdump to view changes for eth0:
+		# tcpdump -ni eth0
+		
+	Using sysctl to set UDP socket buffer kernel parameters
+	# sysctl -w net.core.wmem_default=65536
+	# sysctl -w net.core.wmem_max=16777216
+	# sysctl -w net.core.rmem_default=8388608
+	# sysctl -w net.core.rmem_max=16777216
+
+
+
+qdisc: queaue discipline fifo.
+	ifconfig eth0:
+	eth0  Link encap:Ethernet  HWaddr 00:18:F3:51:44:10  
+          inet addr:69.41.199.58  Bcast:69.41.199.63  Mask:255.255.255.248
+          inet6 addr: fe80::218:f3ff:fe51:4410/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:435033 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:429919 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:65651219 (62.6 MiB)  TX bytes:132143593 (126.0 MiB)
+          Interrupt:23
+		  
+	ip link:
+	1: lo:  mtu 16436 qdisc noqueue state UNKNOWN 
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+	2: eth0:  mtu 1500 qdisc pfifo_fast state UP qlen 1000
+    link/ether 00:18:f3:51:44:10 brd ff:ff:ff:ff:ff:ff
+	
+	ip link set txqueuelen 500 dev eth0
+	
+	BQL:
+	/sys/devices/pci0000:00/0000:00:14.0/net/eth0/queues/tx-0/byte_queue_limits
+	
+driver queaue [ring buffer] fifo.
+	The ethtool command is used to control the driver queue size for Ethernet devices. ethtool also provides low level interface statistics 
+	as well as the ability to enable and disable IP stack and driver features
+
+Why use PACKET_MMAP?
+How to use mmap() directly to improve capture process?
+
+From the system calls stand point, the use of PACKET_MMAP involves
+the following process:
+[setup]     socket() -------> creation of the capture socket
+            setsockopt() ---> allocation of the circular buffer (ring)
+                              option: PACKET_RX_RING
+            mmap() ---------> mapping of the allocated buffer to the
+                              user process
+[capture]   poll() ---------> to wait for incoming packets
+[shutdown]  close() --------> destruction of the capture socket and
+                              deallocation of all associated 
+                              resources.
+
+how to use mmap() directly to improve transmission process?
+Transmission process is similar to capture as shown below.
+[setup]          socket() -------> creation of the transmission socket
+                 setsockopt() ---> allocation of the circular buffer (ring)
+                                   option: PACKET_TX_RING
+                 bind() ---------> bind transmission socket with a network interface
+                 mmap() ---------> mapping of the allocated buffer to the
+                                   user process
+[transmission]   poll() ---------> wait for free packets (optional)
+                 send() ---------> send all packets that are set as ready in
+                                   the ring
+                                   The flag MSG_DONTWAIT can be used to return
+                                   before end of transfer.
+[shutdown]  close() --------> destruction of the transmission socket and
+                              deallocation of all associated resources.
+							  
+how to tune ethernet performance?
+# ip -s link
+[...]
+1: enp0s1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UNKNOWN mode DEFAULT group default qlen 1000
+    link/ether 00:11:95:1e:8e:b6 brd ff:ff:ff:ff:ff:ff
+    RX: bytes  packets  errors  dropped overrun mcast   
+    8028989029 31573824 0       0       0       0       
+    TX: bytes  packets  errors  dropped carrier collsns 
+    3272273796 15088848 0       0       0       0
+[...] 
+errors 	Poorly or incorrectly negotiated mode and speed, or damaged network cable.
+dropped 	Possibly due to iptables or other filtering rules, more likely due to lack of network buffer memory.
+overrun 	Number of times the network interface ran out of buffer space.
+carrier 	Damaged or poorly connected network cable, or switch problems.
+collsns 	Number of collisions, which should always be zero on a switched LAN. Non-zero indicates problems negotiating appropriate duplex mode. 
+			A small number that never grows means it happened when the interface came up but hasn't happened since. 
+
+Performance Tuning With ethtool?
+	http://cromwell-intl.com/linux/performance-tuning/ethernet.html
+	Get current settings including speed and duplex mode and whether a link beat signal is detected, get driver information, and get statistics.
+	# ethtool enp0s2
+	# ethtool -i enp0s2
+	# ethtool -S enp0s2
+
+	ring buffer:
+	The ring buffer is another name for the driver queue. Get the maximum receive and transmit buffer lengths and their current settings. 
+	RX and TX report the number of frames in the buffer, the buffer contains pointers to frame data structures. 
+	Change the settings to the maximum to optimize for throughput while possibly increasing latency. On a busy system the CPU will have fewer opportunities 
+	to add packets to the queue, increasing the likelihood that the hardware will drain the buffer before more packets can be queued. 
+	ethtool -g enp0s2
+	
+	Flow Control:
+	Turn on flow control, allowing the host and the switch to pace their transmission based on current receive capability at the other end. 
+	This will reduce packet loss and it may provide a significant improvement on high-speed networks. 
+	# ethtool -A enp0s2 rx on
+	# ethtool -A enp0s2 tx on 
+	
+Enable Jumbo Frames ?
+	A jumbo frame is an Ethernet frame with more than than 1500 bytes of payload. A 9000-byte MTU reduces the protocol overhead and CPU interrupts by a factor of six. 
+		Much modern Ethernet equipment can support frames up to 9,216 bytes, but make sure to verify that every device on the LAN supports your desired jumbo frame 
+		size before making any changes.
+	ip link set enp0s2 mtu 9000.
+
+http://www.csd.uoc.gr/~hy556/material/tutorials/cs556-3rd-tutorial.pdf
+important socket APIs :
+	socket, bind, connect, listen, accept, read, write, recvmsg, sendmsg, 
+
+	#include <sys/types.h>
+	#include <sys/socket.h>
+	
+	int socket(int domain, int type, int protocol); 
+		sockid: socket descriptor, an integer (like a file-handle)
+		family: integer, communication domain, e.g.,
+			PF_INET, IPv4 protocols, Internet addresses (typically used)
+			PF_UNIX, Local communication, File addresses
+		type: communication type
+			SOCK_STREAM -reliable, 2-way, connection-based service
+			SOCK_DGRAM -unreliable, connectionless, messages of maximum length
+		protocol: specifies protocol 
+			IPPROTO_TCP IPPROTO_UDP
+			usually set to 0 (i.e., use default protocol)
+		upon failure returns -1
+		NOTE: socket call does not specify where data will be coming from, nor where it will be going to –it just creates the interface!
+		
+	int bind(int sockfd, const struct sockaddr *my_addr ", socklen_t " addrlen );
+	int connect(int sockfd, const struct sockaddr *serv_addr, socklen_t addrlen); 
+	int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
+	int listen(int sockfd, int backlog);
+	int send(int sockfd, const void *msg, int len, int flags);
+	int recv(int sockfd, void *buf, int len, unsigned int flags);
+	ssize_t write(int fd, const void *buf, size_t count);
+	ssize_t read(int fd, void *buf, size_t count);
+	int close(int sockfd);
+	int shutdown(int sockfd, int how);
+	
+	int getsockname(int s, struct sockaddr *name, socklen_t *namelen); 
+	int getsockopt(int s, int level, int optname, void *optval, socklen_t *optlen);
+	int setsockopt(int s, int level, int optname, const void *optval, socklen_t optlen); 
+	int ioctl(int d, int request, ...); 
+	
+	poll, epoll_wait, select, getaddressinfo, freeaddrsinfo, gethostbyname, getserverbyname, fcntl, inet_pton, htons, setsocketopt, ioctl, acces. shutdown, nmap, strerror(errno), close.
+	recvmsg, sendmsg
+	
+	flags:
+	SO_REUSEADDR | SO_REUSEPORT
+
+	why bind is optional in client?
+
+	dev_queue_xmit() - net/core/dev.c: puts the sk_buff on the device queue using the qdisc→enqueue virtual method.
+	  calls start_bh_atomic()
+	  if device has a queue
+		calls enqueue() to add packet to queue
+		calls qdisc_wakeup() [= qdisc_restart()] to wake device
+	  else 
+		calls hard_start_xmit()
+		calls end_bh_atomic()
+		
+	inet_sendmsg() - net/ipv4/af_inet.c (786)
+	  extracts pointer to socket sock
+	  checks socket to make sure it is working
+	  verifies protocol pointer
+	  returns sk->prot[tcp/udp]->sendmsg().
+	  
+	netif_rx() - net/core/dev.c (757)
+	  puts time in skb->stamp
+	  if backlog queue is too full, 
+		drops packet
+	  else
+	   calls skb_queue_tail() to put packet into backlog queue
+	   marks bottom half for later execution
+
+	sock_queue_rcv_skb() - include/net/sock.h (857)
+	  calls skb_queue_tail() to put packet in socket receive queue
+	  calls sk->data_ready() [= sock_def_readable()]
+
+	inet_recvmsg() - net/ipv4/af_inet.c (764)
+	  extracts pointer to socket sock
+	  checks socket to make sure it is accepting
+	  verifies protocol pointer
+	  returns sk->prot[tcp/udp]->recvmsg()
+
+	ip_rcv() - net/ipv4/ip_input.c (395)
+	  examines packet for errors:
+		invalid length (too short or too long)
+		incorrect version (not 4)
+		invalid checksum
+	  calls __skb_trim() to remove padding
+	  defrags packet if necessary
+	  calls ip_route_input() to route packet
+	  examines and handle IP options
+	  returns skb->dst->input() [= tcp_rcv,udp_rcv()]
+
+The ifconfig program configures interface devices for use.
+	ifconfig ${DEVICE} ${IPADDR} netmask ${NMASK} broadcast ${BCAST}
+    ifconfig eth0 down - shut down eth0
+    ifconfig eth1 up - activate eth1
+    ifconfig eth0 arp - enable ARP on eth0
+    ifconfig eth0 -arp - disable ARP on eth0
+    ifconfig eth0 netmask 255.255.255.0 - set the eth0 netmask
+    ifconfig inc-scc mtu 2000 - set the scc maximum transfer unit
+    ifconfig eth1 172.16.0.7 - set the eth1 IP address 
+
+How internally ifconfig works:
+	devinet_ioctl() - net/ipv4/devinet.c (398)
+	  creates an info request (ifreq) structure and copies data from
+		  user to kernel space
+	  if it is an INET level request or action, executes it
+	  if it is a device request or action, calls a device function
+	  copies ifreq back into user memory
+	  returns 0 for success
+
+	>>> ifconfig main() - SOURCES/ifconfig.c (478)
+	  opens a socket (only for use with ioctl function)
+	  searches command line arguments for options
+	  calls if_print() if there were no arguments or the only argument
+		  is an interface name
+	  loops through remaining arguments, setting or clearing flags or
+		  calling ioctl() to set variables for the interface
+
+	if_fetch() - SOURCES/lib/interface.c (338)
+	  fills in an interface structure with multiple calls to ioctl() for
+		  flags, hardware address, metric, MTU, map, and address information
+
+	if_print() - SOURCES/ifconfig.c (121)
+	  calls ife_print() for given (or all) interface(s)
+		  (calls if_readlist() to fill structure list if necessary and
+		  then displays information about each interface)
+
+	if_readlist() - SOURCES/lib/interface.c (261)
+	  opens /proc/net/dev and parses data into interface structures
+	  calls add_interface() for each device to put structures into a list
+
+	inet_ioctl() - net/ipv4/af_inet.c (855)
+	  executes a switch based on the command passed
+		  [for ifconfig, calls devinet_ioctl()]
+
+	ioctl() -
+	  jumps to appropriate handler routine [= inet_ioctl()]
+	  
+What are the possible ways to check if your system is listening to port 67
+# nmap localhost | grep 67
+# netstat -ntlp | grep 67
+
+What is a 3 way handshake protocol? Give an example of it
+Ans: SYN - system 1 sends SYN signal to rmote system
+SYN-ACK - remote sysstem receives the syn signal and sends ack signal
+ACK - system again receives ack signal from remote system and connection is established
+
+For Example: When you ping to a machine you are sending a SYN signal which is ACK by the remote machine then it sends a SYN ACK signal back to the host machine. 
+Then the host machine receives SYN ACK and sends the ACK signal back to confirm the same.
+
+How can you make a service run automatically after boot?
+
+What is the command to check all the listening ports and services of your machine?
+
+What is the command to check all the open ports of your machine?
+nmap localhost
+
+What is the use of /etc/hosts file?
+To map any hostname to its relevant IP
+
+What is the the use of /etc/resolv.conf?
+It contains the details of nameserver i.e details of your DNS server which helps us connect to Internet
+
+Mention all the network configuration files you would check to configure your ethernet card ?
+/etc/sysconfig/network-scripts/ifcfg-eth*
+/etc/sysconfig/network
+/etc/resolv.conf
+/etc/nsswitch.conf
+
+What is the difference between TCP and UDP protocol?
+
+What does it mean when lsmod list a module with -1?
+local_irq_save(flags), How does this API stores state of interrupt system?
+How kernel determines that all devices have been initialized in boot?
+Exporting symbols in interdependent kernel modules?
+How to interpret addresses in a kernel oops?
+How to use checkpatch.pl script for our own c files to validate coding style
+How to Delay in Linux Kernel Module Critical Section
+https://stackoverflow.com/questions/45154115/sort-of-an-event-driver
+How to find the implementation of a specific 'ioctl' call?
+Why is it necessary to invoke an interrupt twice (hard and then soft) for packet reception?
+How are the steps to access GPIOs in linux kernel modules?
+What is the difference between sysfs_create_file() and device_create_file()?
+How to ensure if my kernel is configured for using threaded IRQ?
+Is the thread function in a threaded IRQ runs in atomic context?
+How IP address is informed to linux kernel?
+https://stackoverflow.com/questions/5308090/set-ip-address-using-siocsifaddr-ioctl
+https://stackoverflow.com/questions/4139405/how-can-i-get-to-know-the-ip-address-for-interfaces-in-c?rq=1
+Linux device tree, multiple devices on same irq ?
+How does Linux determine a device class?
+What are the timer functions to measure the kernel function time ?
+Why doesn't device_create return error when a file already exists?
+How is /proc/io* populated?
+Physical memory access from Kernel?
+What consequences are there to disabling interrupts/preemption for a long period?
+Ring buffers and DMA ?
+How to access to shared register from linux kernel module?
+what is the difference between kernel panic and software exception?
+Interrupting multi-threaded process in gdb ?
+How to avoid soft lockups in Linux driver?
+Emulating a device in Linux - need a way to allocate a resource in RAM?
+Implementation of Poll Mechanism in Char Device Driver?
+How to force scheduler to migrate a process to another cpu?
+https://stackoverflow.com/questions/43273016/use-netfilter-to-write-kernel-module-to-modify-source-ip-error-computer-crash
+https://stackoverflow.com/questions/13071054/how-to-echo-a-packet-in-kernel-space-using-netfilter-hooks?rq=1
+https://stackoverflow.com/questions/10499865/sending-udp-packets-from-the-linux-kernel?noredirect=1&lq=1
+https://stackoverflow.com/questions/12529497/how-to-append-data-on-a-packet-from-kernel-space?noredirect=1&lq=1
+https://stackoverflow.com/questions/12999548/how-to-route-the-splitted-packets-using-netfilter-hooks-in-kernel-space?noredirect=1&lq=1
+https://stackoverflow.com/questions/30713018/kernel-module-does-not-print-packet-info?noredirect=1&lq=1
+https://stackoverflow.com/questions/24814311/understanding-spinlocks-in-netfilter-hook?rq=1
+When and how to give up cpu in a busy kernel thread loop?
+“Multi-instance” kernel module and parameterization
+Is there good way to keep kernel module loaded until an associated timer callback returns
+Best Way to copy data from Kernel Driver to user space driver?
+Find all network interface(net_device) in linux kernel
+Kernel API to get Physical RAM Offset
+How does uboot print information during board bring up
+Are driver probe and remove methods in linux kernel executed in parallel for multiple devices?
+When and how to give up cpu in a busy kernel thread loop?
+Interrupt on a processor while another process is spinning for lock
+So what will happen if an interrupt happens on the processor where the thread is spinning for the lock?
+So what will be the meaning of spin lock being a non sleeping lock?
+Disabling all interrupts to protect CPU register state on multi processor systems
+    Is there a way to disable ALL interrupts from ALL processors during a code section (with the spinlock mechanism for example)?
+    Is this necessary? When modifying the cr0 register on a multi-processor system, I guess the register is only modified for the current CPU? --> so disabling interrupts only for the current CPU would be sufficient? --> is there a way to check/modify from other CPUs (on a same system) the register from another CPU?
+Why is “sleeping” not allowed while holding a spinlock?
+What happens if a interrupt handler starts spinning?
+https://stackoverflow.com/questions/9403694/what-happens-if-a-interrupt-handler-starts-spinning?rq=1
+Can an interrupt handler be preempted?
+Why kernel code/thread executing in interrupt context cannot sleep?
+How is interrupt context “restored” when a interrupt handler is interrupted by another interrupt?
+https://stackoverflow.com/questions/20737739/how-is-interrupt-context-restored-when-a-interrupt-handler-is-interrupted-by-a?rq=1
+https://stackoverflow.com/questions/10816288/solving-the-spinlock-issue?rq=1
+https://stackoverflow.com/questions/11779397/what-happens-to-preempted-interrupt-handler?rq=1
+how does the kernel know that the interrupt handler was for this particular >device file?
+Are there any kernel tools available to measure interrupt latency with reasonable accuracy?
+https://stackoverflow.com/questions/25507750/detecting-interrupt-on-gpio-in-kernel-module?rq=1
+https://stackoverflow.com/questions/14380417/understanding-link-between-config-smp-spinlocks-and-config-preempt-in-latest-3
+https://stackoverflow.com/questions/20769768/why-disabling-interrupts-disables-kernel-preemption-and-how-spin-lock-disables-p?rq=1
+https://stackoverflow.com/questions/23370574/pre-emption-can-occur-if-the-code-exceeds-the-time-slice-intended-for-it-then-h?rq=1
+Can Hardware interrupts preempt the process holding spinlock(preemption disabled)?
+https://stackoverflow.com/questions/42917490/mapping-device-memory-into-user-process-address-space
+https://stackoverflow.com/questions/42852384/copy-to-user-copies-only-4kib-of-data-to-user-buffer
+https://stackoverflow.com/questions/42764945/spurious-interrupt-handling
+https://stackoverflow.com/questions/42521437/how-to-write-a-dummy-network-device-driver
+https://stackoverflow.com/questions/3299386/how-to-use-netlink-socket-to-communicate-with-a-kernel-module?rq=1
+https://stackoverflow.com/questions/17899396/concurrency-in-the-linux-network-drivers-probe-vs-ndo-open-ndo-start-xmit?rq=1
+https://stackoverflow.com/questions/7578582/who-calls-the-probe-of-driver?rq=1
+Is it possible to transmit a packet while the network interface is blocked using netif_stop_queue?
+network interfaces and IFF_XX flags
+https://stackoverflow.com/questions/22262624/problems-with-netdev-alloc-and-netdev-priv-in-kernel-network-driver?rq=1
+https://stackoverflow.com/questions/33498803/what-do-i-need-to-build-to-directly-access-the-ethernet-frame-bits-in-the-kernel?rq=1
+https://stackoverflow.com/questions/34178579/how-to-work-with-uio-drivers-with-my-network-card?rq=1
+https://stackoverflow.com/questions/15519014/good-links-to-learn-network-driver-interfacing?rq=1
+https://stackoverflow.com/questions/15810608/please-tell-about-the-query-of-network-packet-traversal-in-linux?rq=1
+https://stackoverflow.com/questions/39405186/network-sys-cat-sys-class-net-br0-driver-writing-in-linux?rq=1
+https://stackoverflow.com/questions/42488086/ioctl-call-not-working-with-driver
+https://stackoverflow.com/questions/42483862/char-driver-node-is-not-opening
+https://stackoverflow.com/questions/42436059/using-time-stamp-counter-to-get-the-time-stamp
+https://stackoverflow.com/questions/42059024/restoring-keyboard-irq
+dump_stack() query in soft-irq context?
+https://stackoverflow.com/questions/7135915/which-context-are-softirq-and-tasklet-in?rq=1
+How kernel disable the softirq in the local processor when softirq handler runs
+Why softirq is used for highly threaded and high frequency uses?
+https://stackoverflow.com/questions/33127478/why-same-tasklet-cant-execute-on-two-core-simultaneously?rq=1
+https://stackoverflow.com/questions/26458730/ksoftirqds-bottom-halves-in-interrupt-or-process-context?noredirect=1&lq=1
+https://stackoverflow.com/questions/20737739/how-is-interrupt-context-restored-when-a-interrupt-handler-is-interrupted-by-a?noredirect=1&lq=1
+Sharing data between softirq and process context
+https://stackoverflow.com/questions/41972844/pid-in-case-of-irq-context?rq=1
+https://stackoverflow.com/questions/41954585/is-this-a-bug-in-linux-kernel-concerning-write-to-proc-self-loginuid
+https://stackoverflow.com/questions/7135915/which-context-are-softirq-and-tasklet-in
+https://stackoverflow.com/questions/41916628/linux-device-driver-buffering-strategy
+https://stackoverflow.com/questions/41886232/moving-data-from-kernel-buffer-to-userspace-buffer-in-interrupt-handler
+https://stackoverflow.com/questions/41870418/printing-cpu-number-similar-to-ftrace
+https://stackoverflow.com/questions/41746053/what-is-maximum-number-of-irqs-supported-by-linux-kernel
+https://stackoverflow.com/questions/34043819/inherent-race-condition-in-linux-irq-handlers?rq=1
+https://stackoverflow.com/questions/8815382/how-shared-irq-races-are-avoided-in-linux?rq=1
+https://stackoverflow.com/questions/41549423/linux-device-driver-copying-string-from-kernel-to-userspace
+https://stackoverflow.com/questions/41534450/how-does-ftrace-track-interrupt-service-routines
+https://stackoverflow.com/questions/41446737/platform-device-driver-autoloading-mechanism
+Accessing Files From Kernel Space Code?
+https://stackoverflow.com/questions/41323565/which-processor-would-execute-hardware-interrupt-in-a-muticore-system
+https://stackoverflow.com/questions/41257268/what-request-irq-does-internally
+https://stackoverflow.com/questions/41007678/how-can-i-pull-two-numbers-from-a-string-and-convert-them-to-two-integer-value-i
+https://stackoverflow.com/questions/41006779/keyboard-interrupt-handler-causing-system-to-freeze
+https://stackoverflow.com/questions/40857686/mapping-1-mib-of-reserved-memory-for-network-interface-cardnic-driver-in-arm-l
+https://stackoverflow.com/questions/40824139/modified-usb-keyboard-driver-not-receiving-key-presses-linux
+https://stackoverflow.com/questions/40365910/device-driver-node-specific-private-data
+Is it possible to add platform data from userspace?
+https://unix.stackexchange.com/questions/80044/how-signals-work-internally
+https://unix.stackexchange.com/questions/92747/child-process-does-not-inherit-the-pending-signals-from-the-parent-after-a-fork?rq=1
+https://stackoverflow.com/questions/39405186/network-sys-cat-sys-class-net-br0-driver-writing-in-linux
+https://stackoverflow.com/questions/39375176/waiting-for-a-periodic-event-with-wait-event-interruptible
+https://stackoverflow.com/questions/25955707/what-is-the-difference-between-simple-sleeping-using-wait-event-functions?rq=1
+https://stackoverflow.com/questions/30704408/how-to-offload-napi-poll-function-to-workqueue?rq=1
+Can a user thread directly enter kernel w/o a kernel thread being called?
+https://stackoverflow.com/questions/11012406/race-condition-between-wait-event-and-wake-up?rq=1
+https://stackoverflow.com/questions/38492237/emitting-a-poll-select-event-from-a-timer-handler-through-a-wait-queue?rq=1
+https://stackoverflow.com/questions/7367615/how-can-i-pause-for-100-milliseconds-in-a-linux-driver-module?rq=1
+https://stackoverflow.com/questions/15807846/ioctl-linux-device-driver?rq=1
+https://stackoverflow.com/questions/16956810/how-do-i-find-all-files-containing-specific-text-on-linux?rq=1
+https://stackoverflow.com/questions/34027366/implementing-poll-in-a-linux-kernel-module?rq=1
+https://stackoverflow.com/questions/6570419/linux-kernel-interrupt-handler-mutex-protection?rq=1
+https://stackoverflow.com/questions/9254395/using-wait-event-interruptible-and-wake-up-all-together?rq=1
+https://stackoverflow.com/questions/16245100/how-to-create-a-simple-sysfs-class-attribute-in-linux-kernel-v3-2?rq=1
+https://stackoverflow.com/questions/44932892/why-is-it-necessary-to-invoke-an-interrupt-twice-hard-and-then-soft-for-packet
+https://stackoverflow.com/questions/2623650/why-cant-i-register-edge-triggered-interrupts-in-linux-2-6-26?rq=1
+Why software interrupts can sleep while it is not allowed in hardware interrupts?
+https://stackoverflow.com/questions/28063419/what-does-the-interrupt-code-for-packet-processing-in-the-tcp-ip?rq=1
+dev_kfree_skb() simply frees an skb. Hence cant we use it to release an skb in interrupt context? What's special about dev_kfree_skb_irq()
+https://stackoverflow.com/questions/39045693/why-when-i-printk-a-physical-address-with-pa-or-pap-i-get-a-warning?rq=1
+https://stackoverflow.com/questions/15019127/getting-original-mac-address-using-driver?rq=1
+https://stackoverflow.com/questions/15522948/how-to-extract-the-mac-address-of-an-interface-from-witthin-a-driver-code?rq=1
+https://stackoverflow.com/questions/18612173/how-to-forward-a-generic-resource-data-of-platform-device-to-a-driver?rq=1
+https://stackoverflow.com/questions/39045414/why-physical-address-value-is-different-depending-on-how-it-was-printed?rq=1
+https://stackoverflow.com/questions/5748492/is-there-any-api-for-determining-the-physical-address-from-virtual-address-in-li
+https://stackoverflow.com/questions/36303077/hard-interrupt-and-softirq?rq=1
+https://stackoverflow.com/questions/26724835/why-doesnt-enabling-the-rtc-interrupt-show-in-the-proc-interrupts?rq=1
+https://stackoverflow.com/questions/9652111/why-doesnt-for-each-process-show-every-task?rq=1
+https://stackoverflow.com/questions/43509392/linux-proc-interrupts-with-proc-irq-spurious?rq=1
+https://stackoverflow.com/questions/22638062/what-happens-when-two-interrupts-occur-at-the-same-time-in-linux-kernel?rq=1
+https://stackoverflow.com/questions/17373284/linux-external-event-handling-irq-vs-polling-kthread?rq=1
+https://blog.packagecloud.io/eng/2016/06/22/monitoring-tuning-linux-networking-stack-receiving-data/#data-arrives
+https://stackoverflow.com/questions/37972854/softirqs-and-fast-packet-processing-on-linux-network?rq=1
+https://stackoverflow.com/questions/12821295/soft-vs-hard-interrupt-handle-timing-in-linux?rq=1
+http://www.xml.com/ldd/chapter/book/ch09.html#t6
+https://stackoverflow.com/questions/17080516/unable-unreliable-to-use-clock-gettime-in-hard-irq-context?rq=1
+https://stackoverflow.com/questions/28090086/what-are-the-advantages-napi-before-the-irq-coalesce?rq=1
+https://stackoverflow.com/questions/34371352/what-are-linux-irq-domains-why-are-they-needed
+https://stackoverflow.com/questions/20300149/how-to-add-a-peridic-timer-callback-in-a-linux-kernel-module?rq=1
+https://stackoverflow.com/questions/30223491/function-calling-bottom-half-of-interrupt-handler-in-linux
+https://stackoverflow.com/questions/26275431/interrupt-handling-in-linux-and-pending-interrupt
+https://stackoverflow.com/questions/25144582/running-multiple-instances-of-a-same-interrupt-parallely-on-an-smp-system
+When an ISR is running what happens to the interrupts on that particular IRQ line.would they be lost or stored so it can be processed at later point
+https://stackoverflow.com/questions/22325174/why-some-code-calls-request-threaded-irq-with-null-as-a-parameter-for-irq-handle
+Disabling interrupt from interrupt handler
+https://stackoverflow.com/questions/20887918/why-softirq-is-used-for-highly-threaded-and-high-frequency-uses
+how to know on which CPU interrupt handler is handled in linux
+cat /proc/irq/NNN/smp_affinity tells you on which CPUs the interrupt is allowed to run. It will run on one of the CPUs in the mask.
+cat /proc/interrupts gives you counters, showing how many interrupts there were on each CPU, for each interrupt number. This tells you where interrupts actually happened.
+https://stackoverflow.com/questions/18690715/accessing-kernel-driver-data-from-fiq-interrupt-handler-failing
+https://stackoverflow.com/questions/17373284/linux-external-event-handling-irq-vs-polling-kthread
+https://stackoverflow.com/questions/17237669/interrupt-performance-on-linux-kernel-with-rt-patches-should-be-better
+https://stackoverflow.com/questions/3299386/how-to-use-netlink-socket-to-communicate-with-a-kernel-module?rq=1
+https://stackoverflow.com/questions/11779397/what-happens-to-preempted-interrupt-handler
+https://stackoverflow.com/questions/3743170/low-latency-interrupt-handling-expected-avg-time-to-return-from-kernel-to-user
+Notify gpio interrupt to user space from a kernel module [closed]
+Linux Interrupt vs. Polling vs signal ?
+https://stackoverflow.com/questions/41323565/which-processor-would-execute-hardware-interrupt-in-a-muticore-system
+https://stackoverflow.com/questions/39045414/why-physical-address-value-is-different-depending-on-how-it-was-printed
+https://stackoverflow.com/questions/10378370/socket-questions
+https://stackoverflow.com/questions/25165804/tcp-call-flow-in-linux-kernel
+https://stackoverflow.com/questions/35196270/how-to-stop-blocking-linux-kernel-thread
+https://stackoverflow.com/questions/9305992/linux-threads-and-process?rq=1
+https://stackoverflow.com/questions/14388706/socket-options-so-reuseaddr-and-so-reuseport-how-do-they-differ-do-they-mean-t/14388707#14388707
+https://stackoverflow.com/questions/17212789/multiple-processes-listening-on-the-same-port?noredirect=1&lq=1
+https://stackoverflow.com/questions/37236509/msg-not-getting-printed-in-struct-msghdr-in-linux-kernel
+https://stackoverflow.com/questions/33004599/how-to-get-net-device-and-net-device-operation-in-linux-kernel
+https://stackoverflow.com/questions/31982436/what-is-the-best-why-to-synchronize-access-to-net-device-structures?rq=1
+https://stackoverflow.com/questions/13143129/develop-simple-net-device-in-the-linux-kernel
+https://stackoverflow.com/questions/41837420/user-space-interaction-with-linux-kernel-module
+connection reset by peer，how long linux kernel keep a idle connection
+https://stackoverflow.com/questions/39508271/find-the-next-hop-mac-address-for-ethernet-header-when-sending-custom-skbuff-fro
+https://stackoverflow.com/questions/30886916/how-to-limit-privileged-user-access-at-linux-kernel-level
+https://stackoverflow.com/questions/23998483/send-ip-packet-from-linux-kernel-without-destination-mac-address
+How does a Linux socket buffer overflow?
+https://stackoverflow.com/questions/12111954/context-switches-much-slower-in-new-linux-kernels
+How do you configure a socket in the kernel to be nonblocking or a timeout on an accept() call?
+https://stackoverflow.com/questions/37465768/installing-a-new-route-in-linux-routing-table-using-rtnetlink-socket
+https://stackoverflow.com/questions/10838811/ipc-socket-error
+https://stackoverflow.com/questions/11133887/ipc-using-signals-on-linux?rq=1
+https://stackoverflow.com/questions/4512967/simple-linux-ipc-question?rq=1
+https://stackoverflow.com/questions/841714/how-to-get-a-list-of-open-sockets-in-linux-using-c
