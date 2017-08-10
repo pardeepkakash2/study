@@ -14,7 +14,7 @@ typedef struct list_test_struct {
 struct list_head head_list;
 rwlock_t list_lock;   //The definition of read and write lock, lock before operation, after operation.
 
-void create_queue(void) {
+void create_stack(void) {
         test *tmp = NULL;
         int  i = 1;
         for (i = 1; i <=10; i++) 
@@ -29,13 +29,13 @@ void create_queue(void) {
 		This is good for implementing stacks.
 		void list_add(struct list_head *new, struct list_head *head);
 		*/
-                list_add_tail(&(tmp->list), &head_list);   //Add nodes
+                list_add(&(tmp->list), &head_list);   //Add nodes
                 write_unlock(&list_lock);
         }
-	printk("created the queue having nodes: %d using kzalloc->list_add_tail()\n", i-1);
+	printk("created the stack having nodes: %d using kzalloc->list_add_tail()\n", i-1);
 }
 
-void dequeue_data(void)
+void stack_data(void)
 {
         test *tmp;
         struct list_head *pos, *n;
@@ -80,7 +80,7 @@ void dequeue_data(void)
 
 		 */
 	        write_lock(&list_lock);
-		printk("deleting the node havind data==5 using list_for_each_safe()\n");
+		printk("deleting the node having data==5 using list_for_each_safe()\n");
 		list_for_each_safe(pos, n, &head_list) {
 			tmp= list_entry(pos, test, list);
         	        if (tmp->num == 5) 
@@ -96,7 +96,7 @@ void dequeue_data(void)
 
 }
 
-void print_queue(void)
+void print_stack(void)
 {
         test *tmp;
         struct list_head *pos;
@@ -117,7 +117,7 @@ void print_queue(void)
 	 * Also you can traverse the list using list_for_each_entry() to iterate over a given
 	 * type of entries. For example:
 	 */
-	printk("traversing the list using list_for_each_entry()\n");
+	printk("traversing the stack using list_for_each_entry()\n");
 	list_for_each_entry(tmp, &head_list, list)
                 printk(KERN_INFO"%d\n", tmp->num);
 
@@ -127,10 +127,10 @@ void print_queue(void)
 int list_test_init(void)
 {
         INIT_LIST_HEAD(&head_list);
-        create_queue();
-        print_queue();
-        dequeue_data();
-        print_queue();
+        create_stack();
+        print_stack();
+        stack_data();
+        print_stack();
         return 0;
 }
 
