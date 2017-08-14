@@ -59,58 +59,51 @@ Normal OS vs RTOS ? What is the difference between hard real-time and soft real-
 		gets priority over other tasks and retains that priority until it completes
 	
 	RTOS uses pre-emptive scheduling
+
+Linux Device Driver :
+what is zimage and bzimage.
+difference between poll and select.
+how physical to virtual translations works in linux.
+what is thrashing, segmentation and fragmentation.
+what is preempt_count and what is the need of that.
+What is mknod and it's usage ?
+In how many ways we can allocate device number ?
+How can we allocate device number statically and dynamically and how to free device number?
+Explain about about ksets, kobjects and ktypes. How are they related?
+mmap() and munmap(), ioremap() ?
+Thread switching and process switching in linux kernel ?
+How context switching is handled in linux?
 	
-What is a linux kernel ? is it a process or thread? 
-	Linux Kernel is a passive component of the OS. It does not execute, neither it is a process/thread. It itself has many 
-	subsystem and could be called with system call API/Interrupt that helps in executing the user space process in system space 
-	for more privileged access, either to I/O or any subsystem.
+Compare I2C and SPI protocols?
+	SPI protocol requires more hardware(I²C needs 2 lines and that’s it, while SPI formally defines at least 4  Signals).
+	SPI procol is faster than I2C, it works in full duplex mode, can transmit upto 10Mbps whereas I2C is limited to 1Mbps 
+		in normal mode and 3.4Mbps in fast mode.
+	SPI can have only one master whereas I2C supports more than one masters.
+	In SPI there is no limitation to the number of bits transmitted in one frame(I2c 8bits).
+	SPI is non standard whereas I2C is standard protocol.
+
+Explain about Kconfig build system?
+What is process kernel stack and process user stack? What is the size of each and how are they allocated?
+What all happens during context switch?
+Can we have same major number for more than one device file ?
+What is minor  number and it's usage ?
+What is range of major and minor numbers?
+How to retrieve major and minor number from dev_t type ?
+How can i use my own major and minor number for a device file ?
+How to see  statically assigned major numbers ?
+How to attach file operations to sysfs attribute in platform driver?
+How does Linux Kernel know where to look for driver firmware?
+How do you build only a static (.a) library for kernel modules.
+How to create a device in /dev automatically upon loading of the kernel module for a device driver?
+	sudo mknod -m 0666 /dev/msio c 22 0
+How to implement a Linux Device Driver for Data Acquisition Hardware?
+What is the use of ioctl(inode,file,cmd,arg) ApI ?
+What is the use of the poll(file, polltable) API ?
+What is the use of file->private_data in a device driver structure ?
 
 What is a Loadable Kernel Module?
 	Modules are pieces of code that can be loaded and unloaded into the kernel upon demand. They extend the functionality 
 	of the kernel without the need to reboot the system.
-
-What is difference between the Process and the thread ?
-Process:
-    An executing instance of a program is called a process. Some operating systems use the term task to refer to a program 
-	that is being executed.
-    A process is always stored in the main memory also termed as the primary memory or random access memory.Therefore, a process is 
-	termed as an active entity. It disappears if the machine is rebooted.
-    Several process may be associated with a same program.
-    On a multiprocessor system, multiple processes can be executed in parallel.On a uni-processor system, though true parallelism is 
-	not achieved, a process scheduling algorithm is applied and the processor is scheduled to execute each process one at a 
-	time yielding an illusion of concurrency.
-    Example: Executing multiple instances of the Calculator program. Each of the instances are termed as a process.
-
-Thread:
-    A thread is a subset of the process.It is termed as a lightweight process, since it is similar to a real process but executes 
-	within the context of a process and shares the same resources allotted to the process by the kernel
-    Usually, a process has only one thread of control one set of machine instructions executing at a time.
-    A process may also be made up of multiple threads of execution that execute instructions concurrently.
-    Multiple threads of control can exploit the true parallelism possible on multiprocessor systems.
-    On a uni-processor system, a thread scheduling algorithm is applied and the processor is scheduled to run each thread one at a time.
-    All the threads running within a process share the same address space, file descriptor, stack and other process related attributes.
-    Since the threads of a process share the same memory, synchronizing the access to the shared data withing the process 
-	gains unprecedented importance.
-
-The major difference between threads and processes is:
-    Threads share the address space of the process that created it; processes have their own address space.
-    Threads have direct access to the data segment of its process; processes have their own copy of the data segment of the parent process.
-    Threads can directly communicate with other threads of its process; processes must use interprocess communication to communicate 
-	with sibling processes.
-    Threads have almost no overhead; processes have considerable overhead.
-    New threads are easily created; new processes require duplication of the parent process.
-    Threads can exercise considerable control over threads of the same process; processes can only exercise control over child processes.
-    Changes to the main thread (cancellation, priority change, etc.) may affect the behavior of the other threads of the process; 
-	changes to the parent process does not affect child processes.
-
-What is a user thread and a kernel thread?
-Number of kernel threads = cores?
-Maximum number of threads per process in Linux?
-	cat /proc/sys/kernel/threads-max
-	There is also a limit on the number of processes (an hence threads) that a single user may create, see ulimit/getrlimit
-	Linux implements max number of threads per process indirectly!!
-	number of threads = total virtual memory / (stack size*1024*1024)
-	ulimit -s
 	
 insmod vs modeprobe ?
 
@@ -144,7 +137,6 @@ Explain the module loading in Linux?
 	The user must have the root permission to do so.
 	e.g sudo insmod test.ko 
 
-
 How to Pass Command Line Arguments to a Kernel Module?
 	http://learnlinuxconcepts.blogspot.in/2014/03/how-to-pass-command-line-arguments-to.html	
 	The module_param() macro takes 3 arguments: 
@@ -162,46 +154,47 @@ How to Pass Command Line Arguments to a Kernel Module?
 		as command line argument using module parameter concept.
 	Base address of the register map of a module can be passed at module load time using insmod based on this command line arguments.
 
-Why do we need two bootloaders viz. primary and secondary?
-	When the system starts the BootROM has no idea about the external RAM. It can only access the Internal RAM of the the CPU. 
-	So the BootROM loads the primary bootloader from the boot media (flash memory) into the internal RAM. 
-	The main job of the primary bootloader is to detect the external RAM and load the secondary bootloader into it. 
-	After this, the secondary bootloader starts its execution.
+what does the probe() method, that the driver provides, do? How different is it from the driver init function, 
+i.e. why cant the probe() functions actions be performed in the driver init function ?
 
-Given a pid, how will you distinguish if it is a process or a thread ? 
-	Do ps -AL | grep pid
-	1st column is parent id and the second column is thread (LWP) id. if both are same then its a process id otherwise thread.
+	Different device types can have probe() functions. For example, PCI and USB devices both have probe() functions.
+	Shorter answer, assuming PCI: The driver init function calls pci_register_driver() which gives the kernel a list of devices it 
+	is able to service, along with a pointer to the probe() function. The kernel then calls the driver probe() function once for each
+	device.
 
-Memory-mapped I/O (MMIO) and port mapped I/O ?
-	Memory-mapped I/O (MMIO) and port I/O (also called port-mapped I/O or PMIO) are two complementary methods of performing input/output between the CPU and I/O devices in a computer. 
-		Another method is using dedicated I/O processors (channels, used in IBM mainframe computers).
-	Memory-mapped I/O uses the same bus to address both memory and I/O devices, and the CPU instructions used to read and write to memory are also used in accessing I/O devices. 
-		In order to accommodate the I/O devices, areas of CPU addressable space must be reserved for I/O rather than memory. This does not have to be permanent, 
-		for example the Commodore 64 could bank switch between its I/O devices and regular memory. The I/O devices monitor the CPU's address bus and respond to any CPU access of their assigned address space, 
-		mapping the address to their hardware registers.
+	This probe function starts the per-device initialization: initializing hardware, allocating resources, and registering the 
+	device with the kernel as a block or network device or whatever it is.That makes it easier for device drivers, because 
+	they never need to search for devices or worry about finding a device that was hot-plugged. The kernel handles that part 
+	and notifies the right driver when it has a device for you to handle.
+	
+What is the difference beteween kernel modules and kernel drivers?
 
-	Port-mapped I/O uses a special class of CPU instructions specifically for performing I/O. This is generally found on Intel microprocessors, specifically the IN and OUT instructions 
-		which can read and write a single byte to an I/O device. I/O devices have a separate address space from general memory, either accomplished by an extra "I/O" pin 
-		on the CPU's physical interface, or an entire bus dedicated to I/O.
+	A kernel module is a bit of compiled code that can be inserted into the kernel at run-time, such as with insmod or modprobe.
+	A driver is a bit of code that runs in the kernel to talk to some hardware device. It drives the hardware. Most every bit 
+	of hardware in your computer has an associated driver[*]. A large part of a running kernel is driver code; the rest of the 
+	code provides generic services like memory management, IPC, scheduling, etc.
 
-	Relative merits of the two I/O methods
-		The main advantage of using port-mapped I/O is on CPUs with a limited addressing capability. Because port-mapped I/O separates I/O access from memory access, 
-		the full address space can be used for memory. It is also obvious to a person reading an assembly language program listing when I/O is being performed, 
-		due to the special instructions that can only be used for that purpose.
-	The advantage of using memory mapped I/O is that, by discarding the extra complexity that port I/O brings, a CPU requires less internal logic and is thus cheaper, 
-		faster and easier to build; this follows the basic tenets of reduced instruction set computing. As 16-bit CPU architectures have become obsolete and replaced with 32-bit 
-		and 64-bit architectures in general use, reserving space on the memory map for I/O devices is no longer a problem. The fact that regular memory instructions are used to address 
-		devices also means that all of the CPU's addressing modes are available for the I/O as well as the memory.
-		Example
-		Consider a simple system built around an 8-bit microprocessor. Such a CPU might provide 16-bit address lines, allowing it to address up to 64K bytes (65,535 bytes) of memory. 
-		On such a system, perhaps the first 32K of address space would be allotted to Random access memory (RAM), a further 16K to Read only memory (ROM) and the remainder to a variety of 
-		other devices such as timers, counters, video display chips, sound generating devices, and so forth. The hardware of the system is arranged so that devices on the address bus will only 
-		respond to particular addresses which are intended for them; all other addreses are ignored. This is the job of the address decoding circuitry, and it is this that establishes the memory map of the system. 
-		Some very simple decoding circuitry might allow a device to respond to several different addresses, effectively creating virtual copies of the device at different places in the memory map. 
-		Of course there is only one real device, so there is no particular advantage in doing this, except to simplify the decoder. The decoding itself may be programmable, allowing the system to 
-		reconfigure its own memory map as required. This is commonly done.
+	A driver may be built statically into the kernel file on disk. (The one in /boot, loaded into RAM at boot time by the boot 
+	loader early in the boot process.) 
+	A driver may also be built as a kernel module so that it can be dynamically loaded later. (And then maybe unloaded.)
 
-How to decrease the time of booting processes?
+	Standard practice is to build drivers as kernel modules where possible, rather than link them statically to the kernel, 
+	since that gives more flexibility. 
+	There are good reasons not to, however:
+	Sometimes a given driver is absolutely necessary to help the system boot up. That doesn't happen as often as you might imagine, 
+	due to the initrd feature.
+	Statically built drivers may be exactly what you want in a system that is statically scoped, such as an embedded system. 
+	That is to say, if you know in advance exactly which drivers will always be needed and that this will never change, 
+	you have a good reason not to bother with dynamic kernel modules.
+
+	Not all kernel modules are drivers. For example, a relatively recent feature in the Linux kernel is that you can load a 
+	different process scheduler.
+	[*] One exception to this broad statement is the CPU chip, which has no driver per se. Your computer may also contain hardware 
+	for which you have no driver.
+	Courtesy: http://unix.stackexchange.com/questions/47208/what-is-the-difference-between-kernel-drivers-and-kernel-modules
+
+what is a platform driver? how to bind a driver to a devive? how to get platfrom resource and private data?
+	https://sysplay.in/index.php?pagefile=linux_drivers
 
 However, could you point me out where the kernel actually detects the device? Is it keep polling with the driver's name which was given
 	at compile time? Or Is there other mechanism to detect the device? Basically, how the
@@ -214,6 +207,7 @@ However, could you point me out where the kernel actually detects the device? Is
 
 	Other buses have more sophisticated detection/probing methods. For more information about platform devices, including the places
 	where these functions are called, see drivers/base/platform.c. Read Documentation/driver-model/platform.txt.
+
 
 Why is the probe method needed in Linux device drivers in addition to init?
 	The driver's init function calls pci_register_driver() which gives the kernel a list of devices it is able to service, along with 
@@ -239,6 +233,354 @@ Why is the probe method needed in Linux device drivers in addition to init?
     	5. In the same way, even the platform_device needs to attach to the platform bus.
 	6. Finally, only if the driver_match_device() returns success based on the .name & .id_table of the driver matches in the platform
 	devices list that comes either from ACPI/DTS, then the driver_probe_device() gets called that has the drv -> probe() callback.
+
+Explain about the Linux Device Model (LDM)? how mudules are loaded in linux?
+Explain about about ksets, kobjects and ktypes. How are they related?
+
+	http://linuxburps.blogspot.in/2013/12/linux-device-model.html	
+	The device model provides a single mechanism for representing devices and describing their topology in the system.
+
+	Such system provide several benefits:-
+	1. Minimization of code duplication
+	2. A mechanism for providing common facility such as reference counting. 
+	3. The capability to enumerate all the devices in the system, view their status and see to what bus they attach.
+	4. The capability to generate a complete and valid tree of the entire device structure of the system, including all buses and 			interconnections.
+	5. The capability to link devices to their drivers and vice-versa.
+	6. The capability to categorise devices by their class, such as input device, without the need to understand the 
+		physical device topology.
+	7. The capability to walk the tree of devices from the leaves up to the root, powering down devices in the correct order. 
+
+	The device model brings with it a whole new vocabulary to describe its data structures. A quick overview of some device model 
+	terms appears below; much of this stuff will be looked at in detail later on.
+
+	device:
+	A physical or virtual object which attaches to a (possibly virtual) bus.
+	
+	driver:
+	A software entity which may probe for and be bound to devices, and which can perform certain management functions.
+	
+	bus: The Bus-Device-Driver Model.
+	A device which serves as an attachment point for other devices.
+	
+	Device class:
+	Allows system to discover types of devices that are related.
+	A particular type of device which can be expected to perform in certain ways. Classes might include disks, partitions, 
+	serial ports, etc.
+
+	subsystem:
+	A top-level view of the system's structure. Subsystems used in the kernel include devices (a hierarchical view of all 
+	devices on the system), bus (a bus-oriented view), class(devices by class), net (the networking subsystem), and others. 
+	The best way to think of a subsystem, perhaps, is as a particular view into the device model data structure rather than a 
+	physical component of the system. The same objects (devices, usually) show up in most subsystems, but they are organized differently
+
+	Kobjects:
+	At the heart of the device model is the kobjects, short for kernel objects, which is represented by struct object and 
+	defined  /include/linux/kobject.h
+	http://lxr.free-electrons.com/source/include/linux/kobject.h
+
+	It provides basic facilities such as reference counting, a name, a parent pointer, enabling creation of the hierarchy. 
+	->Name pointer points to the name of this kobject.
+	-> The parent pointer points to this kobject's parent. In this way it developed hierarachy.
+	(Sysfs is a user-space filesystem representation of the kobject hierarchy inside the kernel
+
+	ksets:
+	ktypes:
+	Device model core:
+	generic bus driver:
+	generic controler driver:
+	Device drivers and platfrom drivers:
+	class driver:
+	Hotplug and Coldplug:
+		Used to handle and communicate the plugging and unplugging of devices.
+	sysfs:
+
+How to add a new module in kernel build system?
+
+	1. Create a directory like my_drvr inside drivers(which is in the Linux source code) for your driver and put your driver 
+	(my_driver.c) file inside this directory. It will looks like /linux_source_code/drivers/my_drvr/my_driver.c
+
+	2. Create one Makefile inside your driver directory (using vi any editor) and inside this put 
+	obj-$(CONFIG_MY_DRIVER) += my_driver.o and save this file. This will appears like /linux_source_code/drivers/my_drvr/Makefile
+
+	3. Create one Kconfig file inside your driver directory (using vi any editor) and inside this put
+	    config MY_DRIVER
+	    tristate "my driver" //gives your driver description like vendor name etc.
+	    depends on ARM
+	    default y if ARM
+	    help
+	      my driver module.
+
+	4. Save this file, this will appears like /linux_source_code/drivers/my_drvr/Kconfig
+
+	5. Add both Makefile and Kconfig file in the Linux source drivers Makefile and Kconfig file which are at 
+	/linux_source_code/drivers/Makefile and /linux_source_code/drivers/Kconfig
+
+	6. In the Makefile add below in last line
+	     obj-y    += my_drvr/ 
+	    or
+	     obj-$(CONFIG_MY_DRIVER)   += my_drvr/
+
+	7. In Kconfig file add below in last line
+	    source "drivers/my_drvr/Kconfig"
+
+	8. Finally have to add Kconfig file into architecture specific config file which will be at 
+	kernel_source/arch/arm/configs/--defconfig in this add below line in the last
+		CONFIG_MY_DRIVER=y
+
+	9. Note:- Last step will differ according to your architecture, so that you have take care. Now you can compile your driver 
+	by using make command. (eg: sun7i_defconfig).
+	make menuconfig ARCH=arm 
+
+	10. Verify that your driver module entry is visible under Device Drivers  —>
+	For module entry it shows <M> HelloTest App
+	Now recompile the kernel with your requirement  and give
+	sudo make ARCH=arm CROSS_COMPILE=/toolchainpath
+
+
+
+How to make a module as loadable module? How to make a module as in-built module?
+how parameters are shared between driver modules.
+what is syscalls.what are the benefits of syscalls.
+
+what is init and exit function of a driver.how and when init and exit function of driver get called?
+
+	The __init macro indicates to compiler that that associated function is only used during initialization. 
+	Compiler places all code marked with __init into a special memory section that is freed after initialization for other uses. 
+
+	__exit* macro:
+	The exit macro tells the compiler to put the function in the ".exit.text" section. The exit_data macro tells the compiler 
+	to put the function in the ".exit.data" section.
+
+	exit.* sections make sense only for the modules : exit functions will never be called if compiled statically. That's why there 
+	is a ifdef : exit.* sections will be discarded only if modules support is disabled. 
+
+What is the use of ioctl fuction ?how to add new ioctl inkernel?
+	The major use of this is in case of handling some specific operations of a device for which the kernel does not have a system 
+	call by default. For eg: Ejecting the media from a "cd" drive.	An ioctl command is implemented to give the eject 
+	system call to the cd drive.
+	To implement a new ioctl command we need to follow the following steps:
+
+	1. Define the ioctl code in a header file and include the same in the application as well as the module.
+	
+	The definition is done as follows
+	#define "ioctl name" __IOX("magic number","command number","argument type")
+
+	where IOX can be :
+	"IO": If the command neither reads any data from the user nor writes any data to the userspace.
+	"IOW": If the commands needs to write some to the kernel space. copy_from_user.
+	"IOR": If the command needs to read some thing from the kernel space. copy_to_user.
+	"IOWR": If the command does both read as well as write from the user.( copy_from_user, copy_to_user)
+
+	The Magic Number is a unique number or character that will differentiate our set of ioctl calls from the other ioctl calls. 
+	some times the major number for the device is used here.
+
+	Command Number is the number that is assigned to the ioctl .It is this number that is used to differentiate the commands 
+	from one another .
+
+	The last is the type of data that will be written in case of __IOW or read in case of __IOR or both read as well as write 
+	in case of __IOWR. In the case of _IO we need not pass any thing. 
+
+	2. Add the header file linux/ioctl.h to make use of the above mentioned calls.
+		vim ioctl_basic.h
+		#include <linux/ioctl.h>
+		#define IOC_MAGIC k // defines the magic number
+		#define IOCTL_	HELLO _IO(IOC_MAGIC,0) // defines our ioctl call
+
+	3. The next step is to implement the ioctl call we defined in to the corresponding driver. First we will need to 
+		#include the header file ioctl_basic.h
+
+	
+	Following this convention is good because:
+
+	(1) Keeping the ioctl's globally unique helps error checking:
+	    if a program calls an ioctl on the wrong device, it will get an
+    		error rather than some unexpected behaviour.
+
+	(2) The 'strace' build procedure automatically finds ioctl numbers
+	    defined with _IO, _IOW, _IOR, or _IOWR.
+
+	(3) 'strace' can decode numbers back into useful names when the
+	    numbers are unique.
+
+	(4) People looking for ioctls can grep for them more easily when
+	    this convention is used to define the ioctl numbers.
+
+	(5) When following the convention, the driver code can use generic
+	    code to copy the parameters between user and kernel space.
+
+What is the difference between Platform driver and normal device driver..?
+    Platform devices are inherently not discoverable, i.e. the hardware cannot say "Hey! I'm present!" to the software. 
+	Typical examples are i2c devices, kernel/Documentation/i2c/instantiating-devices states:
+	Unlike PCI or USB devices, I2C devices are not enumerated at the hardware level (at run time). Instead, the software must know 
+	(at compile time) which devices are connected on each I2C bus segment. 
+	So USB and PCI are not platform devices.
+    Platform devices are bound to drivers by matching names,
+    Platform devices should be registered very early during system boot. Because they are often critical to the rest of the 
+	system (platform) and its drivers.
+
+	So basically, the question "is it a platform device or a standard device?" is more a question of which bus it uses. 
+	To work with a particular platform device, you have to:
+		register a platform driver that will manage this device. It should define a unique name,
+		register your platform device, defining the same name as the driver.
+
+    Are platform drivers for those devices that are on chip ??
+	Not true (in theory, but true in practice). i2c devices are not onChip, but are platform devices because they are not discoverable. 		Also we can think of onChip devices which are normal devices. 
+	Example: an integrated PCI GPU chip on a modern x86 processor. It is discoverable, thus not a platform device.
+
+    Are normal device drivers for those that are interfaced to the processor chip. before coming across one i2c driver ??
+		Not true. Many normal devices are interfaced to the processor, but not through an i2c bus. Example: a USB mouse
+
+
+what is platform devices and device driver.
+	https://www.kernel.org/doc/Documentation/driver-model/platform.txt
+	Platform devices are given a name, used in driver binding, and a list of resources such as addresses and IRQs.
+
+	struct platform_device {
+		const char	*name;
+		u32		id;
+		struct device	dev;
+		u32		num_resources;
+		struct resource	*resource;
+	};
+
+	Platform drivers:
+	Platform drivers follow the standard driver model convention, where discovery/enumeration is handled outside the drivers, 
+	and drivers provide probe() and remove() methods.  They support power management and shutdown notifications using the 
+	standard conventions.
+
+	struct platform_driver {
+		int (*probe)(struct platform_device *);
+		int (*remove)(struct platform_device *);
+		void (*shutdown)(struct platform_device *);
+		int (*suspend)(struct platform_device *, pm_message_t state);
+		int (*suspend_late)(struct platform_device *, pm_message_t state);
+		int (*resume_early)(struct platform_device *);
+		int (*resume)(struct platform_device *);
+		struct device_driver driver;
+	};
+	
+	Note: that probe() should in general verify that the specified device hardware actually exists; sometimes platform setup 
+	code can't be sure.  The probing can use device resources, including clocks, and device platform_data.
+
+	Registration:
+	int platform_driver_register(struct platform_driver *drv);
+
+	Note: in common situations where the device is known not to be hot-pluggable, the probe() routine can live 
+	in an init section to reduce the driver's runtime memory footprint:
+
+	int platform_driver_probe(struct platform_driver *drv, int (*probe)(struct platform_device *))
+
+	Unregistration:
+		void platform_unregister_drivers(struct platform_driver * const *drivers, unsigned int count);
+
+	Device Enumeration:
+
+	Legacy Drivers:  Device Probing:
+		You can use platform_device_alloc() to dynamically allocate a device, which you will then initialize with resources 
+		and platform_device_register().
+		You can use platform_device_register_simple() as a one-step call to allocate and register a device
+
+	Device Naming and Driver Binding:
+	* platform_device.name ... which is also used to for driver matching.
+	* platform_device.id ... the device instance number, or else "-1" to indicate there's only one.
+
+	Driver binding is performed automatically by the driver core, invoking driver probe() after finding a match between device 
+	and driver.  If the probe() succeeds, the driver and device are bound as usual.There are three different ways to find such a match:
+
+	Whenever a device is registered, the drivers for that bus are checked for matches. Platform devices should be registered very
+	early during system boot.
+
+	When a driver is registered using platform_driver_register(), all unbound devices on that bus are checked for matches.  Drivers
+	usually register later during booting, or by module loading.
+
+	Registering a driver using platform_driver_probe() works just like using platform_driver_register(), except that the driver won't
+	be probed later if another device registers.  (Which is OK, since this interface is only for use with non-hotpluggable devices.)
+
+	platform_get_drvdata();
+	platform_set_drvdata();
+	platform_device_put();
+	platform_device_del();
+	platform_device_add();
+
+What is the difference between early init and late init?
+module_init() vs. core_initcall() vs. early_initcall() ?
+	init/main.c
+	Actually the main point of the initcall mechanism is to determine correct order of the built-in modules 
+		and subsystems initialization.
+	
+	The Linux kernel calls all architecture-specific initcalls before the fs related initcalls.
+	Linux kernel provides eight levels of main initcalls:
+	static char *initcall_level_names[] __initdata = {
+	    "early",
+	    "core",
+	    "postcore",
+	    "arch",
+	    "subsys",
+	    "fs",
+	    "device",
+	    "late",
+	};
+
+	Linux kernel boot-up:
+	1. early_initcall()
+	2. core_initcall()
+	3. postcore_initcall()
+	4. arch_initcall()
+	5. subsys_initcall()
+	6. fs_initcall()
+	7. device_initcall()
+	8. late_initcall()
+		end of built-in modules
+	9. modprobe or insmod of *.ko modules.
+
+	the order of execution of initcall is from top to bottom as shown in the above array.
+
+	Early init:
+		Early init functions are called when only the boot processor is online.
+		Run before initializing SMP.
+		Only for built-in code, not modules.
+	Late init:
+		Late init functions are called _after_ all the CPUs are online.
+
+	module_init(): in a device driver is equivalent to registering a device_initcall().
+
+		include/linux/init.h):
+		#define module_init(x)  __initcall(x);
+		and then we follow this:
+		#define __initcall(fn) device_initcall(fn)
+		#define device_initcall(fn)             __define_initcall(fn, 6)
+	
+		So, now, module_init(my_func) means __define_initcall(my_func, 6).
+		level 6, which represents all the built-in modules initialized with module_init
+		fn - callback function which will be called during call of initcalls of the certain level;
+		id - identifier to identify initcall to prevent error when two the same initcalls point to the same handler.
+
+What is the use of file->private_data in a device driver structure ?
+
+Macro vs inline; Explain each of them; and which one is better why?
+
+What's the difference between “static” and “static inline” function? why we should defined static inline function in header files?
+	inline:
+	The inline keyword is intended to optimize the execution of functions by embeding the code of the function into the code of 
+	its callers. The Linux kernel uses mainly inline functions that are also declared as static. A static inline function results 
+	in the compiler attempting to incorporate the function's code into all its callers and, if possible, it discards the assembly 
+	code of the function.
+
+	Rule of thumb: header files should only contain extern declarations, static const variable definitions and static inline 
+	function definitions
+
+likely() and unlikely()?
+	likely() and unlikely() are macros that Linux kernel developers use to give hints to the compiler and chipset. Modern CPUs 
+	have extensive branch-prediction heuristics that attempt to predict incoming commands in order to optimize speed. 
+	The likely() and unlikely() macros allow the developer to tell the CPU, through the compiler, that certain sections of code 
+	are likely, and thus should be predicted, or unlikely, so they shouldn't be predicted. They are defined in include/linux/compiler.h:
+
+	37: #define likely(x) __builtin_expect(!!(x), 1)
+	38: #define unlikely(x) __builtin_expect(!!(x), 0)
+
+IS_ERR and PTR_ERR?
+	The IS_ERR macro encodes a negative error number into a pointer, 
+	while the PTR_ERR macro retrieves the error number from the pointer. Both macros are defined in include/linux/err.h
 
 how to know frequesntly used comman function ?
 	Take any kernel modules and identify all the symbols within, extracting only the API that is NOT declared inside the 
@@ -336,8 +678,10 @@ what are the common encountered issues while devplopment of device driver ?
 	Performance: Choose interrupt v/s polling wisely. If your device has DMA capabilities, it is better to switch to polling 
 	and look for all completed requests at once rather than getting interrupt for each completed request.
 
-what are some common traps and pitfalls in development of Linux based device drivers?
 How is a data sheet important, while developing Linux Device Driver, and how is it used?
+
+When does the control passes from user mode to kernel mode in a Linux System? 
+	System calls ,H/w Interrupts and last which I did not mention was Exceptions
 
 What are the generic system call that is used to transfer data from user space to kernel space and vice versa?
 	http://wiki.tldp.org/kernel_user_space_howto
@@ -436,188 +780,75 @@ What are the generic system call that is used to transfer data from user space t
 	strnlen_user	Gets the size of a string buffer in user space
 	strncpy_from_user	Copies a string from user space into the kernel
 
-	
-what does the probe() method, that the driver provides, do? How different is it from the driver init function, 
-i.e. why cant the probe() functions actions be performed in the driver init function ?
-
-	Different device types can have probe() functions. For example, PCI and USB devices both have probe() functions.
-	Shorter answer, assuming PCI: The driver init function calls pci_register_driver() which gives the kernel a list of devices it is able to service,
-	along with a pointer to the probe() function. The kernel then calls the driver probe() function once for each device.
-
-	This probe function starts the per-device initialization: initializing hardware, allocating resources, and registering the device with the kernel as a block 
-	or network device or whatever it is.That makes it easier for device drivers, because they never need to search for devices or worry about finding a device 
-	that was hot-plugged. The kernel handles that part and notifies the right driver when it has a device for you to handle.
-	
-What is the difference beteween kernel modules and kernel drivers?
-
-	A kernel module is a bit of compiled code that can be inserted into the kernel at run-time, such as with insmod or modprobe.
-            A driver is a bit of code that runs in the kernel to talk to some hardware device. It drives the hardware. Most every bit of hardware in your computer 
-			has an associated driver[*]. A large part of a running kernel is driver code; the rest of the code provides generic services like memory management, IPC, 
-			scheduling, etc.
-
-	A driver may be built statically into the kernel file on disk. (The one in /boot, loaded into RAM at boot time by the boot loader early in the boot process.) 
-	A driver may also be built as a kernel module so that it can be dynamically loaded later. (And then maybe unloaded.)
-
-	Standard practice is to build drivers as kernel modules where possible, rather than link them statically to the kernel, since that gives more flexibility. 
-		There are good reasons not to, however:
-		Sometimes a given driver is absolutely necessary to help the system boot up. That doesn't happen as often as you might imagine, due to the initrd feature.
-		Statically built drivers may be exactly what you want in a system that is statically scoped, such as an embedded system. That is to say, 
-			if you know in advance exactly which drivers will always be needed and that this will never change, you have a good reason not to bother with dynamic kernel modules.
-
-	Not all kernel modules are drivers. For example, a relatively recent feature in the Linux kernel is that you can load a different process scheduler.
-	[*] One exception to this broad statement is the CPU chip, which has no driver per se. Your computer may also contain hardware for which you have no driver.
-	Courtesy: http://unix.stackexchange.com/questions/47208/what-is-the-difference-between-kernel-drivers-and-kernel-modules
-
-What is the purpose of WFI and WFE instructions and the event signals ?
-	We have 2 instructions for entering low-power standby state where most clocks are gated: WFI and WFE. 
-
-	They differ slightly in their entry and wake-up conditions, with the main difference being that
-	WFE makes use of the event register, the SEV instruction and EVENTI, EVENTO signals.
-
-	WFI is targeted at entering either standby, dormant or shutdown mode, where an interrupt is required to wake-up the processor. 
-
-	A usage for WFE is to put it into a spinlock loop. Where a CPU wants to access a shared resource
-	such as shared memory, we can use a semaphore flag location managed by exclusive load and store
-	access. If multiple CPUs are trying to access the resource, one will get access and will start to
-	use the resource while the other CPUs will be stuck in the spinlock loop. To save power, you can
-	insert the WFE instruction into the loop so the CPUs instead of looping continuously will enter
-	STANDBTWFE. Then the CPU who has been using the resource should execute SEV instruction after it
-	has finished using the resource. This will wake up all other CPUs from STANDBYWFE and another CPU
-	can then access the shared resource. 
-
-	The reason for having EVENTI and EVENTO is to export a pulse on EVENTO when an SEV instruction is
-	executed by any of the CPUs. This signal would connect to EVENTI of a second Cortex-A5 MPCore
-	cluster and would cause any CPUs in STANDBYWFE state to leave standby. So these signals just
-	expand the usage of WFE mode across multiple clusters. If you have a single cluster, then you do
-	not need to use them.
-
-	Courtesy: http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.faqs/ka15473.html
-
 What is the differance b/w platform driver and device driver or kernel driver ?
 	http://www.atmel.com/Images/doc32098.pdf
 
-What is Thrashing
-What is DMA. Modes - cycle stealing/burst (blk transfer)/transparent
-Cache coherency during dma. Which component handles it
-
-MM - Segmentation, paging, swapping?
 How context switching is handled in linux.
 what is user preemption and kernel preemption?
 what is task_struct thread_info?
 how system calls are implemented in linux.
-what is callback function? signal vs callback ?
 What happens when recursive functions are declared inline?
 What is a stack frame, stack pointer & frame pointer ?
-is linux kernel a thread, process or something else?
-
-When does the control passes from user mode to kernel mode in a Linux System? 
-	System calls ,H/w Interrupts and last which I did not mention was Exceptions
-	
-device tree:
-https://saurabhsengarblog.wordpress.com/2015/11/28/device-tree-tutorial-arm/
-explain device tree concept ?
-	Device tree is a data structure that describes the hardware and is passed to the kernel at boot time.
-	different boards can be supported without recompiling the kernel only by writing the dtbs.
-
-	The linux kernel requires the entire description of the hardware, like which board it is booting(machine type), which 
-	all devices it is using there addresses(device/bus addresses), there interrupts numbers(irq), mfp pins configuration
-	(pin muxing/gpios)  also some board level information like memory size, kernel command line etc etc …
-
-	Before device tree, all these information use to be set in a huge cluster of board files. And, Information like command line,
-	memory size etc use to be passed by bootloaders as part of ATAGS through register R2(ARM). Machine type use to be set separately 
-	in register R1(ARM).
-	At this time each kernel compilation use to be for only one specific chip an a specific board.
-
-	So there was a long pending wish to compile the kernel for all ARM processors, and let the kernel somehow detect its hardware 
-	and apply the right drivers as needed just like your PC.
-	But how? On a PC, the initial registers are hardcoded, and the rest of the information is supplied by the BIOS. 
-	But ARM processors don’t have a BIOS.
-	The solution chosen was device tree, also referred to as Open Firmware (abbreviated OF) or Flattened Device Tree (FDT). 
-	This is essentially a data structure in byte code format which contains information that is helpful to the kernel when booting up.
-
-	The bootloader now loads two binaries: the kernel image and the DTB.
-	DTB is the device tree blob. The bootloader passes the DTB address through R2 instead of ATAGS and R1 register is not required now.
-
-	For a one line bookish definition “A device tree is a tree data structure with nodes that describe the physical devices in a system”
-
-	Currently device tree is supported by ARM, x86, Microblaze, PowerPC, and Sparc architectures.
-
-	Device Tree Compilation:
-	Device tree compiler and its source code  located at scripts/dtc/.
-	On ARM all device tree source are located at /arch/arm/boot/dts/.
-	The Device Tree Blob(.dtb) is produced by the compiler, and it is the binary that gets loaded by the bootloader and parsed 
-	by the kernel at boot time.
-	scripts/dtc/dtc -I dts -O dtb -o /path/my_tree.dtb /arch/arm/boot/dts/my_tree.dts
-	
-	For creating the dts from dtb:
-	scripts/dtc/dtc -I dtb -O dts -o /path/my_tree.dts /path/my_tree.dtb
-
-	dts api:
-	of_address_to_resource: Reads the memory address of device defined by res property
-	irq_of_parse_and_map: Attach the interrupt handler, provided by the properties interrupt and interrupt-parent
-	of_find_property(np, propname, NULL): To find if property named in argument2 is present or not.
-	of_property_read_bool: To read a bool property named in argument 2, as it is a bool property it just like searching 
-		if that property present or not. Returns true or false
-
-	of_get_property: For reading any property named in argument 2
-	of_property_read_u32: To read a 32 bit property, populate into 3rd argument. Doesn’t set anything to 3rd argument in case of error.
-	of_property_read_string: To read string property
-	of_match_device: Sanity check for device that device is matching with the node, highly optional, I don’t see much use of it.
-
 
 interrupt:
-how the synchronisation works in single processor system(spinlock_irq_save)?
-how external devices access the physical address?
-Advantages and disadvantages of Polling & Interrupt drivers.
-Difference between Timer Softirq and Tasklet Softirq ?
-what is top halves and bottom halves [tasklets , softirq and workqueus].
-what are the considerations needs to taken care while writing interrupt handler.
-what are shared handlers.
-what is interrupt context.
-what is ksoftirqd.
-difference between exceptions and signals and interrupt.
 How do you register an interrupt handler on a shared IRQ line?
-What is request_threaded_irq()
+
+How does the Linux kernel handle shared IRQs?
+	When interrupts occurs on shared IRQ line, kernel invokes each and every interrupt handler registered with it by passing each 
+	its own dev_id. Shared IRQ handler should quickly check the dev_id with its own to recognize its interrupts and it should quickly
+	return with return value of IRQ_NONE if own device has not interrupted(dev_id does not match). If dev_id matches ISR should 
+	return IRQ_HANDLE so kernel stops calling nest interrupt handler. In addition to this, driver using shared IRQs should not enable
+	or diable IRQ. If it does, things might go wrong for other devices sharing the line; disabling another device’s interrupts for 
+	even a short time may create latencies that are problematic for that device.
+
+While writing interrupt handlers(ISR), which are points needed to be considered?
+What is ISR? Can they be passed any parameter and can they return a value? can we use printf, break point, function call or any blocking or sleep call or floating operation in ISR?
+
+Advantages and disadvantages of Polling & Interrupt drivers.
+	Both Polling and Interrupts have their place and usefulness in Production code. Using the right method at the right 
+	place reduces code complexity and increases reliability.
+
+	polling:
+	Continuously poll IOs for change of value.
+	cons:
+		most polls are unneeded - value did not change.
+		hihg cpu usgae
+		Reaction time depends on IOs
+
+	interrupts:
+	normal execution is interrupted when events occurs.
+	pros:
+		processors resurces are used when ever required.
+	cons:
+		program execution is interrupted in a non-deteministic manner.
+
+diff b/w system calls, exceptions, interrupt, signal,isr(interrupt handler) and callback ?
+
+When should we re-enable the interrupts in an ISR and why ?
+How do you measure the latency of your system ?
+what is interrupt context.
+what is ksoftirqd
 If same interrupts occurs in two cpu how are they handled?
-How to synchronize data between 'two interrupts' and 'interrupts and process'.
-How are nested interrupts handled?
-Explain about the concurrent work queues.
-diff b/w interrupt, signal,isr and callback ?
-What happens if interrupt handler goes to sleep?
-How to protect variable between two interrupt handlers?
-How to protect variable between task and interrupt handler?
+How nested interrupts are handled in ARM?
+Explain about the concurrent work queues and wait queues.
 How to debug GPIO interrupt functions?
 Timer interrrupts vs Dummy loops ?
-How does MSI interrupt work in linux driver?
-Which processor an interrupt will be generated on?
 ARM interrupt service procedure vs function call procedure
-Retrieving pid of tasklet
 How do I write to a __user memory from within the top half of an interrupt handler?
-Why can interrupt handler has sleep functionality?
 Are the Interrupt Stack and the Kernel Stack the same stack?
-Why interrupt handler cannot use user stack ?
-What are the possible scenarios in which context switching of threads can occur ?
-What will happen if there are more threads requesting for CPU resource such as time ?
-While writing interrupt handlers(ISR), which are points needed to be considered?
-What is preemption ?
-What do you mean by atomic operations ?
-What is ISR? Can they be passed any parameter and can they return a value? can we use printf, break point, function call or any blocking or sleep call or floating operation in ISR?
-How CPUs find the ISR and distinguish between the various devices ?
-Is it possible for two devices to share an interrupt request line but have different ISR for those two devices ?
-What is difference between binary semaphore and mutex?
-What is the use of file->private_data in a device driver structure ?
-poll vs epoll ?
 Difference between Timer Softirq and Tasklet Softirq ?
-What are tasklets ? How are they activated ? when and How are they initialized ?
+Is it possible for two devices to share an interrupt request line but have different ISR for those two devices ?
+what is preemption disabling and what is the use of this.
+Explain about the notifier chains.
+How do I identify which interrupt line shown in /proc/interrupts list is shared?
+What happens to the idle thread when a core is taken offline logically?
+Data sharing between ISR and threads?
+what actually does a system does in a tick?
 
 How many interrupt lines you have been used in your driver development.
 	UART : 1 (RX)
 	Ethernet: 2 (RX & TX)
 	I2C : what is I2C Clock Stretch, Bus line clear.
-
-How do u debug when an process aborted.
-How many Exceptions are there in ARM.
-what are the methods or functions to raise execute the interrupt process when interrupt occurs.
 
 Why Kernel Code running in interrupt context cannot sleep? 	
 	This is because the kernel design architecture wants it to be like this. Why so?
@@ -865,20 +1096,123 @@ How to implement your own driver which is dealing with interrupt?
 	Call free_irq()
 
 
+Kernel thread:
+What is request_threaded_irq()
+What are the possible scenarios in which context switching of threads can occur ?
+What will happen if there are more threads requesting for CPU resource such as time ?
+Which is the first task what is spawned in linux kernel?
+What are the processes with PID 0 and PID 1? PID 0 - idle task and PID 1 - init .
+How does scheduler picks particular task?
+What is the difference between kthread_create, kthread_run, kthread_create_on_cpu and kthread_create_on_node?
+
+What is a linux kernel ? is it a process or thread? 
+	Linux Kernel is a passive component of the OS. It does not execute, neither it is a process/thread. It itself has many 
+	subsystem and could be called with system call API/Interrupt that helps in executing the user space process in system space 
+	for more privileged access, either to I/O or any subsystem.
+
+What is difference between the Process and the thread ?
+Process:
+    An executing instance of a program is called a process. Some operating systems use the term task to refer to a program 
+	that is being executed.
+    A process is always stored in the main memory also termed as the primary memory or random access memory.Therefore, a process is 
+	termed as an active entity. It disappears if the machine is rebooted.
+    Several process may be associated with a same program.
+    On a multiprocessor system, multiple processes can be executed in parallel.On a uni-processor system, though true parallelism is 
+	not achieved, a process scheduling algorithm is applied and the processor is scheduled to execute each process one at a 
+	time yielding an illusion of concurrency.
+    Example: Executing multiple instances of the Calculator program. Each of the instances are termed as a process.
+
+Thread:
+    A thread is a subset of the process.It is termed as a lightweight process, since it is similar to a real process but executes 
+	within the context of a process and shares the same resources allotted to the process by the kernel
+    Usually, a process has only one thread of control one set of machine instructions executing at a time.
+    A process may also be made up of multiple threads of execution that execute instructions concurrently.
+    Multiple threads of control can exploit the true parallelism possible on multiprocessor systems.
+    On a uni-processor system, a thread scheduling algorithm is applied and the processor is scheduled to run each thread one at a time.
+    All the threads running within a process share the same address space, file descriptor, stack and other process related attributes.
+    Since the threads of a process share the same memory, synchronizing the access to the shared data withing the process 
+	gains unprecedented importance.
+
+The major difference between threads and processes is:
+    Threads share the address space of the process that created it; processes have their own address space.
+    Threads have direct access to the data segment of its process; processes have their own copy of the data segment of the parent process.
+    Threads can directly communicate with other threads of its process; processes must use interprocess communication to communicate 
+	with sibling processes.
+    Threads have almost no overhead; processes have considerable overhead.
+    New threads are easily created; new processes require duplication of the parent process.
+    Threads can exercise considerable control over threads of the same process; processes can only exercise control over child processes.
+    Changes to the main thread (cancellation, priority change, etc.) may affect the behavior of the other threads of the process; 
+	changes to the parent process does not affect child processes.
+
+What is a user thread and a kernel thread?
+Number of kernel threads = cores?
+Maximum number of threads per process in Linux?
+	cat /proc/sys/kernel/threads-max
+	There is also a limit on the number of processes (an hence threads) that a single user may create, see ulimit/getrlimit
+	Linux implements max number of threads per process indirectly!!
+	number of threads = total virtual memory / (stack size*1024*1024)
+	ulimit -s
+
+What are the Possible Task States ? 
+
+	TASK_RUNNING
+	(R) The process is able to run and contributes to the system load. The scheduler decides which processes really receive CPU time.
+
+	TASK_UNINTERRUPTIBLE 
+	(D) The process waits for some event. It will not be considered by the scheduler. The process cannot do anything while it 
+	is waiting (it cannot even be killed). This is usually used by device drivers while the process is waiting for some hardware
+	to respond. Such a process contributes to the system load even though it will not receive CPU time; some other part of 
+	the system is considered to be working on behalf of the process.
+
+	TASK_INTERRUPTIBLE
+	(S) The process waits for some event as in TASK_UNINTERUPTIBLE but it can be woken up by a signal. This should be used when 
+	the action can be interrupted without side effects. A process in this state is considered asleep and does not contribute to
+	the system load.
+ 
+	TASK_STOPPED
+	(T) The process is stopped by a signal (Ctrl-Z)
+ 
+	TASK_ZOMBIE
+	(Z) The process has exited but there are still some data structures around that could not yet be freed.The zombie will 
+	usually be freed when the parent calls wait4() to get the exit status.
+
+
+Timers:
+what is tick rate and jiffies and HZ.
+what are the various way of applying delay in linux.
+what is Real time clock (RTC).
+What is the initial value of jiffies when the system has started? and how to check it ?
+Explain about HR timers and normal timers?
+How to declare that a specific hardware timers is used for kernel periodic timer interrupt used by the scheduler?
+How software timers are implemented?
+
+what is a watchdog timer? what is the sinificance of it?
+	Watchdog timer is basically a timing device that is set for predefined time interval and some event should occur during 
+		that time interval else the device generates a time out signal.
+	One application where it is most widely used is when the mobile phone hangs and no activity takes place, in those cases 
+		watchdog timer performs a restart of the system and comes to the rescue of the users.
+	It is used to reset to the original state whenever some inappropriate events take place such as too many commands being 
+		given at the same time or other activities that result in malfunctioning of the GUI. 
+	It is usually operated by counter devices.
+
 Synchronization :
+
+What is priority inversion ? solutions for priority inversion ?
+	solution:
+	priority inheritance
+	priority ceiling
+
+What is deadlock ?
+what is starvation?
+what is race condition?
 What is data race and how to avoid it?
-what is starvation and how to avoid it?
-
-What is priority inversion ? 
-	solution : priority inheritance, priority ceiling.
-
-What is Indefinite Postponement / Indefinite blocking or starvation ?
-Can we use semaphore or mutex or spin lock in interrupt context in linux kernel? and why?
-What is rwlock and spinlock ? Briefly explain about both of them ?
 Which are the synchronization technoques you use 'between processes', 'between processe and interrupt' and 'between interrupts';
 	why and how ?
 Which synchronization mechanism is safe to use in interrupt context and why?
-Diff between mutex and semaphore? Can semaphore be used for data synchronisation purpose?
+
+What is the significance of spinlock on uniprocessor system?
+
+Explain about RCU locks and when are they used?
 
 what are causes for kernel concurrency?
 	Interrupts:
@@ -921,10 +1255,6 @@ what are causes for kernel concurrency?
 
 	Note : all global and shared data in the kernel requires some form of the synchronization methods
 
-Explain about the implementation of spinlock in case of ARM architecture.
-Explain about the implementation of mutex in case of ARM architecture.
-Explain about RCU locks and when are they used?
-
 What is deadlock ? how to deteatc and remove deadlock?
 	A deadlock is a condition involving one or more threads of execution and one or more resources, 
 	such that each thread waits for one of the resources, but all the resources are already held. 
@@ -933,21 +1263,6 @@ What is deadlock ? how to deteatc and remove deadlock?
 
 	Note : The simplest example of a deadlock is the self-deadlock.
 	solution : recursive lock.
-
-What is the function of DMA controller in embedded system?
-	DMA stands for Direct Memory Access controller as the name suggest it does not involve processor to transfer memory between 
-	two devices that handles the allocation of the memory dynamically to the components and allows the data to be transferred 
-	between the devices.
-	
-	The interrupt can be used to complete the data transfer between the devices. It is used to give the high quality performance 
-	as, the input/output device can perform the operations that are in parallel with the code that are in execution.
-
-	- Direct memory access is mainly used to overcome the disadvantages of interrupt and progam controlled I/O.
-	- DMA modules usually take the control over from the processor and perform the memory operations and this is mainly because 
-		to counteract the mismatch in the processing speeds of I/O units and the procesor. This is comparatively faster.
-	- It is an important part of any embedded systems,and the reason for their use is that they can be used for bursty data 
-		transfers instead of single byte approaches.
-	- It has to wait for the systems resources such as the system bus in case it is already in control of it.
 
 What are the Synchronization techniques used in Linux Kernel? 
 	For simple counter variables or for bitwise ------->atomic operations are best methods. 
@@ -1011,102 +1326,55 @@ Why are spin locks good choices in Linux Kernel Design instead of something more
 	When properly used, spinlock can give higher performance than semaphore. Ex: Intrrrupt handler.
 
 What are the rules to use spinlocks?
-	Rule - 1: Any code that holds the spinlock, can not relinquish the processor for any reason except to service interrupts ( sometimes not even then). So code holding spinlock can not sleep.
-		Reason: suppose your driver holding spinlock goes to sleep. Ex: calls function copy_from_user() or copy_to_user(), or kernel preemption kicks in so higher priority process pushed your code aside. 
-			Effectively the process relinquishes the CPU holding spinlock.
-		Now we do not know when the code will release the lock. If some other thread tries to obtain the same lock, it would spin for very long time. In the worst case it would result in deedlock.
-		Kernel preemption case is handled by the spinlock code itself. Anytime kernel code holds a spinlock, preemption is disabled on the relevant processor. 
-			Even uniprocessor system must disable the preemption in this way.
+	Rule - 1: Any code that holds the spinlock, can not relinquish the processor for any reason except to service interrupts 			( sometimes not even then). So code holding spinlock can not sleep.
+		Reason: suppose your driver holding spinlock goes to sleep. Ex: calls function copy_from_user() or copy_to_user(), or 			kernel preemption kicks in so higher priority process pushed your code aside. 
+		Effectively the process relinquishes the CPU holding spinlock.
+		Now we do not know when the code will release the lock. If some other thread tries to obtain the same lock, it would spin 			for very long time. In the worst case it would result in deedlock.
+		Kernel preemption case is handled by the spinlock code itself. Anytime kernel code holds a spinlock, preemption is disabled 			on the relevant processor. Even uniprocessor system must disable the preemption in this way.
 	Rule - 2: Disable interrupts on the local CPU, while the spinlock is held.
-		Reason: Support your driver take a spinlock that control access to the device and then issues an interrupt. This causes the interrupt handler to run. Now the interrupt handler also needs the lock to access the device. If the interrupt handler runs on the same processor, it will start spinning. The driver code also can not run to release the lock. SO the processor will spin for ever.
+		Reason: Support your driver take a spinlock that control access to the device and then issues an interrupt. 
+		This causes the interrupt handler to run. Now the interrupt handler also needs the lock to access the device. 
+		If the interrupt handler runs on the same processor, it will start spinning. The driver code also can not run to release
+		the lock. SO the processor will spin for ever.
 	Rule - 3: Spinlocks must be held for the minimum time possible.
-		Reason: Long lock hold times also keeps the current processor from scheduling, meaning a higher priority process may have to wait to get the CPU.
-		So it impacts kernel latency (time a process may have to wait to be scheduled). Typically spinlocks should be held for the time duration, less than that CPU takes to do a contex switch between threads.
+		Reason: Long lock hold times also keeps the current processor from scheduling, meaning a higher priority process may have 			to wait to get the CPU. So it impacts kernel latency (time a process may have to wait to be scheduled). Typically 
+		spinlocks should be held for the time duration, less than that CPU takes to do a contex switch between threads.
 	Rule -4: if you have semaphores and spinlocks both to be taken. Then take semaphore first and then spinlock.
 
 What is Spinlock and what is difference between Mutex and Spinlock?
-	When you use regular locks (mutexes, critical sections etc), operating system puts your thread in the WAIT state and preempts it by scheduling other threads on 
-	the same core. This has a performance penalty if the wait time is really short, because your thread now has to wait for a preemption to receive CPU time again.
+	When you use regular locks (mutexes, critical sections etc), operating system puts your thread in the WAIT state and preempts 
+	it by scheduling other threads on the same core. This has a performance penalty if the wait time is really short, 
+	because your thread now has to wait for a preemption to receive CPU time again.
 
-	Spin locks don't cause preemption but wait in a loop (spin) till the other core releases the lock. This prevents the thread from losing it's quantum and continue 
-	as soon as the lock gets released. The simple mechanism of spinlocks allow a kernel to utilize it in almost any state.
+	Spin locks don't cause preemption but wait in a loop (spin) till the other core releases the lock. This prevents the thread 
+	from losing it's quantum and continue as soon as the lock gets released. The simple mechanism of spinlocks allow a kernel 
+	to utilize it in almost any state.
 	Courtesy: http://stackoverflow.com/questions/1957398/what-exactly-are-spin-locks
 
 	Difference:
-	In theory, when a thread tries to lock a mutex and it does not succeed, because the mutex is already locked, it will go to sleep, immediately allowing another thread 
-	to run. It will continue to sleep until being woken up, which will be the case once the mutex is being unlocked by whatever thread was holding the lock before. 
-	When a tread tries to lock a spinlock and it does not succeed, it will continuously re-try locking it, until it finally succeeds; thus it will not allow another 
-	thread to take its place (however, the operating system will forcefully switch to another thread, once the CPU runtime quantum of the current thread has been 
-	exceeded, of course).
+	In theory, when a thread tries to lock a mutex and it does not succeed, because the mutex is already locked, it will go to 
+	sleep, immediately allowing another thread to run. It will continue to sleep until being woken up, which will be the case once 
+	the mutex is being unlocked by whatever thread was holding the lock before. 
+	When a tread tries to lock a spinlock and it does not succeed, it will continuously re-try locking it, until it finally succeeds; 		thus it will not allow another thread to take its place (however, the operating system will forcefully switch to another thread, 		once the CPU runtime quantum of the current thread has been exceeded, of course).
 
 	Courtesy: http://stackoverflow.com/questions/5869825/when-should-one-use-a-spinlock-instead-of-mutex
 	
-what is a watchdog timer? what is the sinificance of it?
-	Watchdog timer is basically a timing device that is set for predefined time interval and some event should occur during 
-		that time interval else the device generates a time out signal.
-	One application where it is most widely used is when the mobile phone hangs and no activity takes place, in those cases 
-		watchdog timer performs a restart of the system and comes to the rescue of the users.
-	It is used to reset to the original state whenever some inappropriate events take place such as too many commands being 
-		given at the same time or other activities that result in malfunctioning of the GUI. 
-	It is usually operated by counter devices.
+how the synchronisation works in single processor system(spinlock_irq_save)?
+	Spin locks must not be used on a single processor system. In the best case, a spin lock on a single processor system will 
+	waste resources, slowing down the owner of the lock; in the worst case, it will deadlock the processor.
 
-What is a kernel Panic and oops?
-	Kernel Panic:	
-	It is an action taken by linux kernel when it experiences a situation from where it can't recover safely.
-	In many cases the system may keep on running but due to security risk by fearing security breach the kernel reboots 
-	or instructs to be rebooted manually.
-	
-	It can be caused due to various reasons-
-	1. Hardware failure
-	2. Software bus in the OS.
-	3. During booting the kernel panic can happen due to one of the reasons-
-		a.Kernel not correctly configured, compiled or installed.
-		b.Incompatibility of OS, hardware failure including RAM.
-		c.Missing device driver
-		d.Kernel unable to locate root file system
-		e.After booting if init process dies.
-	
-	OOPS:
-	it is a deviation from correct behaviour of Linux kernel which produces certain error log.
-	Kernel Panic is one type of OOPS. Kernel Panic doesnt allow system to continue operation while other form of OOPS 
-	ALLOW WITH COMPROMISED RELIABILITY.
-	When the kernel detects a problem, it prints an oops message and kills any offending process.
+	From: http://blogs.microsoft.co.il/blogs/sasha/archive/2008/08/10/practical-concurrency-patterns-spinlock.aspx
 
-What is bus error? what are the common causes of bus errors? 
-	The first thing that needs to be addressed is: What is a bus? A bus is a communication unit that allows the CPU to interact 
-	with peripherals, there are different type of buses such as PCI, I2C, MDIO, Memory Buses, etc. Normally each bus would have 
-	its own protocol for transmitting data across devices, for example in the case of PCI we can have timeout errors or windows 
-	errors (data is directed to unknown addresses/devices). In memory, bus errors would refer to alignment but other errors 
-	could be attributed to physical HW problems such as faulty connections. Other type of bus errors could be single 
-	and multiple bit errors, this could be addressed by using ECC memory.
-
-
-What is a device tree in Linux? 
-	Device tree is a data structure that describes the hardware , their layout, their parameters and other details 
-	and is passed to the kernel at boot time
+	On single-processor systems, spinlocks are not needed because spinlock synchronization is required on high IRQLs only. 
+	On high IRQLs (above dispatch IRQL) a context switch cannot occur, so instead of spinning the acquiring thread can simply 
+	request an interrupt on the relevant IRQL and return; the interrupt will be masked until the releasing thread lowers the IRQL 
+	below the requested IRQL.
 
 How function pointers are shared across different processes? using which IPCs? 
 	Two processes can not share function pointers. If we want to use functions in two processes we will have to make library 
 	for those functions and we use that library in our processes.
 
-what is preemption disabling and what is the use of this.
-Explain about the notifier chains.
-What is the difference between fork( ) and vfork( ) and execv?
-Which is the first task what is spawned in linux kernel?
-What are the processes with PID 0 and PID 1? PID 0 - idle task and PID 1 - init .
-How to extract task_struct of a particular process if the stack pointer is given?
-How does scheduler picks particular task?
-what is tick rate and jiffies and HZ.
-what are the various way of applying delay in linux.
-what is blocking and non blocking call
-what is Real time clock (RTC).
-how busy looping is implemented in linux.
-What is the initial value of jiffies when the system has started? and how to check it ?
-Explain about HR timers and normal timers?
-How to declare that a specific hardware timers is used for kernel periodic timer interrupt used by the scheduler?
-How software timers are implemented?
 how memory is managed in linux.what are different memory zones in linux.
-what us kmalloc and what are action modifier we can pass while using kmalloc.
 
 What are the differences between malloc,zmalloc, vmalloc and kmalloc? Which is preferred to use in device drivers?
 	http://learnlinuxconcepts.blogspot.in/2014/02/linux-memory-management.html
@@ -1179,6 +1447,7 @@ Reading Physical Mapped Memory using /dev/mem ?
 
 what is Contiguous Memory Allocator (or CMA) ?
 how kernel manage to allocate memory when running interrupts? will it able to allocate?
+
 why copy_from_user() and copy_to_user() used ? why copy_to_user() user even though kernel could  write at any user space?
 	
 	copy_to_user is a function defined in the Linux kernel to copy data from kernel-space to user-space. It is defined 
@@ -1235,6 +1504,20 @@ How to detect kernel memory leak?
 	https://psankar.blogspot.in/2010/11/detecting-memory-leaks-in-kernel.html
 
 how container_of() works? write your own MACRO?
+	http://linuxkernel51.blogspot.in/2011/02/how-containerof-macro-works-example.html
+	#define container_of(ptr, type, member) ({                      \
+        const typeof( ((type *)0)->member ) *__mptr = (ptr);    \
+        (type *)( (char *)__mptr - offsetof(type,member) );})
+
+	I understand what does container_of do, but what I do not understand is the last sentence, which is
+	(type *)( (char *)__mptr - offsetof(type,member) );})
+
+	If we use the macro as follows:
+	container_of(dev, struct wifi_device, dev);
+
+	The corresponding part of the last sentence would be:
+	(struct wifi_device *)( (char *)__mptr - offset(struct wifi_device, dev);
+
 
 how to add your own systemcall in kernel ?
 	https://www.ibm.com/developerworks/library/l-system-calls/index.html
@@ -1243,26 +1526,120 @@ how to create proc entry and debugfs in linux kernel ?
 	https://www.ibm.com/developerworks/linux/library/l-proc/index.html
 	https://lwn.net/Articles/115405/?cm_mc_uid=83865307126915008343575&cm_mc_sid_50200000=1502132303
 
-what is Device Tree in Linux ? what is the Advantages and Disadvantages of Device Tree?
 How do the brk and mmap system calls work in the Linux kernel?
 How does the code after calling schedule() gets executed in Linux Kernel?
 
-How does Uboot pass device tree information to Linux kernel?
+operating system:
 
-    void TheKernel(char *cmdline, void* dtb);
+What is Thrashing
+What is DMA. Modes - cycle stealing/burst (blk transfer)/transparent
+Cache coherency during dma. Which component handles it
+MM - Segmentation, paging, swapping?
+who schedules the scheduler
+what is cache coherence?
+Can a scheduler can be locked?
+When cahche is enabled in a operating system ,DMA is enabled,how does DMA access the cache?
+difference betwen fork() and vfork()?
+what is zombie and orphan process? how parent less process is handles in linux.
+What is the difference between wait() and waitpid() system calls ?
+What is the relationship between fork() and pthread_atfork() in Linux?
+Diff btwn SPI & I2C
 
-	The kernel is passed the command line, and a pointer to the device tree binary, and then the function gets called, 
-	simple as that.
+What is the difference between fork( ) and vfork( ) and execv?
 
-	From user point of view, these are the steps for booting:
+What is the function of DMA controller in embedded system?
+	DMA stands for Direct Memory Access controller as the name suggest it does not involve processor to transfer memory between 
+	two devices that handles the allocation of the memory dynamically to the components and allows the data to be transferred 
+	between the devices.
+	
+	The interrupt can be used to complete the data transfer between the devices. It is used to give the high quality performance 
+	as, the input/output device can perform the operations that are in parallel with the code that are in execution.
 
-	1- set the variable $cmdline to the desired kernel command line
-	2- use fatload or similar command to read the kernel from the sdcard and put it to some address at the memory, 
-		let's say at the address 20000000.
-	3- use fatload again to read the device tree binary (dtb) to another memory address, like 21000000. (The numbers are all made up)
-	4- use the bootm (boot from memory) command to start the boot
+	- Direct memory access is mainly used to overcome the disadvantages of interrupt and progam controlled I/O.
+	- DMA modules usually take the control over from the processor and perform the memory operations and this is mainly because 
+		to counteract the mismatch in the processing speeds of I/O units and the procesor. This is comparatively faster.
+	- It is an important part of any embedded systems,and the reason for their use is that they can be used for bursty data 
+		transfers instead of single byte approaches.
+	- It has to wait for the systems resources such as the system bus in case it is already in control of it.
 
-	    bootm 20000000 21000000.
+Why do we need two bootloaders viz. primary and secondary?
+	When the system starts the BootROM has no idea about the external RAM. It can only access the Internal RAM of the the CPU. 
+	So the BootROM loads the primary bootloader from the boot media (flash memory) into the internal RAM. 
+	The main job of the primary bootloader is to detect the external RAM and load the secondary bootloader into it. 
+	After this, the secondary bootloader starts its execution.
+
+Given a pid, how will you distinguish if it is a process or a thread ? 
+	Do ps -AL | grep pid
+	1st column is parent id and the second column is thread (LWP) id. if both are same then its a process id otherwise thread.
+
+Memory-mapped I/O (MMIO) and port mapped I/O ?
+	Memory-mapped I/O (MMIO) and port I/O (also called port-mapped I/O or PMIO) are two complementary methods of performing 
+	input/output between the CPU and I/O devices in a computer. 
+	Another method is using dedicated I/O processors.
+
+	Memory-mapped I/O uses the same bus to address both memory and I/O devices, and the CPU instructions used to read and write 
+	to memory are also used in accessing I/O devices. 
+	In order to accommodate the I/O devices, areas of CPU addressable space must be reserved for I/O rather than memory. 
+	This does not have to be permanent, 
+	for example the Commodore 64 could bank switch between its I/O devices and regular memory. The I/O devices monitor 
+	the CPU's address bus and respond to any CPU access of their assigned address space, 
+	mapping the address to their hardware registers.
+
+	Port-mapped I/O uses a special class of CPU instructions specifically for performing I/O. This is generally found on 
+	Intel microprocessors, specifically the IN and OUT instructions 
+	which can read and write a single byte to an I/O device. I/O devices have a separate address space from general memory, 
+	either accomplished by an extra "I/O" pin 
+	on the CPU's physical interface, or an entire bus dedicated to I/O.
+
+	Relative merits of the two I/O methods
+	The main advantage of using port-mapped I/O is on CPUs with a limited addressing capability. Because port-mapped I/O separates 
+	I/O access from memory access, the full address space can be used for memory. It is also obvious to a person reading an 
+	assembly language program listing when I/O is being performed, due to the special instructions that can only be used 
+	for that purpose.
+	
+	The advantage of using memory mapped I/O is that, by discarding the extra complexity that port I/O brings, a CPU requires 
+	less internal logic and is thus cheaper, faster and easier to build; this follows the basic tenets of reduced instruction 
+	set computing. As 16-bit CPU architectures have become obsolete and replaced with 32-bit and 64-bit architectures in general 
+	use, reserving space on the memory map for I/O devices is no longer a problem. The fact that regular memory instructions are 
+	used to address devices also means that all of the CPU's addressing modes are available for the I/O as well as the memory.
+
+
+How to decrease the time of booting processes?
+How does cpu communicate with peripherals?
+	Accessing I/O devices:
+		Memory-mapped I/O
+		Programed- I/O
+		interrupts
+		DMA diract memory access
+
+On a ARM based system running Linux, I have a device that's memory mapped to a physical address. From a user space program 
+where all addresses are virtual, how can I read content from this address?
+
+	https://stackoverflow.com/questions/12040303/accessing-physical-address-from-user-space	
+	You can map a device file to a user process memory using mmap(2) system call. Usually, device files are mappings of 
+	physical memory to the file system. Otherwise, you have to write a kernel module which creates such a file or provides 
+	a way to map the needed memory to a user process.
+
+	Another way is remapping parts of /dev/mem to a user memory. 
+
+	How to test it out:
+	Now for the fun part. Here are a few cool setups:
+	Userland memory
+        	allocate volatile variable on an userland process
+        	get the physical address with /proc/<pid>/maps + /proc/<pid>/pagemap
+        	the physical address with devmem2, and watch the userland process react:
+        Kernelland memory
+        	allocate kernel memory with kmalloc
+        	get the physical address with virt_to_phys and pass it back to userland
+        	modify the physical address with devmem2
+        	query the value from the kernel module
+        IO mem and QEMU virtual platform device
+        	create a platform device with known physical register addresses
+        	use devmem2 to write to the register
+        	watch printfs come out of the virtual device in response
+
+			
+What's the difference between a hardware register and a memory-mapped register?
 
 how to convert virtual addrees to physical address and vice versa ?
 	Documentation/{IO-mapping.txt,DMA-mapping.txt,DMA-API.txt}.
@@ -1286,207 +1663,54 @@ what is virtual memory and what are the advanatages of using virtual memory?
 		not necessarily 1-to-1 mapping
 		able to allocate physical memory that has no logical address
 
+how external devices access the physical address? How do you read directly from physical memory?
+
+	http://opensourceforu.com/2011/06/generic-hardware-access-in-linux/	
+	Address:
+		virtual address: as the name says are virtual, i.e. they do not point to any address in RAM directly but need 
+				to be converted into physical address by MMU at run time.
+
+			For a 32 bit system there can be 2^32=4GB virtual addresses possible.
+	
+			1. User space virtual addresses  
+			2. Kernel space virtual addresses
+
+		physical address : Physical addresses are the addresses of the contents of the RAM.
+		bus address.
+		system IO
+		IO memory
+
+	mapping and unmapping the device bus addresses to virtual addresses are:
+	void *ioremap(unsigned long device_bus_address, unsigned long device_region_size);
+	void iounmap(void *virt_addr);
+
+	Once mapped to virtual addresses, it depends on the device datasheet as to which set of device registers and/or device memory 
+	to read from or write into, by adding their offsets to the virtual address returned by ioremap(). 
+	For that, the following are the APIs (also prototyped in <asm/io.h>):
+	unsigned int ioread8(void *virt_addr);
+	unsigned int ioread16(void *virt_addr);
+	unsigned int ioread32(void *virt_addr);
+	unsigned int iowrite8(u8 value, void *virt_addr);
+	unsigned int iowrite16(u16 value, void *virt_addr);
+	unsigned int iowrite32(u32 value, void *virt_addr);
+
 What is memory hotplugging in Linux kernel?
 	Memory hotplugging is adding or removing sections of memory from the Linux kernel. All the memory in the system is represented 
 	as /sys/devices/system/memory/memory*  and their state can be checked by "cat /sys/devices/system/memory/memoryX/state" . 
 	To add new memory adddresses, use "echo phys_mem_address > /sys/devices/system/memory/probe"  . 
 	This will add new node (memoryY) under /sys/devices/system/memory . To make this memory available, 
 	issue 'echo "online" > /sys/devices/system/memory/memoryY/state" and to disable this memory, 
-	use 'echo "offline" > /sys/devices/system/memory/memoryY/state' .
-
-What is the difference between kthread_create, kthread_run, kthread_create_on_cpu and kthread_create_on_node?
-
-Shrinking memory will result reassignment of virtual addresses mapped to the memory offlined to new locations and will involve memory copies.
-What's paging and swapping?
-Is it better to enable swapping in embedded systems? and why?
-What is the page size in Linux kernel in case of 32-bit ARM architecture?
-
-What is the difference between the term 'Virtual Memory' and 'Virtual Address Space' ?
-Can an user space application view the physical address Or Can an user space application access the physical address space ?
-Is it possible for two different application to have a same virtual address but point to different physical memory ?
-What is the difference between Code section, Data section, ro Data section & BSS section ?
-What is the use of /proc/PID/maps ?
-Explain the relation between file struct,File Descriptor Table(FDT), task_struct, MM_struct, vm_area_struct, Heap, Page Global Directory(PGD), Page table(PT) & user page .
-What is the use of ioctl fuction ?how to add new ioctl inkernel?
-what mmap and do_mmap().
+	use 'echo "offline" > /sys/devices/system/memory/memoryY/state'.
  
-Linux Device Driver :
-What is device driver and what is the need of it.
-what are different kind of devices.
-Explain about the Linux Device Model (LDM)? how mudules are loaded in linux.
-How to make a module as loadable module? How to make a module as in-built module?
-
-What are the Possible Task States ? 
-
-	TASK_RUNNING
-	(R) The process is able to run and contributes to the system load. The scheduler decides which processes really receive CPU time.
-
-	TASK_UNINTERRUPTIBLE 
-	(D) The process waits for some event. It will not be considered by the scheduler. The process cannot do anything while it 
-	is waiting (it cannot even be killed). This is usually used by device drivers while the process is waiting for some hardware
-	to respond. Such a process contributes to the system load even though it will not receive CPU time; some other part of 
-	the system is considered to be working on behalf of the process.
-
-	TASK_INTERRUPTIBLE
-	(S) The process waits for some event as in TASK_UNINTERUPTIBLE but it can be woken up by a signal. This should be used when 
-	the action can be interrupted without side effects. A process in this state is considered asleep and does not contribute to
-	the system load.
- 
-	TASK_STOPPED
-	(T) The process is stopped by a signal (Ctrl-Z)
- 
-	TASK_ZOMBIE
-	(Z) The process has exited but there are still some data structures around that could not yet be freed.The zombie will 
-	usually be freed when the parent calls wait4() to get the exit status.
-
-how parameters are shared between driver modules.
-what are IOCTLS.
-what is syscalls.what are the benefits of syscalls.
-what is init and exit function of a driver.how and when init and exit function of driver get called.
-what is probe function.when probe is get called.
-what is platform devices.
-what is device tree.what are the benefits of device tree over board files.
-what is sysfs and procfs.
-how logs are printed in linux kernel and what are the logs level available in linux.
-what is copy_to_user and copy_from_user.
-what do you mean by kernel configuration and what are the various way of configuring kernel.
-what is ioremap
-what are the various ways od debugging linux kernel.
-how linux kernel boots. what are different booting arguments in linux. how parameter are passed from boot loader to kernel.
-what is zimage and bzimage.
-difference between poll and select.
-what are different type of kernel.
-what is DMA.
-what is cache coherency.
-what is copy on write.
-what happens if we pass invalid address from userspace by using ioctls.
-what are different ipc mechanism in linux.
-difference between memory based io and port based io.
-what is I2c and SPI.
-how physical to virtual translations works in linux.
-what is thrashing, segmentation and fragmentation.
-what is preempt_count and what is the need of that.
-What is mknod and it's usage ?
-In how many ways we can allocate device number ?
-How can we allocate device number statically and dynamically and how to free device number?
-Explain about about ksets, kobjects and ktypes. How are they related?
-mmap() and munmap() ?
-	
-Compare I2C and SPI protocols?
-	SPI protocol requires more hardware(I²C needs 2 lines and that’s it, while SPI formally defines at least 4  Signals).
-	SPI procol is faster than I2C, it works in full duplex mode, can transmit upto 10Mbps whereas I2C is limited to 1Mbps 
-		in normal mode and 3.4Mbps in fast mode.
-	SPI can have only one master whereas I2C supports more than one masters.
-	In SPI there is no limitation to the number of bits transmitted in one frame(I2c 8bits).
-	SPI is non standard whereas I2C is standard protocol.
-
-What is the difference between early init and late init?
-What is process kernel stack and process user stack? What is the size of each and how are they allocated?
-What all happens during context switch?
-How to do a single dma transaction in kernel?
-Translating virtual address to physical address in kernel space?
-Can we have same major number for more than one device file ?
-What is minor  number and it's usage ?
-What is range of major and minor numbers?
-How to retrieve major and minor number from dev_t type ?
-How can i use my own major and minor number for a device file ?
-How to see  statically assigned major numbers ?
-how interrupt id and ISR is mapped?
-How to pin a interrupt to a CPU in driver
-How many maximum different CPU-Cores can be used to processing of one IP-packet?
-What are the different modes in ARM.
-What is the difference between IRQ & FIQ.
-how the synchronisation works in single processor system(spinlock_irq_save).
-how external devices access the physical address.
-
-What is the difference between Platform driver and normal device driver..?
-    Platform devices are inherently not discoverable, i.e. the hardware cannot say "Hey! I'm present!" to the software. Typical examples are i2c devices, kernel/Documentation/i2c/instantiating-devices states:
-	Unlike PCI or USB devices, I2C devices are not enumerated at the hardware level (at run time). Instead, the software must know (at compile time) which devices are connected on each I2C bus segment. 
-	So USB and PCI are not platform devices.
-    Platform devices are bound to drivers by matching names,
-    Platform devices should be registered very early during system boot. Because they are often critical to the rest of the system (platform) and its drivers.
-
-	So basically, the question "is it a platform device or a standard device?" is more a question of which bus it uses. 
-	To work with a particular platform device, you have to:
-		register a platform driver that will manage this device. It should define a unique name,
-		register your platform device, defining the same name as the driver.
-
-    Are platform drivers for those devices that are on chip ??
-	Not true (in theory, but true in practice). i2c devices are not onChip, but are platform devices because they are not discoverable. Also we can think of onChip devices which are normal devices. 
-	Example: an integrated PCI GPU chip on a modern x86 processor. It is discoverable, thus not a platform device.
-
-    Are normal device drivers for those that are interfaced to the processor chip. before coming across one i2c driver ??
-		Not true. Many normal devices are interfaced to the processor, but not through an i2c bus. Example: a USB mouse
-		
-What happens to the idle thread when a core is taken offline logically?
-Measure of performance of OS. Define performance
-What are the various code optimization techniques used
-memory leak deduction and various ways of handling
-How to proceed if system is sluggish
-How to determine if some high prio task is hogging CPU
-Important things to look for in code reviews
-Understanding of schematics
-Run Time optimization
+Linux Kernel debugging:
+Run Time optimization?
 Have you worked in crash dump?
 How will you solve memory crash, what steps would you take if a crash occurs?
-Data sharing between ISR and threads?
-what is NAND and NOR flash, diff between them?
-who schedules the scheduler
-what is cache coherence?
-Can a scheduler can be locked?
-At what frequency scheduler looks for threads/processes ready for schedule?
-what actually does a system does in a tick?
-When cahche is enabled in a operating system ,DMA is enabled,how does DMA access the cache?
-Diff btwn SPI & I2C
-How kernel comes to know which device raised an interrupt when  interrupt  is shared.
-how to get physically contiguousness memory allocation if kmalloc is giving logical contiguousness allocations?
-How do you build only a static (.a) library for kernel modules.
-Kernel thread vs user space thread and kernel process vs user space process and What was the need of thread_info structure?
-Thread switching and process switching in linux kernel ?
-How context switching is handled in linux?
-
-difference betwen fork() and vfork()?
-zombiee and orphon process and How parent less process is handles in linux ?
-what is zombie and orphan process? how parent less process is handles in linux.
-Can two zombie process communicate with each other ?
-What will happen if we do not reap the zombie process ?
-What are the various ways to terminate a zombie process ?
-What is the difference between wait() and waitpid() system calls ?
-
-Device tree  vs board file?
-what is ioctl and What happens if you pass a invalid user space address in an ioctl?
-Tell me any issue in which you debugged and found that there is some issue in hardware?
-Maximum size you can allocate using kmalloc?
-What is the exact definition of 'process preemption'?
-nested interrupt is allowed in linux, but the size of interrupt stack is limited,is there any chance that too many nested interrupts cause stack overflow which crashes the whole system!
-How do I identify which interrupt line shown in /proc/interrupts list is shared?
-How does the Linux kernel handle shared IRQs?
-What is the relationship between fork() and pthread_atfork() in Linux?
-What is the relationship between System Call and Software Interrupt in Linux?
-user/kernel interface (system calls, procfs/sysfs, ioctl) :
-synchronization between contexts (how would you synchronize access to a shared memory area used from an interrupt handler and a workqueue on a SMP preemptive kernel).
-
-
-
-How do I include the device tree with my kernel?
-How to attach file operations to sysfs attribute in platform driver?
-How to remove packet from UDP read buffer in kernel?
-
-How does Linux Kernel know where to look for driver firmware?
-How to create a device in /dev automatically upon loading of the kernel module for a device driver?
-	sudo mknod -m 0666 /dev/msio c 22 0
-How to use netlink socket to communicate with a kernel module?
-How to implement a Linux Device Driver for Data Acquisition Hardware?
-How to find owner socket of sk_buff in Linux kernel?
-Why Socket Connection Blocked and TCP Kernel Keeps Retransmitting [ACK] packets
-How will you Access userspace memory from kernel ? What are the various methods ?
-What is the use of ioctl(inode,file,cmd,arg) ApI ?
-What is the use of the poll(file, polltable) API ?
-What is the use of file->private_data in a device driver structure ?
-
+What are the various code optimization techniques used?
+memory leak deduction and various ways of handling?
+How to determine if some high prio task is hogging CPU?
+Important things to look for in code reviews?
 How do I debug a kernel module in which a NULL pointer appears?
-
-Linux Kernel Debugging:
 What is Oops and kernel panic and how to understand the panic stack?
 Does all Oops result in kernel panic?
 What are the tools that you have used for debugging the Linux kernel?
@@ -1497,6 +1721,108 @@ What's the use of early_printk( )?
 Explan about the various gdb commands and features of gdb ?
 What are good ways to debug memory corruption in C under Linux?
 have u debug any issues using jtag/ any other debugger. if yes, how can we get the call stack in the debugger?
+what are the various ways od debugging linux kernel.
+
+What is a kernel Panic and oops?
+	Kernel Panic:	
+	It is an action taken by linux kernel when it experiences a situation from where it can't recover safely.
+	In many cases the system may keep on running but due to security risk by fearing security breach the kernel reboots 
+	or instructs to be rebooted manually.
+	
+	It can be caused due to various reasons-
+	1. Hardware failure
+	2. Software bus in the OS.
+	3. During booting the kernel panic can happen due to one of the reasons-
+		a.Kernel not correctly configured, compiled or installed.
+		b.Incompatibility of OS, hardware failure including RAM.
+		c.Missing device driver
+		d.Kernel unable to locate root file system
+		e.After booting if init process dies.
+	
+	OOPS:
+	it is a deviation from correct behaviour of Linux kernel which produces certain error log.
+	Kernel Panic is one type of OOPS. Kernel Panic doesnt allow system to continue operation while other form of OOPS 
+	ALLOW WITH COMPROMISED RELIABILITY.
+	When the kernel detects a problem, it prints an oops message and kills any offending process.
+
+What is bus error? what are the common causes of bus errors? 
+	The first thing that needs to be addressed is: What is a bus? A bus is a communication unit that allows the CPU to interact 
+	with peripherals, there are different type of buses such as PCI, I2C, MDIO, Memory Buses, etc. Normally each bus would have 
+	its own protocol for transmitting data across devices, for example in the case of PCI we can have timeout errors or windows 
+	errors (data is directed to unknown addresses/devices). In memory, bus errors would refer to alignment but other errors 
+	could be attributed to physical HW problems such as faulty connections. Other type of bus errors could be single 
+	and multiple bit errors, this could be addressed by using ECC memory.
+
+device tree:
+Device tree  vs board file?
+
+What is a device tree in Linux? 
+	Device tree is a data structure that describes the hardware , their layout, their parameters and other details 
+	and is passed to the kernel at boot time.
+
+	different boards can be supported without recompiling the kernel only by writing the dtbs.
+
+	The linux kernel requires the entire description of the hardware, like which board it is booting(machine type), which 
+	all devices it is using there addresses(device/bus addresses), there interrupts numbers(irq), mfp pins configuration
+	(pin muxing/gpios)  also some board level information like memory size, kernel command line etc etc …
+
+	Before device tree, all these information use to be set in a huge cluster of board files. And, Information like command line,
+	memory size etc use to be passed by bootloaders as part of ATAGS through register R2(ARM). Machine type use to be set separately 
+	in register R1(ARM).
+	At this time each kernel compilation use to be for only one specific chip an a specific board.
+
+	So there was a long pending wish to compile the kernel for all ARM processors, and let the kernel somehow detect its hardware 
+	and apply the right drivers as needed just like your PC.
+	But how? On a PC, the initial registers are hardcoded, and the rest of the information is supplied by the BIOS. 
+	But ARM processors don’t have a BIOS.
+	The solution chosen was device tree, also referred to as Open Firmware (abbreviated OF) or Flattened Device Tree (FDT). 
+	This is essentially a data structure in byte code format which contains information that is helpful to the kernel when booting up.
+
+	The bootloader now loads two binaries: the kernel image and the DTB.
+	DTB is the device tree blob. The bootloader passes the DTB address through R2 instead of ATAGS and R1 register is not required now.
+
+	For a one line bookish definition “A device tree is a tree data structure with nodes that describe the physical devices in a system”
+
+	Currently device tree is supported by ARM, x86, Microblaze, PowerPC, and Sparc architectures.
+
+	Device Tree Compilation:
+	Device tree compiler and its source code  located at scripts/dtc/.
+	On ARM all device tree source are located at /arch/arm/boot/dts/.
+	The Device Tree Blob(.dtb) is produced by the compiler, and it is the binary that gets loaded by the bootloader and parsed 
+	by the kernel at boot time.
+	scripts/dtc/dtc -I dts -O dtb -o /path/my_tree.dtb /arch/arm/boot/dts/my_tree.dts
+	
+	For creating the dts from dtb:
+	scripts/dtc/dtc -I dtb -O dts -o /path/my_tree.dts /path/my_tree.dtb
+
+	dts api:
+	of_address_to_resource: Reads the memory address of device defined by res property
+	irq_of_parse_and_map: Attach the interrupt handler, provided by the properties interrupt and interrupt-parent
+	of_find_property(np, propname, NULL): To find if property named in argument2 is present or not.
+	of_property_read_bool: To read a bool property named in argument 2, as it is a bool property it just like searching 
+		if that property present or not. Returns true or false
+
+	of_get_property: For reading any property named in argument 2
+	of_property_read_u32: To read a 32 bit property, populate into 3rd argument. Doesn’t set anything to 3rd argument in case of error.
+	of_property_read_string: To read string property
+	of_match_device: Sanity check for device that device is matching with the node, highly optional, I don’t see much use of it.
+
+How does Uboot pass device tree information to Linux kernel?
+
+    void TheKernel(char *cmdline, void* dtb);
+
+	The kernel is passed the command line, and a pointer to the device tree binary, and then the function gets called, 
+	simple as that.
+
+	From user point of view, these are the steps for booting:
+
+	1- set the variable $cmdline to the desired kernel command line
+	2- use fatload or similar command to read the kernel from the sdcard and put it to some address at the memory, 
+		let's say at the address 20000000.
+	3- use fatload again to read the device tree binary (dtb) to another memory address, like 21000000. (The numbers are all made up)
+	4- use the bootm (boot from memory) command to start the boot
+
+	    bootm 20000000 21000000.
 
 Power Management in Linux:
 Explain about cpuidle framework.
@@ -1507,35 +1833,11 @@ Explain about suspened and resume framwork.
 Explain about early suspend and late resume.
 Explain about wakelocks.
 
-Miscellaneous:
-How are the atomic functions implemented in case of ARM architecture?
-How is container_of( ) macro implemented? 
-What 's the use of __init and __exit macros?
-How to ensure that init function of a partiuclar driver was called before our driver's init function is called (assume that both these drivers are 	 built into the kenrel image)?
-What's a segementation fault and what are the scenarios in which segmentation fault is triggered?
-How are the command line arguments passed to Linux kernel by the u-boot (bootloader)?
-
-How nested interrupts are handled in ARM?
-What are the benefits using FIQ?
-What is reset vector?
-What is the significance of spinlock on uniprocessor system?
-What is priority inversion ? solutions for priority inversion ?
-What is priority inheritance ?
-What is priority ceiling ?
-What is deadlock ?
-what is starvation?
-what is race condition?
-
-What is the use of the method of temporarily masking / disabling interrupts ? When is it used ? What should be taken care while doing this method ?
-Since, disabling/masking of interrupts can be done whent the critical section is ONLY SHORT,What method can be used if the critical section is longer than few source lines or if it involves few lengthy loopings ?
-Even if we never enables interrupts in the code, the processor automatically disables them often during hardware access - True/False ? In this case how to reduce interrupt latency ?
-When should we re-enable the interrupts in an ISR and why ?
-How do you measure the latency of your system ?
-What is data race ?
-What is Indefinite Postponement / Indefinite blocking or starvation ?
-How Many Processes or Threads Are Enough for an application ?
-
 Networking:
+How to remove packet from UDP read buffer in kernel?
+How to use netlink socket to communicate with a kernel module?
+How to find owner socket of sk_buff in Linux kernel?
+Why Socket Connection Blocked and TCP Kernel Keeps Retransmitting [ACK] packets?
 http://amsekharkernel.blogspot.in/2014/08/what-is-skb-in-linux-kernel-what-are.html
 
 Track a packet as it goes through the kernel (linux)?
@@ -1649,87 +1951,33 @@ How to know size of memory allocated by malloc using pointer?
 
 
 Bitwise:
-C program to swap every 2 bits in a 8 bit binary number?
-Write a program to find how many bit to toggle in 2 binary numbers so that they become equal?
-Write a program for to get the number of bits toggle in 2 binary numbers and toggle them to make the numbers equal?
-Bit manipulationWrite the logic for setting nth bit.
-Write the logic for clearing  nth bit.
-Write the logic for toggling  nth bit.
-Write the logic for setting nth to mth bits, where n > m.
-Write the logic for clearing nth to mth bits, where n > m.
-Write the logic for toggling nth to mth bits, where n > m.
-Program for finding number of 1s and 0s in a 32-bit number.
-Program for finding whether a number is power of 2 or not.
-Program for finding whether a number is even or odd.
-Write a function to swap even bits with consecutive odd bits in a number.
-Write a function to swap odd bits in a number.
-Write a function to swap even bits in a number.
-Write a function to find out the number of 1s in a number.
-Write a function to check whether the number of 1s present in a number are even or odd.
-Write a function for finding the first lowest bit set in a number.
-Write a function for finding the higest bit set in a number.
-Write a function for reversing the bits in a number.
-Write the code for extracting nth to mth bits, where n < m.
-Write the code for toggling nth to mth bits, where n < m.
-Write the code for setting nth to mth bits, where n < m.
-Write the code for clearing nth to mth bits, where n < m
-Write a piece of code for sizeof() implementation.
-Explain about container_of() and offsetof() implementations.
-How to implement bit-wise operations without using bit-wise operators?
-Check if a number is multiple of 9 using bitwise operators
-Count strings with consecutive 1's
-Gray to Binary and Binary to Gray conversion
-Find the maximum subset XOR of a given set
-Given a set, find XOR of the XOR's of all subsets.
-Sum of Bitwise And of all pairs in a given array
-Find Next Sparse Number
-Find the maximum subarray XOR in a given array
-Find XOR of two number without using XOR operator
-Write a program to add one to a given number. You are not allowed to use airtmatic operators ?
-Multiply two integers without using multiplication, division and bitwise operators, and no loops?
-Check if a number is a power of another number
-Check perfect square using addition/subtraction
-Count numbers having 0 as a digit
-Number of perfect squares between two given numbers
-Write an Efficient C Program to Reverse Bits of a Number
-Calculate square of a number without using *, / and pow()
-
-Byte Swap program?
-	function swap16(val) { 
-		return ((val & 0xFF) << 8) | ((val >> 8) & 0xFF); 
-		}
-
-	function swap32(val) { 
-		return ((val & 0xFF) << 24) | ((val & 0xFF00) << 8) | ((val >> 8) & 0xFF00) | ((val >> 24) & 0xFF); 
-		}
-	
-Write a macro for set and reset, swap.
-	#define SET_BIT( _X_, _NO_ ) ( 1<<(_X_-1)) | _NO_
-	#define RESET_BIT( _X_, _NO_ ) ~( ( 1<<(_X_-1) ) ) & _NO_
-	#define SWAP_BIT( _X_, _NO_ ) ( 1<<(_X_-1)) ^ _NO_
-
-
-Program to Nibble and bit swapping
-	int main( void )
+How to set particular bit in a number? 
+#define SET_BIT(Number, bit_position)    		Number |=  (1<< bit_position)
+OR
+Write a program to set n th bit in 32 bit number?
+	int setbit(int num, int pos)
 	{
-	  unsigned char a = 40, b=20;
-	  a = ( a>>4 ) | ( a<<4 );
-	  b = ( ( b & 0xAA ) >> 1 ) | ( ( b & 0x55 ) << 1 );
-	  clrscr();
-	  printf( \93After Nibble Swap %d\n\94, a );
-	  printf( \93Bit swapping %d\n\94, b );
-	  getch();
-	  return 0;
+			   num = num | 1 << pos;
 	}
 
+How to clear particular bit in a number? 
+#define CLEAR_BIT(Number, bit_position)    		Number &= ~(1<< bit_position)
+
+How to toggle or flip particular bit in a number?
+#define TOGGLE_BIT(Number, bit_position)    		Number ^=  (1<< bit_position) 
+
+How to check particular bit is set or not in a number?
+#define CHECK_BIT_IS_SET_OR_NOT(Number, bit_position)   Number & (1<< bit_position)
+
 Write a program to count total number of setbit in 32 bit number?
+	
 	int countset(int num)
 	{
 			   int count = 0;
 			   while (num) {
-						if( ((num) & 1) == 1)
-							   count++;
-						 num = num >> 1;
+					if( ((num) & 1) == 1)
+					   count++;
+					 num = num >> 1;
 				  }
 				 return count;
 	}
@@ -1738,38 +1986,23 @@ Write a program to count total number of setbit in 32 bit number?
 	{
 			   int count = 0;
 			   while(num != 0) {
-						  count ++;
-						  num = num & (num-1);
+					count ++;
+					num = num & (num-1);
 				  }
 				 return count;
 	}
-
-Write a program to set n th bit in 32 bit number?
-	int setbit(int num, int pos)
+	or
+	while(n)
 	{
-			   num = num | 1 << pos;
+		n = n&(n-1);
+		count ++;
 	}
-
-Write a program to count total number of reset bit in 32 bit integer?
-	int setbit(int num)
+	OR
+	int count_set_bits (long n)
 	{
-			   int count = 0;
-			   while (num) {
-						if( ((num) & 1) == 0)
-							   count++;
-						 num = num >> 1;
-				  }
-				 return count;
-	}
+		return (n ? 1+ count_set_bits (n&n-1) : 0);
+	} 
 
-Write a program to reset nth bit in 32 bit number?
-	int resetbit(int num, int pos)
-	{
-			   num = num &  ~(1 << pos);
-	}
-
-
-Write a program to swap nibble of a 1byte data?
 Write a program to find number is even or odd?
 	void evnodd(int num)
 	{
@@ -1779,6 +2012,62 @@ Write a program to find number is even or odd?
 			   printf("even");
 	} 
 
+C program to swap every 2 bits in a 8 bit binary number?
+
+How would you obtain n bits from position p in an integer?
+	First left shift 32-p bits followed by 32-n bits right shift.
+	/* getbits: get n bits from position p */ 
+	unsigned getbits(unsigned x, int p, int n) { 
+		return (x >> (p+1-n)) & ~(~0 >(p+1-n)
+	}	 
+	moves the desired field to the right end of the word. ~0 is all 1 bits; 
+	shifting it left n bit positions with ~0 << n places zeros in the rightmost n bits; complementing that with ~ makes a mask 
+	with ones in the rightmost n bits. Directly from K&R.
+	
+Write a code to extract nth to mth bit, where n?
+	(num >> n) & ~(~ 0 << (m-n+1))
+
+write a code for toggling nth to m bits,where n < m?
+	num ^ ((~ 0 << n) & ( ~0 >> (31-m)))
+
+Write a code for setting nth to mth bit, where n < m?
+	num | ((~0 << n) & (~0 >>(31-m)))
+	
+write a code for clearing nth to mth bit, where n  < m?
+	num & ~((~0 << n) & (~0 >> (31-m))) 
+
+Explain about container_of() and offsetof() implementations.
+Count strings with consecutive 1's
+Sum of Bitwise And of all pairs in a given array
+Write a program to add one to a given number. You are not allowed to use airtmatic operators ?
+Multiply two integers without using multiplication, division and bitwise operators, and no loops?
+Check if a number is a power of another number
+Check perfect square using addition/subtraction
+
+Write an Efficient C Program to Reverse Bits of a Number
+
+Byte Swap program?
+	function swap16(val) { 
+		return ((val & 0xFF) << 8) | ((val >> 8) & 0xFF); 
+		}
+
+	function swap32(val) { 
+		return ((val & 0xFF) << 24) | ((val & 0xFF00) << 8) | ((val >> 8) & 0xFF00) | ((val >> 24) & 0xFF); 
+		}
+
+Write a program to swap nibble of a 1byte data?
+	int main( void )
+	{
+	  unsigned char a = 40, b=20;
+	  a = ( a>>4 ) | ( a<<4 );
+	  b = ( ( b & 0xAA ) >> 1 ) | ( ( b & 0x55 ) << 1 );
+	  return 0;
+	}
+
+How to swap between first & 2nd byte of an integer in one line statement?
+	int x=0x1234;
+	x = x<<8 | x>>8;
+
 Write a program to find number is power of 2 or not?
 	void  power(int num)
 	{
@@ -1787,23 +2076,7 @@ Write a program to find number is power of 2 or not?
 		  else
 			   printf("num is not power of 2");
 	} 
-
-	Write a function to swap even bits with consecutive odd bits in a number.
-	   e.g. bo swapped with b1,b2 sawpped with b3 and so on.
-
-	Given an unsigned integer, swap all odd bits with even bits. For example, if the given number is 23 (00010111), it should be converted to 43 (00101011). 
-	Every even position bit is swapped with adjacent bit on right side (even position bits are highlighted in binary representation of 23), 
-	and every odd position bit is swapped with adjacent on left side.
-	If we take a closer look at the example, we can observe that we basically need to right shift (>>) all even bits (In the above example, even bits of 23 are highlighted) by 1
-	so that they become odd bits (highlighted in 43), and left shift (<<) all odd bits by 1 so that they become even bits. The following solution is based on this observation. 
-	The solution assumes that input number is stored using 32 bits.
-	Let the input number be x
-	1) Get all even bits of x by doing bitwise and of x with 0xAAAAAAAA. The number 0xAAAAAAAA is a 32 bit number with all even bits set as 1 and all odd bits as 0.
-	2) Get all odd bits of x by doing bitwise and of x with 0x55555555. The number 0x55555555 is a 32 bit number with all odd bits set as 1 and all even bits as 0.
-	3) Right shift all even bits.
-	4) Left shift all odd bits.
-	5) Combine new even and odd bits and return.
-
+Note: The logic says that if a no. is power of 2, then in the binary representation, only one bit of the no. can be set.
 
 write a C program to swap even and odd bits of a given number?
 	#include
@@ -1812,45 +2085,12 @@ write a C program to swap even and odd bits of a given number?
 		// Get all even bits of x
 		unsigned int even_bits = x & 0xAAAAAAAA;
 		// Get all odd bits of x
-		unsigned int odd_bits  = x & 0\D755555555;
+		unsigned int odd_bits  = x & 0x55555555;
 		even_bits >>= 1;  // Right shift even bits
 		odd_bits <<= 1;   // Left shift odd bits
 		return (even_bits | odd_bits); // Combine even and odd bits
 	}
-	// Driver program to test above function
-	int main()
-	{
-		unsigned int x = 23; // 00010111
-		// Output is 43 (00101011)
-		printf("%u ", swapBits(x));
-		return 0;
-	}
-	Output: 43 
-
-Write a function to set a particular bit?
-	unsigned int setbit(unsigned inr num,int pos)
-	{
-	 num = num | (1 << pos);
-	 return num;
-	}
- 
-
-Write a function to clear a particular bit.
-	unsigned int clear(unsigned inr num,int pos)
-	{
-	 num = num & ~ (1 << pos);
-	 return num;
-	}
-
-Write a function to toggle particular bit.
-	unsigned int togglebit(unsigned inr num,int pos)
-	{
-	 num = num ^ (1 << pos);
-	 return num;
-	}
-
-Write a function to swap even bits with consecutive odd bits in a number?
-e.g. b0 swapped with b1, b2 swapped with b3 and so on.
+	OR	
 	unsigned int swap_bits(unsigned int num)
 	{
 	  return (num >> 1 & 0x55555555) | (num << 1 & 0xAAAAAAAA);
@@ -1871,15 +2111,6 @@ Write a function to swap even bits in a number?
 	  return (num >> 2 & 0x11111111) |
 			 (num << 2 & 0x44444444) |
 			 ( num   & 0xAAAAAAAA);}
-			 
-Write a function to find out the number of 1s in a number?
-	unsigned int num_of_ones(unsigned int num)
-	{
-	 if( (count_ones(num) & 1) 
-	  return ODD;
-	 else
-	  return EVEN;
-	}
 
 Write a function for finding the first lowest bit set in a number.
 	unsigned int first_lowest_bit(unsigned num)
@@ -1918,70 +2149,6 @@ Write a function for reversing the bits in a number.
 	 return rev;
 	}
 
-Write a code to extract nth to mth bit, where n?
-	(num >> n) & ~(~ 0 << (m-n+1))
-
-write a code for toggling nth to m bits,where n < m?
-	num ^ ((~ 0 << n) & ( ~0 >> (31-m)))
-
-Write a code for setting nth to mth bit, where n < m?
-	num | ((~0 << n) & (~0 >>(31-m)))
-	
-write a code for clearing nth to mth bit, where n  < m?
-	num & ~((~0 << n) & (~0 >> (31-m))) 
-	
-Which bit wise operator is suitable for checking whether a particular bit is on or off?
-	The bitwise AND operator. Here is an example:
-	enum {
-		KBit0 = 1,
-		KBit1,
-		\85
-		KBit31,
-	};
-	if ( some_int & KBit24 )
-		printf ( \93Bit number 24 is ON\n\94 );
-	else
-		printf ( \93Bit number 24 is OFF\n\94 );
-
-Which bit wise operator is suitable for turning off a particular bit in a number?
-	The bitwise AND operator, again. In the following code snippet, the bit number 24 is reset to zero.
-	some_int = some_int & ~KBit24;
-
-Which bit wise operator is suitable for putting on a particular bit in a number?
-	The bitwise OR operator. In the following code snippet, the bit number 24 is turned ON:
-	some_int = some_int | KBit24;
-
-How can you make sure that 3 rd bit (Say 8-bits given to you) is set or not?
-
-Count the number of set bits in an integer?
-How do you set/reset a particular bit?
-	#define BIT3 (0x1 << 3)
-	static int a;
-	void set_bit3(void) {
-		a |= BIT3;
-	}
-	void clear_bit3(void) {
-		a &= ~BIT3;
-	}
-	
-How would you obtain n bits from position p in an integer?
-	First left shift 32-p bits followed by 32-n bits right shift.
-	/* getbits: get n bits from position p */ unsigned getbits(unsigned x, int p, int n) { return (x >> (p+1-n)) & ~(~0 >(p+1-n) moves the desired field to the right end of the word. ~0 is all 1 bits; 
-	shifting it left n bit positions with ~0 << n places zeros in the rightmost n bits; complementing that with ~ makes a mask with ones in the rightmost n bits. Directly from K&R.
-
-check whether a number is power of 2 or not ?
-	void main ()
-	{
-		int n;
-		printf (\93\n Enter any no:\94);
-		scanf (\93%d\94, & n);
-		if (n & & ((n & n-1) = = 0))
-			printf (\93It is power of 2\94);
-		else
-			printf (\93It is not power of 2\94);
-	}
-	Note: The logic says that if a no. is power of 2, then in the binary representation, only one bit of the no. can be \911\92 & rest are must be \910\92.
-	
 swap two variable without temp variable ?
 	/* swapping using three variables*/ (Takes extra memory space)
 	Int a=5, b=10, c;
@@ -1995,71 +2162,61 @@ swap two variable without temp variable ?
 	
 	/* one line statement using bit-wise operators */ (most efficient)
 	a^=b^=a^=b;
-	The order of evaluation is from right to left. This is same as in approach (c) but the three statements are compounded into one statement.
+	The order of evaluation is from right to left. This is same as in approach (c) but the three statements are compounded into 
+	one statement.
 
 	/* one line statement using arithmetic & assignment operators */
 	a=(a+b) - (b=a);
-	In the above axample, parenthesis operator enjoys the highest priority & the order of evaluation is from left to right. Hence (a+b) is evaluated first and replaced with 15. 
-	Then (b=a) is evaluated and the value of a is assigned to b, which is 5. Finally a is replaced with 15-5, i.e. 10. Now the two numbers are swapped.
+	In the above axample, parenthesis operator enjoys the highest priority & the order of evaluation is from left to right. 
+	Hence (a+b) is evaluated first and replaced with 15. 
+	Then (b=a) is evaluated and the value of a is assigned to b, which is 5. Finally a is replaced with 15-5, i.e. 10. Now the two 		numbers are swapped.
 
-Suggest an efficient method to count the no. of 1\92s in a 32 bit no. Remember without using loop & testing each bit?
-	int count_set_bits (long n)
+How to reverse a string with out using Temporary variable?
+	#include<stdio.h>
+	#include<string.h>
+
+	#define LEN 100 /* Can be changed */
+	int main()
 	{
-            int count = 0;
-             while (n)
-             {
-				count ++;
-				n & = n-1;
-             }
-            return (count);
-     }
+	   char str[LEN];   
+	   unsigned int end, start=0;
 
-	int count_set_bits (long n)
-	{
-		return (n ? 1+ count_set_bits (n&n-1) : 0);
-	} 
+	   printf(" Enter the String to be reversed  \n");
+	   scanf("%s", str);
 
-How to swap between first & 2nd byte of an integer in one line statement?
-	int x=0x1234;
-	x = x<<8 | x>>8;
-	
+	   /* Find out the string Length */
+	   end = strlen(str)-1;
+	   /* Iterate through start less than end */
+	   while(start < end)  
+	   {
+	     str[start]   ^= str[end];
+	     str[end]     ^= str[start];
+	     str[start]   ^= str[end];
+	    
+	     start++;
+	     end --;
+	   }
+	   printf("The Reverse string is : %s\n", str);
+	   return 0;
+	}
+
 linklist:
-How to find if their is in repeating node in linked list
-find merge point of two single linked list?
-arrange elements in single linked list in odd-even group?
-Data Structures Write a program for reversing a singly linked list?
-Write a program for a singly linked list (insert, delete, count, search etc functions).
-Write a program for a doubly linked list (insert, delete, count, search etc functions).
-Write a program for a circular singly linked list (insert, delete, count, search etc functions).
-Write a program for a circular doubly linked list (insert, delete, count, search etc functions).
-Write a program for binary tree implementation.
-You are given a pointer to a node (not the tail node) in a singly linked list. Delete that node from the linked list. 
-How to check whether a linked list is circular or not?
-How would you find a loop in a singly linked list?
-Write a c program for reversing a singly linked list.
-Given two singly linked list, find if they are intersecting. Do this in single iteration. Also find the intersecting node in O(n) time and O(1) space. By intersection I mean intersection by reference not by value.
-find length of circular linked list given a pointer to some node of linkedlist?
-Write a c program to get the intersection point of two singly linked lists.
-Find loop in linked list and remove the loop
-implement Stack and Queue using Linked List
-Repeatedly Delete N nodes after M nodes of a Linked list
-Reverse every k nodes of a linked list
-Reverse a Linked List using Recursion
-Remove Duplicates from a Linked List
-Print Linked List Elements in Reverse order
-Merge a linked list into another linked list at alternate positions
-Move last node to front in linked list
-Swap every two nodes in a linked list
-Frequency of a given number in a Linked List
-Delete alternate nodes of a Linked List
-Rotate linked list by K nodes
-Reverse a singly linked list
-Write a function to get the intersection point of two Linked Lists (Y Shape)
+Write a program for a singly linked list, doubly linked list, circular singly linked list, circular doubly linked list 
+	(insert, delete, count, search etc functions).
 
-Finding Loop in a single linked list?
-	(1) If the linked list is read only, take two pointer approach( p1, p2). Both pointing to beginning of linked list. Now increment p1 by 1 and p2 by 2 and compare both. 
-		if they are equal there is a cycle. Repeat this untill p2 points to null.
-	(2) If you have the condition not to modify the node but you can change the links, then reverse the linked list. If you reach the head node then there is a cycle.
+implement Stack and Queue using Linked List?
+
+Arrange elements in single linked list in odd-even group?
+Reverse a singly linked list? Reverse a Linked List using Recursion?
+
+You are given a pointer to a node (not the tail node) in a singly linked list. Delete that node from the linked list?
+
+Repeatedly Delete N nodes after M nodes of a Linked list?
+find and Remove Duplicates node from a Linked List ?
+Move last node to front in linked list?
+Swap every two nodes in a linked list?
+Frequency of a given number in a Linked List?
+Rotate linked list by K nodes?
 
 Finding middle of the single linked list in a single traversal?
 
@@ -2069,52 +2226,6 @@ Finding middle of the single linked list in a single traversal?
 	Increment P1 by 1 and P2 by two.
 	Step 3:
 	Whenever P2 reaches to the end, P1 will be at the middle of the list, just return P1->data.
-
-How to check whether linked list is circular or not?
-	struct node {
-
-		int data;
-		struct node *next;
-	};
-	struct node *head = NULL;
-
-	void checkcircular(struct node *head)
-	{
-		struct node * slow = head;
-		struct node * fast = head;
-		while( fast && fast->next) {
-			if(slow == fast->next->next) {
-				printf("Circular\n');
-				break;
-			}
-			else {           
-				slow = slow->next;
-				fast = fats->next->next;
-			}
-		}
-	}
-
-How would you find a loop in a singly linked list?
-	struct node {
-		int data;
-		struct node *next;
-	};
-
-	struct node *head = NULL:
-
-	void detectloop(struct node * head)
-	{
-		struct node * slow = head;
-		struct node * fast = head;
-		while(slow && fast && fast->next) {
-			slow = slow->next;
-			fast = fast->next->next;
-			if (slow == fast) {
-				printf("Loop detected\n');
-				break;
-			}
-		}
-	}
 
 Write a C function to print the middle of a given linked list.
 	struct node {
@@ -2186,7 +2297,7 @@ Write a c program to get the intersection point of two singly linked lists.
 		}
 	}
 
-Write a program to detect loop in a Linked List?
+find length of circular linked list given a pointer to some node of linkedlist?
 Finding a linked list that is either circular or not circular ?
 	Try using 2 pointers:
 	pointers travelling at different speeds start from the 
@@ -2226,22 +2337,37 @@ Finding a linked list that is either circular or not circular ?
 	   }
 	}
 
-Insert nodes into a linked list in a sorted fashion
-Write a C program to return the nth node from the end of a linked list
+	OR
+	struct node {
+		int data;
+		struct node *next;
+	};
 
-find the middle element in link list ?
-		Maintain two pointers slow and fast.
-		Iterate thru the list by moving slow pointer once and fast pointer twice. When fast pointer will point to null, slow pointer will be pointing to middle element.
+	struct node *head = NULL:
+
+	void detectloop(struct node * head)
+	{
+		struct node * slow = head;
+		struct node * fast = head;
+		while(slow && fast && fast->next) {
+			slow = slow->next;
+			fast = fast->next->next;
+			if (slow == fast) {
+				printf("Loop detected\n');
+				break;
+			}
+		}
+	}
+
+Write a C program to return the nth node from the end of a linked list
 
 Array vs Linked list?
 	Major differences between arrays and linked lists are: 
 	(i)  In array consecutive elements are stored in consecutive memory locations whereas in linked list it not so. 
 		  Array Elements are stored in contiguous memory locations. Hence they will be faster to retrieve.
 	(ii)  In array address of next element is consecutive and whereas in linked list it is specified in the address part of each node.
-	(iii) Linked List makes better use of memory than arrays.(iv) Insertion or deletion of an element in array is difficult than insertion or deletion in linked list.
+	(iii) Linked List makes better use of memory than arrays.(iv) Insertion or deletion of an element in array is difficult than 			insertion or deletion in linked list.
 	
-Can you tell me how to check whether a linked list is circular or not and delte the circulerity?
-
 Find the size of a structure with out size of operator.
 why stack is always in higher location.
 what is the difference between global and static
@@ -2564,8 +2690,6 @@ Infinite loops often arise in embedded systems. Howe does one code an infinite l
 	loop
 	...
 	goto loop
-
-Macro vs inline; Explain each of them; and which one is better why?
 
 what are Static and Dynamic Libraries? advantage and disadvantages of both?
 
