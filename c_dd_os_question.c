@@ -1,16 +1,16 @@
 Multicore processor:
-Will increasing the number of cores, increase the throughput of your system ?
-What are the general methods of communication between the cores ?
-When is it better to use single core processor compared to multi-core processor ?
-If the CPU in a multi-core processor updates the data in the cache, copies of data in caches associated with other cores will become stale. How is the multicore processor designed to handle this scenario ?
-What is 'Run to Completion' software architecture ?
-What is a 'Pipelined' software architecture ?
-What is the difference between 'Run to Completion' and 'Pipelined' software architecture ?
-How is the debugging and testing environment in the case of multithreaded/multiprocessing applications ?
-At what point does adding more processors or computers to the computation pool slow things down instead of speeding them up?
-Is there an optimal number of processors for any given parallel program?
-How Many Processes or Threads are enough for an application ?
-What is difference between micro processor & micro controller?
+	Will increasing the number of cores, increase the throughput of your system ?
+	What are the general methods of communication between the cores ?
+	When is it better to use single core processor compared to multi-core processor ?
+	If the CPU in a multi-core processor updates the data in the cache, copies of data in caches associated with other cores will become stale. How is the multicore processor designed to handle this scenario ?
+	What is 'Run to Completion' software architecture ?
+	What is a 'Pipelined' software architecture ?
+	What is the difference between 'Run to Completion' and 'Pipelined' software architecture ?
+	How is the debugging and testing environment in the case of multithreaded/multiprocessing applications ?
+	At what point does adding more processors or computers to the computation pool slow things down instead of speeding them up?
+	Is there an optimal number of processors for any given parallel program?
+	How Many Processes or Threads are enough for an application ?
+	What is difference between micro processor & micro controller?
 
 Kernel:
 What are monolithic and micro kernels and what are the differences between them?
@@ -61,17 +61,30 @@ Normal OS vs RTOS ? What is the difference between hard real-time and soft real-
 	RTOS uses pre-emptive scheduling
 
 Linux Device Driver :
+
 what is zimage and bzimage.
-difference between poll and select.
-how physical to virtual translations works in linux.
+	Image: the generic Linux kernel binary image file.
+	
+	zImage: a compressed version of the Linux kernel image that is self-extracting.
+	
+	uImage: an image file that has a U-Boot wrapper (installed by the mkimage utility) that includes the OS type and loader information.
+		A very common practice (e.g. the typical Linux kernel Makefile) is to use a zImage file. Since a zImage file is self-extracting (i.e. needs no external decompressors), 
+		the wrapper would indicate that this kernel is "not compressed" even though it actually is.
+
 what is thrashing, segmentation and fragmentation.
 what is preempt_count and what is the need of that.
-What is mknod and it's usage ?
-In how many ways we can allocate device number ?
-How can we allocate device number statically and dynamically and how to free device number?
+How can we allocate device number statically and dynamically and how to free device number? whichone is batter?
 Explain about about ksets, kobjects and ktypes. How are they related?
 mmap() and munmap(), ioremap() ?
+
 Thread switching and process switching in linux kernel ?
+	Context switches can occur only in kernel mode.
+    A process switch is a operating system scheduler change from one running program to another. This requires saving all of the state of the currently executing program, 
+		including its register state, associated kernel state, and all of its virtual memory configuration. All of the state of the new program is then loaded and execution continues.
+    A thread switch shifts from one thread to another, within one program. Threads within a program are full execution contexts, but they share one address space with other threads in the program. 
+		A thread switch is cheaper than a full context switch since the memory management unit does not need to be reconfigured.
+    A context switch can informally mean either a process or thread switch, depending on the context (pun intended).
+	
 How context switching is handled in linux?
 	
 Compare I2C and SPI protocols?
@@ -82,25 +95,77 @@ Compare I2C and SPI protocols?
 	In SPI there is no limitation to the number of bits transmitted in one frame(I2c 8bits).
 	SPI is non standard whereas I2C is standard protocol.
 
-Explain about Kconfig build system?
 What is process kernel stack and process user stack? What is the size of each and how are they allocated?
 What all happens during context switch?
+
 Can we have same major number for more than one device file ?
-What is minor  number and it's usage ?
-What is range of major and minor numbers?
+	http://www.tutorialsdaddy.com/courses/linux-device-driver/lessons/major-and-minor-number/?content-item-only=yes
+	Traditionally, the major number identifies the driver associated with the device. The minor number is used by the kernel to determine exactly which device is being referred to.
+	
+	Modern Linux kernels allow multiple drivers to share major numbers, but most devices that you will see are still organized on the one-major-one-driver principle.
+    
+	Each device file has a major ID number and a minor ID number. The major ID identifies the general class of device, and is used by the kernel to look up the appropriate driver for this type of device. 
+	The minor ID uniquely identifies a particular device within a general class. The major and minor IDs of a device file are displayed by the ls ­-l command.
+    Each device driver registers its association with a specific major device ID, and this association provides the connection between the device special file and the device. 
+	The name of the device file has no relevance when the kernel looks for the device driver.
+
+	sudo mknod 0666 /dev/device_name [c,b,p] [MAJOR MINOR]
+	
 How to retrieve major and minor number from dev_t type ?
-How can i use my own major and minor number for a device file ?
-How to see  statically assigned major numbers ?
+	#include <sys/types.h>
+	makedev(dmajor, dminor)
+	major(devnum)
+	minor(devnum)
+
 How to attach file operations to sysfs attribute in platform driver?
-How does Linux Kernel know where to look for driver firmware?
+	https://stackoverflow.com/questions/37237835/how-to-attach-file-operations-to-sysfs-attribute-in-platform-driver
+	http://opensourceforu.com/2015/05/talking-to-the-kernel-through-sysfs/
+	https://unix.stackexchange.com/questions/4884/what-is-the-difference-between-procfs-and-sysfs
+	
 How do you build only a static (.a) library for kernel modules.
-How to create a device in /dev automatically upon loading of the kernel module for a device driver?
-	sudo mknod -m 0666 /dev/msio c 22 0
+
+	I have the following Makefile for a kernel module:
+	
+	EXTRA_CFLAGS+=-DLINUX_DRIVER -mhard-float
+	obj-m += main.o
+	other-objs := Obj.o Obj1.o Obj2.o Obj2.o ... 
+
+	Question:
+	How can I first make a static lib from all the objects and only then link with the main object with the created static lib?
+	I know how to make this process manually in two steps. First I call the version above. then I call:
+	ar rcs libother.a Obj.o Obj1.o ...
+
+	And then I change the makefile to:
+
+	EXTRA_CFLAGS+=-DLINUX_DRIVER -mhard-float
+	obj-m += main.o libother.a
+	Since I don't master Makefiles I wonder if anyone knows a quick and clean solution for this.
+
+	solution:
+	EXTRA_CFLAGS+=-DLINUX_DRIVER -mhard-float
+	obj-m += main.o lib.a
+	lib-y := Obj.o Obj1.o Obj2.o Obj2.o ...
+
 How to implement a Linux Device Driver for Data Acquisition Hardware?
+	https://stackoverflow.com/questions/15792144/how-to-implement-a-linux-device-driver-for-data-acquisition-hardware
+	https://stackoverflow.com/questions/31876296/linux-driver-and-api-architecture-for-a-data-acquisition-device
+	
 What is the use of ioctl(inode,file,cmd,arg) ApI ?
 What is the use of the poll(file, polltable) API ?
+difference between epoll and poll and select?
+	https://daniel.haxx.se/docs/poll-vs-select.html
+	https://www.ulduzsoft.com/2014/01/select-poll-epoll-practical-difference-for-system-architects/
+	
 What is the use of file->private_data in a device driver structure ?
+	http://www.haifux.org/lectures/89/intro_linux_device_drivers.pdf
+	
+The difference between device_info and private_data?
+	private_data is exactly what it says. Data that's private to device driver. Application or library can use this field to communicate data that is very specific for the device driver.
+	http://www.circlemud.org/jelson/software/fusd/docs/node29.html
 
+	private_data is stored per file descriptor
+	device_info is kept per device. 
+	
 What is a Loadable Kernel Module?
 	Modules are pieces of code that can be loaded and unloaded into the kernel upon demand. They extend the functionality 
 	of the kernel without the need to reboot the system.
@@ -339,8 +404,8 @@ How to add a new module in kernel build system?
 
 
 How to make a module as loadable module? How to make a module as in-built module?
-how parameters are shared between driver modules.
-what is syscalls.what are the benefits of syscalls.
+how parameters are shared between driver modules?
+what is syscalls.what are the benefits of syscalls?
 
 what is init and exit function of a driver.how and when init and exit function of driver get called?
 
@@ -2201,6 +2266,11 @@ How to reverse a string with out using Temporary variable?
 	}
 
 linklist:
+	kfifo:
+	http://elixir.free-electrons.com/linux/latest/source/samples/kfifo/bytestream-example.c
+	https://lwn.net/Articles/102951/
+	https://android.googlesource.com/kernel/common/+/bcmdhd-3.10/samples/kfifo/dma-example.c
+	https://lwn.net/Articles/347619/
 Write a program for a singly linked list, doubly linked list, circular singly linked list, circular doubly linked list 
 	(insert, delete, count, search etc functions).
 
