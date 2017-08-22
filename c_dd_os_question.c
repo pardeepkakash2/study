@@ -2,7 +2,7 @@ Multicore processor:
 	Will increasing the number of cores, increase the throughput of your system ?
 	What are the general methods of communication between the cores ?
 	When is it better to use single core processor compared to multi-core processor ?
-	If the CPU in a multi-core processor updates the data in the cache, copies of data in caches associated with other cores will become stale. How is the multicore processor designed to handle this scenario ?
+	If the CPU in a multi-core processor updates the data in the cache, copies of data in caches associated with other cores will 			become stale. How is the multicore processor designed to handle this scenario ?
 	What is 'Run to Completion' software architecture ?
 	What is a 'Pipelined' software architecture ?
 	What is the difference between 'Run to Completion' and 'Pipelined' software architecture ?
@@ -26,9 +26,11 @@ What are monolithic and micro kernels and what are the differences between them?
 		kernel while later version like L4 only 2% or 4% slower than the Monolithic kernel .
 	Monolithic kernel generally are bulky . While Pure monolithic kernel has to be small in size even fit in s into 
 		processor first level cache (first generation microkernel).
+
 	Monolithic kernel device driver reside in the kernel space . While In the Microkernel device driver reside in the user space.
 	Since the device driver reside in the kernel space it make monolithic kernel less secure than microkernel . (Failure in the 
 		driver may lead to crash) While Microkernels are more secure than the monolithic kernel hence used in some military devices.
+
 	Monolithic kernels use signals and sockets to ensure IPC while microkernel approach uses message queues . 
 		1 gen of microkernel poorly implemented IPC so were slow on context switches.
 	Adding new feature to a monolithic system means recompiling the whole kernel While You can add new feature or patches 
@@ -36,29 +38,59 @@ What are monolithic and micro kernels and what are the differences between them?
 
 Normal OS vs RTOS ? What is the difference between hard real-time and soft real-time OS? What type of scheduling is there in RTOS?
 	RTOS: http://careerride.com/embedded-systems-interview-questions.aspx
+	
 	In an operating system, there is a module called the scheduler, which schedules different tasks and determines when a process 
 		will execute on the processor. This way, the multi-tasking is achieved. 
+
 	The scheduler in a Real Time Operating System (RTOS) is designed to provide a predictable execution pattern. In an embedded 
 		system, a certain event must be entertained in strictly defined time.
+
 	To meet real time requirements, the behaviour of the scheduler must be predictable. This type of OS which have a scheduler 
-		with predictable execution pattern is called Real Time OS(RTOS). The features of an RTOS are
+		with predictable execution pattern is called Real Time OS(RTOS).
 
-    Context switching latency should be short.
-    Interrupt latency should be short.
-    Interrupt dispatch latency should be short.
-    Reliable and time bound inter process mechanisms.
-    Should support kernel preemption.
-	Compatibility with several plugin devices.
-	Deterministic operating system having guaranteed worst-case interrupt latency and context-switch times.
-	Documentation providing for the minimum, average, and maximum number of clock cycles required by each system call.
-	Overall it should be very reliable.
+    The features of an RTOS are:
+    Context switching latency: Context switching latency should be short.
+    Context switch latency is the time from one context switching to another and it should be short. In other words, the time taken 
+	while saving the context of current task and then switching over to another task should be short. In general, switching context
+ 	involved saving the CPU's registers and loading a new state, flushing the caches, and changing the virtual memory mapping.Context
+	switch latency is highly architecture dependent and different hardware may get different results.
 
+    Interrupt latency:	Interrupt latency should be short.
+    Interrupt latency is the time from interrupt generation until the interrupt service routine starts executing.
+    Factors that affect interrupt latency include the processor architecture, the processor clock speed, the particular OS employed, 
+	and the type of interrupt controller used.
+    Minimum interrupt latency depends mainly on the configuration of the interrupt controller, which combines interrupts onto 
+	processor lines, and assigns priority levels (visit Priority Inversion) to the interrupts.
+    Maximum interrupt latency depends mainly on the OS.
+    For more on Interrupt and Interrupt Latency, please visit my another page Interrupt & Interrupt Latency
+    
+    Dispatch latency:	Interrupt dispatch latency should be short.
+    The time between when a thread is scheduled and when it begins to execute. Theoretically, in a preemptive OS the dispatch latency 
+	for a high-priority thread should be very low. However, in practice preemptive OSs are non-preemptive at times; for example, 
+	while running an interrupt handler. The duration of the longest possible non-preemptive interval is said to be the worst-case
+	dispatch latency of an OS.
+    Reliable and time bound inter process mechanisms should be in place for processes to communicate with each other in a timely manner.
+    
+    Multitasking and task preemption:
+    An RTOS should have support for multitasking and task preemption. Preemption means to switch from a currently executing task to a 
+	high priority task ready and waiting to be executed.
+    
+    Kernel preemption:	Should support kernel preemption.
+    Most modern systems have preemptive kernels, designed to permit tasks to be preempted even when in kernel mode.
+    The bright side of the preemptive kernel is that sys-calls do not block the entire system.
+    However, it introduces more complexity to the kernel code, having to handle more end-cases, perform more fine grained locking 
+	or use lock-less structures and algorithms.
+    Note: Preemptive:
+    Preemptive means that the rules governing which processes receive use of the CPU and for how long are determined by the 
+	kernel process scheduler.
+
+	Hard real time RTOS vs Soft realtime RTOS.
 	A Hard real-time system strictly adheres to the deadline associated with the task. If the system fails to meet the deadline, 
 		even once, the system is considered to have failed. 
+
 	In case of a soft real-time system, missing a deadline is acceptable. In this type of system, a critical real-time task 
 		gets priority over other tasks and retains that priority until it completes
-	
-	RTOS uses pre-emptive scheduling
+
 
 Linux Device Driver :
 
@@ -68,8 +100,9 @@ what is zimage and bzimage.
 	zImage: a compressed version of the Linux kernel image that is self-extracting.
 	
 	uImage: an image file that has a U-Boot wrapper (installed by the mkimage utility) that includes the OS type and loader information.
-		A very common practice (e.g. the typical Linux kernel Makefile) is to use a zImage file. Since a zImage file is self-extracting (i.e. needs no external decompressors), 
-		the wrapper would indicate that this kernel is "not compressed" even though it actually is.
+		A very common practice (e.g. the typical Linux kernel Makefile) is to use a zImage file. Since a zImage file is 
+		self-extracting (i.e. needs no external decompressors), the wrapper would indicate that this kernel 
+		is "not compressed" even though it actually is.
 
 what is thrashing, segmentation and fragmentation.
 what is preempt_count and what is the need of that.
@@ -856,6 +889,26 @@ What happens when recursive functions are declared inline?
 What is a stack frame, stack pointer & frame pointer ?
 
 interrupt:
+
+Explain Minimizing Latency Scheduling of Soft Real Time Systems.
+
+	When an event occurs, the system must respond to and service it as quickly as possible. We refer to event latency as the amount 
+			of time that elapses from when an event occurs to when it is serviced.
+	Two types of latencies affect the performance of real time systems, they are as follow:
+
+        Interrupt Latency
+        Dispatch Latency
+
+	Interrupt Latency refers to the period of time from the arrival of an interrupt at the CPU to the start of the routine 
+	that services the interrupt. When an interrupt occurs, the operating system must first complete the instruction it is executing 
+	and determine the type of interrupt that occurred. It must then save the state of the current process before servicing 
+	the interrupt using the specific Interrupt Service Routine (ISR). The total time required to perform these tasks is the 
+	interrupt latency.
+
+	The amount of time required for the scheduling dispatcher to stop one process and start another is known as dispatch latency.
+	Providing real time tasks with immediate access to the CPU mandates that real time operating system minimize this latency. 
+	The most effective technique for keeping dispatch latency low is to provide preemptive kernels.
+
 How do you register an interrupt handler on a shared IRQ line?
 
 How does the Linux kernel handle shared IRQs?
@@ -2129,6 +2182,16 @@ Write a program to swap nibble of a 1byte data?
 	  return 0;
 	}
 
+Portable way to obtain the most significant byte?
+	(a) i & 0xFF00 
+	(b) i >> 24 
+	(c) i & 0xFF000000 
+	(d) i >> (CHAR_BIT * sizeof(int) - 1))
+
+	(a)-(c) does not cover sizeof(int),
+	d) is comprehensive because of CHAR_BIT (some implementation has 7 bits for char), sizeof(int)(4,8,16 byte int), 
+	and right shift works regardless of Endianness (it always shift bits towards least significant). 
+
 How to swap between first & 2nd byte of an integer in one line statement?
 	int x=0x1234;
 	x = x<<8 | x>>8;
@@ -2764,12 +2827,19 @@ Infinite loops often arise in embedded systems. Howe does one code an infinite l
 what are Static and Dynamic Libraries? advantage and disadvantages of both?
 
 What is the difference between static linking and dynamic linking ?
-	In static linking, all the library modules used in the program are placed in the final executable file making it larger in size. This is done by the linker. 
-	If the modules used in the program are modified after linking, then re-compilation is needed. 
-	The advantage of static linking is that the modules are present in an executable file. We don't want to worry about compatibility issues.
+	http://www.bogotobogo.com/cplusplus/libraries.php
+	In static linking, all the library modules used in the program are placed in the final executable file making it larger in size.
+	This is done by the linker. 
 
-	In case of dynamic linking, only the names of the module used are present in the executable file and the actual linking is done at run time when the program and the library modules both are present in the memory.
-	That is why, the executables are smaller in size. Modification of the library modules used does not force re-compilation. But dynamic linking may face compatibility issues with the library modules used.
+	If the modules used in the program are modified after linking, then re-compilation is needed. 
+	The advantage of static linking is that the modules are present in an executable file. We don't want to worry about 
+	compatibility issues.
+
+	In case of dynamic linking, only the names of the module used are present in the executable file and the actual linking is done 
+	at run time when the program and the library modules both are present in the memory.
+
+	That is why, the executables are smaller in size. Modification of the library modules used does not force re-compilation. 
+	But dynamic linking may face compatibility issues with the library modules used.
 
 What is the difference between #include "..." and #include <...>?
 		The difference lies in where the preprocessor looks for the file to be included. For the include directive with a double quoted filename, 
@@ -2984,6 +3054,16 @@ Can we declare main() function as static?
 	Some compilers treat "main" specially and might silently ignore you when you declare it static.
 	
 Array pointer:
+
+Array problem:
+
+	Buffer Overruns and out of bound:
+	Buffer overruns occur when memory outside of the allocated boundaries is overwritten. We call it data corruption. This is 
+	nasty because it may not become visible at the place where the memory is overwritten. It may appear when we access that 
+	memory address, which can happen much later part of code. When it happens, our program behaves strangely because the
+	memory location has wrong value.
+
+	
 There is a char * pointer that points to some ints, and what should be done to step over it ?
 How does declaring function parameters as 'const' help in better,safer code ?
 Which of the following is correct . Why does point no 'i' gives output sometime & sometimes it does not give output ?
@@ -3117,6 +3197,24 @@ write your own malloc()?
 malloc vs calloc vs realloc?
 what is free()? how does free know how much memory to de-allocate?
 
+Why does malloc() return a void*?
+	It's because malloc() has no idea which type of object we want to put in that memory. Initialization is our responsibility. 
+
+Common Bugs for Memory Allocation?
+
+
+
+    Null dereferencing:
+    Trying to use -> or * operator on a NULL pointer.
+
+    Double Freeing:
+    Calling delete or free() on a block of memory twice.
+
+    Accessing invalid memory:
+    Trying to use -> or * operator on a pointer that has not been allocated yet or that has been freed already.
+
+    Memory leaks:
+    Not freeing a block of memory when we are finished with it.
 
 NULL vs wild vs dangling vs generic pointer ? Why NULL pointer is required?
 	
@@ -3915,6 +4013,9 @@ Is it necessary to start the execution of a program from the main() in C?*.
 Explain Order of constructor and destructor call in case of multiple inheritance?
 
 Multithreading:
+http://www.bogotobogo.com/cplusplus/multithreaded.php
+http://www.bogotobogo.com/cplusplus/multithreading_pthread.php
+
 Can a child process be called as a thread ?
 Is it possible for the thread to be alive if we terminate the process ? Is it possible for a child process to be alive if we terminate the parent process ? 
 What is the difference between multithreading and multiprocessing ?
@@ -3941,6 +4042,132 @@ how a func from one user process can be called in other user process ?
 write a program using two thread . one thread should print odd number and other should even number in sequesnce? how you can make it SMP safe ?
 how to make it SMP safe in user space?
 implemet your own string system call ? 
+
+
+IPCs:
+http://www.chandrashekar.info/articles/linux-system-programming/introduction-to-linux-ipc-mechanims.html
+http://www.bogotobogo.com/cplusplus/multithreading_ipc.php
+
+The Linux kernel provides the following IPC mechanisms:
+
+    Signals
+    Anonymous Pipes
+    Named Pipes or FIFOs
+    SysV Message Queues and POSIX Message Queues
+    SysV Shared memory and POSIX Shared memory
+    File-backed and anonymous shared memory using mmap
+    UNIX Domain Sockets
+    Netlink Sockets
+    Network Sockets
+    Inotify mechanisms
+    FUSE subsystem
+    D-Bus subsystem
+
+Signals:
+
+	Signals are the cheapest forms of IPC provided by Linux. Their primary use is to notify processes of change in states or 
+	events that occur within the kernel or other processes. We use signals in real world to convey messages with least overhead - 
+	think of hand and body gestures. For example, in a crowded gathering, we raise a hand to gain attention, wave hand at a friend 
+	to greet and so on.
+
+	On Linux, the kernel notifies a process when an event or state change occurs by interrupting the process's normal flow of 
+	execution and invoking one of the signal handler functinos registered by the process or by the invoking one of the default 
+	signal dispositions supplied by the kernel, for the said event.
+
+Anonymous pipes:
+
+	Anonymous pipes (or simply pipes, for short) provide a mechanism for one process to stream data to another. A pipe has two 
+	ends associated with a pair of file descriptors - making it a one-to-one messaging or communication mechanism. One end of the 
+	pipe is the read-end which is associated with a file-descriptor that can only be read, and the other end is the write-end which 
+	is associated with a file descriptor that can only be written. This design means that pipes are essentially half-duplex.
+
+	Anonymous pipes can be setup and used only between processes that share parent-child relationship. Generally the parent 
+	process creates a pipe and then forks child processes. Each child process gets access to the pipe created by the parent process 
+	via the file descriptors that get duplicated into their address space. This allows the parent to communicate with its children, 
+	or the children to communicate with each other using the shared pipe.
+
+	Pipes are generally used to implement Producer-Consumer design amongst processes - where one or more processes would produce 
+	data and stream them on one end of the pipe, while other processes would consume the data stream from the other end of the pipe.
+
+Named pipes or FIFO:
+
+	Named pipes (or FIFO) are variants of pipe that allow communication between processes that are not related to each other. 
+	The processes communicate using named pipes by opening a special file known as a FIFO file. One process opens the FIFO file 
+	from writing while the other process opens the same file for reading. Thus any data written by the former process gets 
+	streamed through a pipe to the latter process. The FIFO file on disk acts as the contract between the two processes 
+	that wish to communicate.
+
+Message Queues:
+
+	Message Queues are synonymous to mailboxes. One process writes a message packet on the message queue and exits. Another process 
+	can access the message packet from the same message queue at a latter point in time. The advantage of message queues over 
+	pipes/FIFOs are that the sender (or writer) processes do not have to wait for the receiver (or reader) processes to connect. 
+	Think of communication using pipes as similar to two people communicating over phone, while message queues are similar to 
+	two people communicating using mail or other messaging services.
+
+	There are two standard specifications for message queues.
+
+	SysV message queues:
+	The AT&T SysV message queues support message channeling. Each message packet sent by senders carry a message number. 
+	The receivers can either choose to receive message that match a particular message number, or receive all other messages 
+	excluding a particular message number or all messages.
+
+	POSIX message queues:
+	The POSIX message queues support message priorities. Each message packet sent by the senders carry a priority number along with 
+	the message payload. The messages get ordered based on the priority number in the message queue. When the receiver tries to 
+	read a message at a later point in time, the messages with higher priority numbers get delivered first. POSIX message queues 
+	also support asynchronous message delivery using threads or signal based notification.
+
+	Linux support both of the above standards for message queues.
+
+Shared memory:
+
+	As the name implies, this IPC mechanism allows one process to share a region of memory in its address space with another. 
+	This allows two or more processes to communicate data more efficiently amongst themselves with minimal kernel intervention.
+
+	There are two standard specifications for Shared memory.
+
+	SysV Shared memory: 
+	Many applications even today use this mechanism for historical reasons. It follows some of the artifacts of SysV IPC semantics.
+
+	POSIX Shared memory: 
+	The POSIX specifications provide a more elegant approach towards implementing shared memory interface. On Linux, POSIX Shared
+	memory is actually implemented by using files backed by RAM-based filesystem. I recommend using this mechanism over 
+	the SysV semantics due to a more elegant file based semantics.
+
+	why shared memory is the fastest machnisam?
+	For LARGE messages, there is no doubt that shared memory is a very good technique, and very useful in many ways.
+
+UNIX Domain Sockets:
+
+	UNIX Domain Sockets provide a mechanism for implementing applications that communicate using the Client-Server architecture. 
+	They support both stream and datagram oriented communication, are full-duplex and support a variety of options. 
+	They are very widely used for developing many large-scale frameworks.
+
+Netlink Sockets:	
+
+	Netlink sockets are similar to UNIX Domain Sockets in its API semantics - but used mainly for two purposes:
+	For communication between a process in user-space to a thread in kernel-space
+	For communication amongst processes in user-space using broadcast mode.
+
+Network Sockets:	
+
+	Based on the same API semantics like UNIX Domain Sockets, Network Sockets API provide mechanisms for communication between
+	processes that run on different hosts on a network. Linux has rich support for features and various protocol stacks for 
+	using network sockets API. For all kinds of network programming and distributed programming - network socket APIs form 
+	the core interface.
+
+Inotify mechanisms:	
+	
+	The Inotify API on Linux provides a method for processes to know of any changes on a monitored file or a directory asynchronously.
+	By adding a file to inotify watch-list, a process will be notified by the kernel on any changes to the file like open, read, 
+	write, changes to file stat, deleting a file and so on.
+
+D-Bus subsystem:
+
+	D-Bus is a high-level IPC mechanism built generally on top of socket API that provides a mechanism for multiple processes 
+	to communicate with each other using various messaging patterns. D-Bus is a standards specification for processes communicating
+	with each other and very widely used today by GUI implementations on Linux following Freedesktop.org specifications.
 
 cbasic:
 Data type :
@@ -4104,12 +4331,8 @@ scope types:
 storage class Types:
 
 storage class		declared	scope 		visibility
-1. auto
-			Globel		
-			local		block		block
-2. register		
-			globel		
-			local		block		block
+1. auto			local		block		block
+2. register		local		block		block
 3. static
 			globel		program		file
 			local		program		block
