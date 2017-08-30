@@ -1,0 +1,283 @@
+From 0d8812aa38c19be4bba2b9799adc01bb88a99a59 Mon Sep 17 00:00:00 2001
+From: Dharmender Suresh Chander <Dharmender.SureshChander@in.bosch.com>
+Date: Wed, 30 Aug 2017 19:17:50 +0530
+Subject: [PATCH] update c_dd
+
+Signed-off-by: Dharmender Suresh Chander <Dharmender.SureshChander@in.bosch.com>
+---
+ c_dd_os_question.c | 178 +++++++++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 165 insertions(+), 13 deletions(-)
+
+diff --git a/c_dd_os_question.c b/c_dd_os_question.c
+index 0ab941c..d60c6b1 100755
+--- a/c_dd_os_question.c
++++ b/c_dd_os_question.c
+@@ -1,3 +1,39 @@
++Embedded:
++
++CAN,I2C,SPI and LIN all these protocols are related to serial communication/protocols. Only the naming is differ from the techniques we used to transfer the data, 
++about number of lines we used, about data transfer speed.
++
++CAN
++Controller Area Network is the secure and fast serial communication protocol. CAN is generally used for different device at different location i.e, usually out side of our PCB. 
++	CAN is a multi-master serial bus standard for connecting ECUs
++	Lines: 2 Lines[TX and RX]
++	Speed: up to 1 Mbit/s
++
++I2C
++Inter Integrated Circuit is an official standard serial communication protocol that only requires two signal lines that was designed for communication between chips on a PCB. 
++	Lines: 2 lines [SCK and SCL]
++	Speed: 100kbps [faster data transmission modes have been developed over the years to achieve speeds of up to 3.4Mbps]
++
++SPI
++Serial Peripheral Interface is a very low power serial protocol. SPI bus is full-duplex bus, which allows communication to flow to and from the master device simultaneously.
++	Lines: 4 lines [MISO, MOSI, SCK, CS]
++	Speed: up to 10Mbps
++
++LIN
++Local Interconnect Network is a serial network protocol used for communication between components outside the PCB/BOARD. LIN is a broadcast serial network comprising one 
++	master and typically up to 16 slaves.
++	Lines: Single wire communication
++	Speed: up to 20 kbit/s.
++
++
++UART
++
++This is one more serial protocol you missed to mention. Universal Asynchronous Receiver Transmitter. it is very simple and old one from all the serial protocols. It is the famous one and most used serial protocol. 
++Lines : 3 lines are more than enough [TX , RX & GND]
++it not suitable for long distance transmission.
++
++more serial protocols are available UART,USART,I2S,Microwire,1-wire etc.,
++
+ Multicore processor:
+ 	Will increasing the number of cores, increase the throughput of your system ?
+ 	What are the general methods of communication between the cores ?
+@@ -12,6 +48,7 @@ Multicore processor:
+ 	How Many Processes or Threads are enough for an application ?
+ 	What is difference between micro processor & micro controller?
+ 
++
+ Kernel:
+ What are monolithic and micro kernels and what are the differences between them?
+ 	Monolithic kernel is a single large processes running entirely in a single address space. 
+@@ -857,6 +894,46 @@ What is a stack frame, stack pointer & frame pointer ?
+ 
+ interrupt:
+ How do you register an interrupt handler on a shared IRQ line?
++Why are interrupts disabled when the kernel is currently handling an interrupt on that cpu? is it really need to disable the interrupt?
++	What if an interrupt carrying an important message is missed ?
++
++	there are many types of interrupts, such as I/Os, timers, watchdogs, serial ports,peripherals and DMA etc.
++	This prevents "stacked interrupts" that can overflow the kernel stack. It also can also prevent deadlocks and/or "pinning".
++	Most hardware doesn't "lose" an interrupt.
++	Minimizing latency is a part of careful kernel design and ISR design.
++
++Are Interrupts assigned to a fixed CPU (always handled by the same CPU)?
++
++On an SMP machine we must use spin_lock_irqsave and not spin_lock_irq from interrupt context?
++	http://www.linuxinternals.org/blog/2014/05/07/spinlock-implementation-in-linux-kernel/
++	So only when you are sure that interrupts are not disabled only then you should spin_lock_irq otherwise you should always use spin_lock_irqsave.
++
++	spinlock_t mLock = SPIN_LOCK_UNLOCK;
++	unsigned long flags;
++	spin_lock_irqsave(&mLock, flags); // save the state, if locked already it is saved in flags
++	// Critical section
++	spin_unlock_irqrestore(&mLock, flags); // return to the formally state specified in flags
++
++	spinlock_t mLock = SPIN_LOCK_UNLOCK;
++	unsigned long flags;
++	spin_lock_irq(&mLock); // Does not know if already locked
++	// Critical section
++	spin_unlock_irq(&mLock); // Could result in an error unlock
++
++	local_irq_save(flags) vs local_irq_disable(flags) ?
++
++	The local_irq_disable() routine is dangerous if interrupts were already disabled prior to its invocation.
++	The corresponding call to local_irq_enable() unconditionally enables interrupts, despite the fact that they were off to begin with.
++
++	unsigned long flags;
++
++	local_irq_save(flags);    /* interrupts are now disabled */ /* ... */
++	local_irq_restore(flags); /* interrupts are restored to their previous
++	state */
++
++1) In case of UP how is jiffies(timer) get updated while holding spin lock using spinlock_irq_save?
++2)My understanding is in smp environment jiffies updation cannot be done on processor holding spinlock irrespective of spinlock API.So timer interrupt should be enabled across all cores in SoC. 
++Imagine a scenario in quad core processor where 4 cores are holding 4 different spinlocks & how is the timer interrupt for jiffies handled?
+ 
+ How does the Linux kernel handle shared IRQs?
+ 	When interrupts occurs on shared IRQ line, kernel invokes each and every interrupt handler registered with it by passing each 
+@@ -869,6 +946,19 @@ How does the Linux kernel handle shared IRQs?
+ While writing interrupt handlers(ISR), which are points needed to be considered?
+ What is ISR? Can they be passed any parameter and can they return a value? can we use printf, break point, function call or any blocking or sleep call or floating operation in ISR?
+ 
++What Functions Are Safe To Call From Interrupts?
++	Some Functions Which Sleep:
++        copy_from_user()
++        copy_to_user()
++        get_user()
++        put_user() 
++    	kmalloc(GFP_KERNEL)
++    	down_interruptible() and down()
++	schedule()) directly or indirectly sleep
++
++    There is a down_trylock() which can be used inside interrupt context, as it will not sleep. up() will also never sleep. 
++
++
+ Advantages and disadvantages of Polling & Interrupt drivers.
+ 	Both Polling and Interrupts have their place and usefulness in Production code. Using the right method at the right 
+ 	place reduces code complexity and increases reliability.
+@@ -1376,13 +1466,26 @@ What are the Synchronization techniques used in Linux Kernel?
+ 	mutex_unlock( &my_mutex );
+ 
+ What are the differences between mutex and semaphore? give a nice example when we should use whichone?
++	https://blog.feabhas.com/2009/09/mutex-vs-semaphores-%E2%80%93-part-1-semaphores/
++
+ 	Strictly speaking, mutex is a locking mechanism whereas semaphore is a signaling mechanism.
+-	Mutex is the lock to a toilet and semaphore is the number of identical keys to a shared resource.
+-	Imagine a buffer being split up into 4 parts and then the semaphore count can become 4, i.e there are now 4 instance to the same
+-	resource. Mind it , it is not the same resource. A semaphore with a value of 0 is similar to mutex but is has a difference, 
+-	in mutex ,the thread within the same process can unlock the mutex whereas in semaphore an external thread can also free 
+-	the semaphore by giving wakeup signal.
++	pthread mutexes are used for mutual exclusion between threads of the same process. On the other hand, System V IPC (man svipc) semaphores can be used across processes.
++	A semaphore with a value of 0 is similar to mutex but has a difference, in mutex ,the thread within the same process can unlock the mutex whereas in semaphore 
++	an external thread can also free the semaphore by giving wakeup signal.
++	A mutex can only be used to maintain atomicity whereas a semaphore can be used for both ordering and atomicity.
++	
++	Atomicity:
++	An illusion that a section of code either executes completely, or doesn't execute at all. This illusion can be provided by allowing only one thread to execute that code at a time. 
++	Atomicity is a key requirement for generating consistent results with respect to a memory location. It is particularly useful for the parts of your program that modify shared state, 
++	say globals.
+ 
++	Ordering:
++	Different threads might be running on different cores. However, since there is no such thing as a global clock, at times its imperative to achieve ordering of instructions across 
++	various cores, for correctness. For example, it might be a correctness requirement to execute instruction X of thread T1 running on core C1 before instruction Y of thread T2 running on core C2.
++
++
++How to share or use mutex b/w different process?
++ 
+ Why are spin locks good choices in Linux Kernel Design instead of something more common in userland code, such as semaphore or mutex?
+ 	In the following situations.
+ 		The thread that holds the lock is not allowed to sleep.
+@@ -1994,12 +2097,9 @@ What is BER (Bit error Rate / Bit Error Ratio)?
+ 
+ cquestions:
+ call back functions?
+-How can you avoid accessing of an array beyond its limits?
++
+ In a big array consists of 1's & 0's ,write an efficient programe to keep all 1's to right side and 0's to other side
+ In a Process Address Space what if stack or heap collide?
+-Delete a particular node in a linked list having argument passed as address of a node.
+-   without Header pointer known and other implementation with header pointer known
+-Write program to Insert element in static array
+ what all Debugging techniques you know?
+ Determine the minimum stack size required for given prog by end of main function?
+ how to debug your driver if u had any buffer issues
+@@ -2008,9 +2108,32 @@ Difference between #define and CONST, which one will you chose in programming?
+ tell me the logic how can you find depth of a stack?
+ difference b/w macro and a constant variable?
+ Memory barriers; Why are they required?
+-What is re-entrancy
++What is re-entrancy?
+ What is structure padding,alignment and packing.?
++
+ How to write own malloc call?
++	http://tharikasblogs.blogspot.in/p/how-to-write-your-own-malloc-and-free.html
++	https://codereview.stackexchange.com/questions/88552/my-own-malloc-function-in-c
++	static unsigned char our_memory[1024 * 1024]; //reserve 1 MB for malloc
++	static size_t next_index = 0;
++
++	static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
++
++	void *malloc(size_t sz)
++	{
++	    void *mem;
++	    pthread_mutex_lock(&lock);
++
++	    if(sizeof our_memory - next_index < sz) {
++		pthread_mutex_unlock(&lock);		
++		return NULL;
++	    }
++	    mem = &our_memory[next_index];
++	    next_index += sz;
++	    pthread_mutex_unlock(&lock);
++	    return mem;
++	}
++
+ What is the difference between inline and macro?
+ How to know size of memory allocated by malloc using pointer?
+ 
+@@ -2276,6 +2399,9 @@ Write a program for a singly linked list, doubly linked list, circular singly li
+ 
+ implement Stack and Queue using Linked List?
+ 
++Delete a particular node in a linked list having argument passed as address of a node.
++   without Header pointer known and other implementation with header pointer known?
++
+ Arrange elements in single linked list in odd-even group?
+ Reverse a singly linked list? Reverse a Linked List using Recursion?
+ 
+@@ -2339,7 +2465,7 @@ Write a c program to get the intersection point of two singly linked lists.
+ 		struct node current2 = head2;
+ 	   
+ 		for(i=0;i        cureent1 = current->next;
+-		}
++}
+ 		while(cuttent1 != NULL && current2 != NULL) {
+ 			if(current1 == current2) {
+ 				printf(" intersection node =%d\n", current1->data);
+@@ -2797,7 +2923,7 @@ Can static variables be declared in a header file?
+ Can a static variable accessed from outside of the file?
+ 
+ 	Storage class static and extern and register in details.
+-	storage class           declared        scope           visibility
++	storage class   declared        scope           visibility
+ 	1. auto
+                         Globel
+                         local           block           block
+@@ -2983,7 +3109,9 @@ Can we declare main() function as static?
+ 	That's why main can't be static.
+ 	Some compilers treat "main" specially and might silently ignore you when you declare it static.
+ 	
+-Array pointer:
++Array:
++Assigning any address to an array variable is not allowed.
++
+ There is a char * pointer that points to some ints, and what should be done to step over it ?
+ How does declaring function parameters as 'const' help in better,safer code ?
+ Which of the following is correct . Why does point no 'i' gives output sometime & sometimes it does not give output ?
+@@ -3115,7 +3243,31 @@ What is hashing?
+ memmove vs memcpy vs memset ?
+ write your own malloc()?
+ malloc vs calloc vs realloc?
++
++How to free the memory allocated by malloc without free()?
++	Note: realloc can be use to free the allocated memory.
++	realloc(a, 0);
++	The realloc() function changes the size of the memory block pointed to by ptr to size bytes. The contents will be unchanged in the range from the start of
++	the region up to the minimum of the old and new sizes. If the new size is larger than the old size, the added memory will not be initialized. If ptr is NULL, 
++	then the call is equivalent to malloc(size), for all values of size; if size is equal to zero, and ptr is not NULL, then the call is equivalent to free(ptr). 
++	Unless ptr is NULL, it must have been returned by an earlier call to malloc(), calloc() or realloc(). If the area pointed to was moved, a free(ptr) is done.
++
++
+ what is free()? how does free know how much memory to de-allocate?
++	https://www.quora.com/How-does-free-function-in-C-knows-how-much-memory-to-be-released-deallocate
++	When you call malloc(), you specify the amount of memory to allocate. The amount of memory actually used is slightly more than this, and includes extra information 
++	that records (at least) how big the block is. You can't (reliably) access that other information - and nor should you :-).
++	When you call free(), it simply looks at the extra information to find out how big the block is.
++	
++	____ The allocated block ____
++	/                             \
++	+--------+--------------------+
++	| Header | Your data area ... |
++	+--------+--------------------+
++		  ^
++		  |
++		  +-- The address you are given
++
+ 
+ 
+ NULL vs wild vs dangling vs generic pointer ? Why NULL pointer is required?
+-- 
+1.9.1
+
